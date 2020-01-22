@@ -8,10 +8,10 @@ function log_network(
     agent_outdegree = outdegree(graph)
     agent_centrality = closeness_centrality(graph)
     agent_cc = local_clustering_coefficient(graph)
-    agent_component = (
-        [i for i in keys(connected_components(graph)), v in 1:nv(graph)
-        if v in connected_components(graph)[i]]
-    )
+    # agent_component = (
+    #     [i for i in keys(connected_components(graph)), v in 1:nv(graph)
+    #     if v in connected_components(graph)[i]]
+    # )
 
     return DataFrame(
         TickNr = tick_nr,
@@ -21,8 +21,8 @@ function log_network(
         Indegree = agent_indegree,
         Outdegree = agent_outdegree,
         Centrality = agent_centrality,
-        CC = agent_cc,
-        Component = agent_component
+        CC = agent_cc#,
+        # Component = agent_component
     )
 end
 

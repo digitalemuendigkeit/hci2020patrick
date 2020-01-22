@@ -105,8 +105,8 @@ function run!(
         Indegree = Int64[],
         Outdegree = Int64[],
         Centrality = Float64[],
-        CC = Float64[],
-        Component = Int64[]
+        CC = Float64[]#,
+        # Component = Int64[]
     )
 
     if !in("tmp", readdir())

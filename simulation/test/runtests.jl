@@ -11,8 +11,11 @@ convert_results()
 batchrun = Simulation[]
 
 
-for file in readdir("results/new/")
-    raw = load(joinpath("results", "new", file))
+for file in readdir("results")
+    if !occursin("jld2", file)
+        continue
+    end
+    raw = load(joinpath("results", file))
     push!(batchrun, raw[first(keys(raw))])
 end
 
@@ -40,10 +43,10 @@ resultcomparison = DataFrame(
 )
 
 for (index, simulation) in enumerate(batchrun)
-    componentsizes = ""
-    for i in 1:length(connected_components(simulation.final_state[1]))
-        componentsizes = componentsizes * "Component No.$i, $(length(connected_components(simulation.final_state[1])[i])) Agents. "
-    end
+    # componentsizes = ""
+    # for i in 1:length(connected_components(simulation.final_state[1]))
+    #     componentsizes = componentsizes * "Component No.$i, $(length(connected_components(simulation.final_state[1])[i])) Agents. "
+    # end
 
     if simulation.config.simulation.addfriends == ""
         addfriends = "hybrid"
@@ -87,67 +90,6 @@ for (index, simulation) in enumerate(batchrun)
 end
 
 
-
-metagraph = MetaGraph(10, 1.0)
-current_graph = batchrun[10].final_state[1]
-meanOut = mean(outdegree(batchrun[10].final_state[1]))
-for v in vertices(batchrun[10].final_state[1])
-    if outdegree(current_graph, v) > mean(outdegree(current_graph))
-        add_vertex!(metagraph, :outdegree, outdegree(current_graph))
-    end
-end
-
-metagraph
-
-filtered_graph = deepcopy(current_graph)
-
-deletenodes = Int64[]
-for v in vertices(filtered_graph)
-    if outdegree(filtered_graph, v) < mean(outdegree(filtered_graph))
-        push!(deletenodes, v)
-    end
-end
-
-add_vertices!(metagraph,10)
-
-add_edge!(metagraph, 1, 2, :weight, 1)
-add_edge!(metagraph, 2, 1)
-
-has_edge(metagraph,2,1)
-
-e = Edge(2, 3)
-if !add_edge!(metagraph, src(e), dst(e))
-    set_prop!(metagraph, e, :weight, 0)
-end
-
-using GraphPlot
-metagraph = MetaGraph(complete_graph(10))
-gplot(myweight)
-
-using SimpleWeightedGraphs
-
-myweight = SimpleWeightedGraph(metagraph)
-add_vertices!(myweight,10)
-add_edge!(myweight,1,2, 3)
-
-for e in edges(myweight)
-    print(e)
-end
-
-for e in edges(current_graph)
-    if !add_edge!(metagraph, src(e), dst(e))
-        set_prop!(metagraph, e, :weight, 2)
-    end
-
-degree(filtered_graph)
-degree(Graph(filtered_graph))
-
-weights(current_graph)
-
-for v in vertices(metagraph)
-    print(v)
-end
-
 using Statistics
 using RCall
 using Cairo
@@ -157,7 +99,7 @@ using Fontconfig
 R"save(resultcomparison,file=\"results.Rda\")"
 degree
 histogram(mean(indegree(batchrun[18].final_state[1])))
-
+convert_results()
 using GraphPlot
 using Compose
 plot = gplot(batchrun[10].final_state[1])
