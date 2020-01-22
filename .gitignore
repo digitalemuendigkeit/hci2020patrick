@@ -7,3 +7,5 @@
 *.gml
 *.csv
 *.png
+*.ipynb
+/ipynb_checkpoints/*
