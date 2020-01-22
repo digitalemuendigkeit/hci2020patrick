@@ -15,7 +15,7 @@ function add_friends_neighbors_of_neighbors!(
             friend_candidates,
             setdiff(
                 neighbors(graph, neighbor),
-                neighbors(graph, agent_idx),
+                inneighbors(graph, agent_idx),
                 agent_idx
             )
         )

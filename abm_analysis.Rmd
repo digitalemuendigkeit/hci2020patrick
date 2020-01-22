@@ -28,7 +28,7 @@ results <- load("simulation/results.Rda")
 simruns <- list.files(file.path("simulation", "dataexchange"))
 
 
-for (i in 15:length(simruns)) {
+for (i in 1:length(simruns)) {
   assign(paste0(simruns[i], "_agent_log"), read.csv(file.path("simulation", "dataexchange", simruns[i], "agent_log.csv")))
   assign(paste0(simruns[i], "_post_log"), read.csv(file.path("simulation","dataexchange", simruns[i], "post_log.csv")))
   assign(paste0(simruns[i], "_graph_final"), 
@@ -53,20 +53,86 @@ dendPlot(ceb, mode="hclust")
 
 modularity(ceb)
 
+testobjekt <- c(1,2)
+test2 <- testobjekt
+test3 = testobjekt
+
+test2[1] <- 3
+
 V(BAv2_run01_graph_final)$label <- NA
 V(BAv2_run01_graph_final)$size <- degree(BAv2_run01_graph_final, mode="out") * 0.3
+
+for (runname in simruns) {
+  current_agent_log <- get(paste0(runname, "_agent_log"))
+  current_graph <- get(paste0(runname, "_graph_final"))
+  current_agent_log %>% 
+    filter(TickNr == 1000) %>% 
+    .$Opinion -> agent_opinions
   
+  V(current_graph)$opinion <- agent_opinions
+  write.graph(current_graph, paste0(runname,".gml"), format="gml")
+}
 
-E(BAv2_run01_graph_final)$arrow.size <- 0.1
+BAv2_run11_agent_log %>% 
+  filter(AgentID == 369)
 
+get(paste0(simruns[1], "_agent_log")) %>% 
+    filter(TickNr == 1000) %>% 
+    .$Opinion -> agent_opinions
+  
+  V(get(paste0(simruns[1], "_graph_final")))$opinion <- agent_opinions
+
+BAv2_run15_agent_log %>% 
+  filter(TickNr == 1000) %>% 
+  .$Opinion -> agent_opinions
+
+V(BAv2_run15_graph_final)$opinion <- agent_opinions
+write.graph(BAv2_run15_graph_final, "graph_test2.gml", format="gml")
+  
+test <- E(BAv2_run15_graph_final)$arrow.size
+E(BAv2_run15_graph_final)$arrow.size <- 0.1
+E(BAv2_run15_graph_final)$weight <- 1.0
+edges(BAv2_run15_graph_final)
+edge_attr(BAv2_run15_graph_final, "weight", index = 1) <- 2
+edge_attr(BAv2_run15_graph_final, "weight")
+edge(BAv2_run15_graph_final, index=1)
+set_edge_attr(BAv2_run15_graph_final, "weight", index = 1, 2.0)
+
+g <- make_ring(10) %>%
+  set_edge_attr("width", value = 1:10) %>%
+  set_edge_attr("color", value = "red")
+E(g)$weight
+E(g)$width <- E(g)$weight
+edge.attributes(g)
+plot(g)
+
+set_edge_attr(g, "weight", 1, 100) -> g
+degree(g)[1]
+V(g) %>% 
+  filter(.$weight > 1)
+
+E(g, 1,2)
+degree(g)
+g <- delete.vertices(g, c(3,7))
+
+vertex(g)
+for (i in vertices(g)) {
+  print(i)
+}
 # pdf(file = "myplot.pdf", 600, 600)
 png("my_plot.png", 3000, 3000)
 plot(clp, BAv2_run01_graph_final, layout = layout_with_fr)
 title("Test")
 dev.off()
+
 ```
 
 ```{r}
+
+resultcomparison %>% 
+  ggplot(aes(y=OutdegreeAVG, x=Agentcount)) +
+  geom_point()
+
 BAv2_run06_agent_log %>% 
   group_by(TickNr) %>% 
   summarize(meanOutdegree = mean(Outdegree))
@@ -81,6 +147,8 @@ BAv2_run06_agent_log %>%
 nodecolorgrad <- colorRampPalette(c("green", "yellow", "red"))
 length(seq(-1,1, by=0.1))
 nodecolors <- nodegolorgrad
+
+find("ab", "blasber")
 
 deg <- degree(BAv2_run01_graph_10, mode="out")
 V(BAv2_run01_graph_10)$size <- deg

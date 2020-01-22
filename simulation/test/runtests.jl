@@ -10,13 +10,30 @@ convert_results()
 
 batchrun = Simulation[]
 
+for e in edges(batchrun[16].final_state[1])
+    if src(e) == dst(e)
+        println("Self Loop!")
+    end
+end
+
+radius(SimpleGraph(batchrun[11].final_state[1]))
+
+ne(SimpleGraph(batchrun[11].final_state[1]))
+ne(batchrun[11].final_state[1])
+
+connected_components(batchrun[11].final_state[1])
+
+using Plots
+histogram(indegree(batchrun[11].final_state[1]), bins=200)
+
 for file in readdir("results")
     raw = load(joinpath("results", file))
     push!(batchrun, raw[first(keys(raw))])
 end
 
 resultcomparison = DataFrame(
-    config = String[],
+    AddFriends = String[],
+    UnfriendThresh = Float64[],
     Agentcount = Int64[],
     Edgecount = Int64[],
     OutdegreeAVG = Float64[],
@@ -48,18 +65,11 @@ for (index, simulation) in enumerate(batchrun)
         addfriends = simulation.config.simulation.addfriends
     end
 
-    config = (
-        string(simulation.config.network.agent_count)
-        * "_"
-        * addfriends
-        * "_"
-        * string(simulation.config.opinion_threshs.unfriend)
-    )
-
     push!(
         resultcomparison,
         (
-            config,
+            addfriends,
+            simulation.config.opinion_threshs.unfriend,
             nv(simulation.final_state[1]),
             ne(simulation.final_state[1]),
             mean(outdegree(simulation.final_state[1])),
@@ -86,6 +96,68 @@ for (index, simulation) in enumerate(batchrun)
     #     "Components of final Graph: $componentsizes \n"
     # )
     # histogram(outdegree(simulation.final_state[1]))
+end
+
+using LightG
+
+metagraph = MetaGraph(10, 1.0)
+current_graph = batchrun[10].final_state[1]
+meanOut = mean(outdegree(batchrun[10].final_state[1]))
+for v in vertices(batchrun[10].final_state[1])
+    if outdegree(current_graph, v) > mean(outdegree(current_graph))
+        add_vertex!(metagraph, :outdegree, outdegree(current_graph))
+    end
+end
+
+metagraph
+
+filtered_graph = deepcopy(current_graph)
+
+deletenodes = Int64[]
+for v in vertices(filtered_graph)
+    if outdegree(filtered_graph, v) < mean(outdegree(filtered_graph))
+        push!(deletenodes, v)
+    end
+end
+
+add_vertices!(metagraph,10)
+
+add_edge!(metagraph, 1, 2, :weight, 1)
+add_edge!(metagraph, 2, 1)
+
+has_edge(metagraph,2,1)
+
+e = Edge(2, 3)
+if !add_edge!(metagraph, src(e), dst(e))
+    set_prop!(metagraph, e, :weight, 0)
+end
+
+using GraphPlot
+metagraph = MetaGraph(complete_graph(10))
+gplot(myweight)
+
+using SimpleWeightedGraphs
+
+myweight = SimpleWeightedGraph(metagraph)
+add_vertices!(myweight,10)
+add_edge!(myweight,1,2, 3)
+
+for e in edges(myweight)
+    print(e)
+end
+
+for e in edges(current_graph)
+    if !add_edge!(metagraph, src(e), dst(e))
+        set_prop!(metagraph, e, :weight, 2)
+    end
+
+degree(filtered_graph)
+degree(Graph(filtered_graph))
+
+weights(current_graph)
+
+for v in vertices(metagraph)
+    print(v)
 end
 
 using Statistics
@@ -138,7 +210,6 @@ using JLD
 using JLD2
 
 configbatch = Config[]
-reverse(configbatch)
 for
     agent_count in [100, 1000],
     unfriend in [0.4, 0.8, 1.2],
