@@ -8,16 +8,16 @@ function drop_friends!(
     # look for current input posts that have too different opinion compared to own
     # and remove them if source agent opinion is also too different
     unfriend_candidates = Array{Tuple{Int64, Int64}, 1}()
+
     for post in this_agent.feed
         if abs(post.opinion - this_agent.opinion) > config.opinion_threshs.unfriend
             if abs(agent_list[post.source_agent].opinion - this_agent.opinion) > config.opinion_threshs.unfriend
                 # Remove agents with higher follower count than own only with certain probability?
                 if (outdegree(graph, post.source_agent) / outdegree(graph, agent_idx) > 1 && rand() > 0.5)
-                    push!(unfriend_candidates, (post.source_agent, indegree(graph, post.source_agent)))
+                    push!(unfriend_candidates, (post.source_agent, outdegree(graph, post.source_agent)))
                 elseif (outdegree(graph, post.source_agent) / outdegree(graph, agent_idx) <= 1)
-                    push!(unfriend_candidates, (post.source_agent, indegree(graph, post.source_agent)))
+                    push!(unfriend_candidates, (post.source_agent, outdegree(graph, post.source_agent)))
                 end
-                push!(unfriend_candidates, (post.source_agent, degree(graph, post.source_agent)))
             end
         end
     end

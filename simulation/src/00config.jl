@@ -1,7 +1,7 @@
 
 function cfg_net(
     ;
-    agent_count::Int64=10000,
+    agent_count::Int64=1000,
     m0::Int64=100,
     new_follows::Int64=10
 )

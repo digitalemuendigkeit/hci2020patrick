@@ -10,11 +10,11 @@ function add_friends_neighbors_of_neighbors!(
     # neighbors of neighbors
     friend_candidates = Int64[]
 
-    for neighbor in neighbors(graph, agent_idx)
+    for neighbor in inneighbors(graph, agent_idx)
         append!(
             friend_candidates,
             setdiff(
-                neighbors(graph, neighbor),
+                all_neighbors(graph, neighbor),
                 inneighbors(graph, agent_idx),
                 agent_idx
             )
@@ -56,7 +56,7 @@ function add_friends_random!(
     friends_queue = Array{Tuple{Int64,Int64}, 1}()
     not_neighbors = setdiff(
         [1:(agent_idx - 1); (agent_idx + 1):nv(graph)], 
-        neighbors(graph, agent_idx)
+        inneighbors(graph, agent_idx)
     )
 
         for candidate in not_neighbors
@@ -73,11 +73,12 @@ function add_friends_random!(
     if (length(friends_queue) - config.network.new_follows) < 0
         new_friends_count = length(friends_queue)
 
-    for _ in 1:new_friends_count
-        new_neighbor = popfirst!(friends_queue)
-        add_edge!(graph, new_neighbor, agent_idx)
+        for _ in 1:new_friends_count
+            new_neighbor = popfirst!(friends_queue)
+            add_edge!(graph, new_neighbor, agent_idx)
         end
     end
+    
     return state
 end
 

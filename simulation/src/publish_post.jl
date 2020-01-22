@@ -4,6 +4,7 @@ function publish_post!(
 )
     graph, agent_list = state
     this_agent = agent_list[agent_idx]
+
     post_opinion = this_agent.opinion + 0.1 * (2 * rand() - 1)
     # upper opinion limit is 1
     if post_opinion > 1
@@ -15,9 +16,10 @@ function publish_post!(
     post = Post(post_opinion, outdegree(graph, agent_idx), agent_idx, tick_nr)
     push!(post_list, post)
     # send post to each neighbors
-    for neighbor in neighbors(graph, agent_idx)
+    for neighbor in outneighbors(graph, agent_idx)
         push!(agent_list[neighbor].feed, post)
     end
+    
     return state, post_list
 end
 

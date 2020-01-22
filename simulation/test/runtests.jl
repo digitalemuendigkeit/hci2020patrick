@@ -10,26 +10,14 @@ convert_results()
 
 batchrun = Simulation[]
 
-for e in edges(batchrun[16].final_state[1])
-    if src(e) == dst(e)
-        println("Self Loop!")
-    end
-end
 
-radius(SimpleGraph(batchrun[11].final_state[1]))
-
-ne(SimpleGraph(batchrun[11].final_state[1]))
-ne(batchrun[11].final_state[1])
-
-connected_components(batchrun[11].final_state[1])
-
-using Plots
-histogram(indegree(batchrun[11].final_state[1]), bins=200)
-
-for file in readdir("results")
-    raw = load(joinpath("results", file))
+for file in readdir("results/new/")
+    raw = load(joinpath("results", "new", file))
     push!(batchrun, raw[first(keys(raw))])
 end
+
+test1 = run!(Simulation(configbatch[10]), name="Performancetest")
+run!()
 
 resultcomparison = DataFrame(
     AddFriends = String[],
@@ -98,7 +86,7 @@ for (index, simulation) in enumerate(batchrun)
     # histogram(outdegree(simulation.final_state[1]))
 end
 
-using LightG
+
 
 metagraph = MetaGraph(10, 1.0)
 current_graph = batchrun[10].final_state[1]
@@ -222,7 +210,7 @@ for
                 new_follows = 10
             ),
             simulation = cfg_sim(
-                ticks = 1000,
+                ticks = 100,
                 addfriends = addfriends
             ),
             opinion_threshs = cfg_ot(
