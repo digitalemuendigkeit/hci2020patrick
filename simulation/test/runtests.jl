@@ -1,26 +1,17 @@
 include(joinpath("..", "src", "simulation.jl"))
 
-run_resume!()
-readdir()
-run_batch(reverse(configbatch), batch_name="BAv2")
-
-barabasi_albert(1000, 500)
-
-convert_results()
+testold = load("results\\old\\BAv2_run10.jld2")
 
 batchrun = Simulation[]
 
-
-for file in readdir("results")
+readdir("results")[11]
+for file in readdir("results")[11:11]
     if !occursin("jld2", file)
         continue
     end
     raw = load(joinpath("results", file))
     push!(batchrun, raw[first(keys(raw))])
 end
-
-test1 = run!(Simulation(configbatch[10]), name="Performancetest")
-run!()
 
 resultcomparison = DataFrame(
     AddFriends = String[],
@@ -78,15 +69,6 @@ for (index, simulation) in enumerate(batchrun)
             std([agent.opinion for agent in simulation.final_state[2]])
         )
     )
-
-    # println(
-    #     "Simulation Run $index \n",
-    #     "Configuration: $(simulation.config.network.agent_count) Agents, Friend Mode: $(simulation.config.simulation.addfriends), Unfriend Threshold: $(simulation.config.opinion_threshs.unfriend) \n" ,
-    #     "Nodes: $(nv(simulation.final_state[1])), Edges: $(ne(simulation.final_state[1])) \n",
-    #     "AVG Outdegree: $(mean(outdegree(simulation.final_state[1]))) \n",
-    #     "Components of final Graph: $componentsizes \n"
-    # )
-    # histogram(outdegree(simulation.final_state[1]))
 end
 
 
@@ -97,77 +79,10 @@ using Fontconfig
 
 @rput resultcomparison
 R"save(resultcomparison,file=\"results.Rda\")"
-degree
+
 histogram(mean(indegree(batchrun[18].final_state[1])))
 convert_results()
 using GraphPlot
 using Compose
 plot = gplot(batchrun[10].final_state[1])
 savefig(plot, "plot.pdf")
-
-draw(PDF("plot.pdf", 16cm, 16cm), gplot(batchrun[10].final_state[1]))
-
-filter(row -> row[:TickNr] == 1000, BArun01.agent_log)[:Opinion]
-
-
-batchrun = Simulation[]
-for i in 1:3
-    temp = load(joinpath("results", readdir("results")[i]))
-    push!(batchrun, temp[first(keys(temp))])
-end
-
-
-using Plots
-histogram([agent.opinion for agent in batchrun[3].final_state[2]], bins = 100)
-
-convert_results(specific_run="BAv2_run03.jld2")
-
-run!(Simulation(configbatch[1]), name="BAv3")
-
-readdir("results")
-
-reverse(collect(1:10))
-stop_at = 0
-if stop_at == 0
-    stop_at = 2
-end
-for i in 10:-1:1
-    print(i)
-end
-
-
-using JLD
-using JLD2
-
-configbatch = Config[]
-for
-    agent_count in [100, 1000],
-    unfriend in [0.4, 0.8, 1.2],
-    addfriends in ["", "neighborsofneighbors", "random"]
-
-    push!(configbatch, Config(
-            network = cfg_net(
-                agent_count = agent_count,
-                m0 = Int(agent_count/10),
-                new_follows = 10
-            ),
-            simulation = cfg_sim(
-                ticks = 100,
-                addfriends = addfriends
-            ),
-            opinion_threshs = cfg_ot(
-                backfire = 0.4,
-                befriend = 0.2,
-                unfriend = unfriend
-            ),
-            agent_props = cfg_ag(
-                own_opinion_weight = 0.95,
-                unfriend_rate = 0.05,
-                min_friends_count = 5
-            )
-        )
-    )
-end
-
-
-configbatch

@@ -152,6 +152,123 @@ of social network analysis and evaluated the resulting networks and
 their nodes regarding their degree, centrality, communality, diameter,
 and clustering coefficient.
 
+\hypertarget{the-network-model}{%
+\subsection{The Network Model}\label{the-network-model}}
+
+We designed a network in which agents interact with each other through
+publishing posts to their followers and receiving content through their
+followees. The network is directed so that it is more suitable to
+represent a real online social network as currently most of the famous
+social networks allow for unidirectional relationships. The different
+edges are considered as direction of information spread: outgoing edges
+from agent x show to which agents the posts of agent x will be sent
+while incoming edges show from which agents the agent x receives posts.
+The initial network is created by using the Barabasi Albert Network
+generator of the LightGraphs package in Julia. This generator allows to
+define the size of the network and an initial average edge count per
+agent that follows a power law distribution.
+
+After creating the network, the agents are generated with the following
+attributes:
+
+\begin{itemize}
+\tightlist
+\item
+  Opinion {[}-1,1{]}: Main attribute to change their network of incoming
+  edges (followees). Initially, the opinion is uniformly distributed
+  over all agents.
+\item
+  Perceived Public Opinion {[}-1,1{]}: The mean opinion a particular
+  agent perceives in its neighborhood through seeing the posts of
+  inneighbors. If the absolute distance between the public and its own
+  opinion is in a defined threshold, the agent approaches towards the
+  public opinion. If not, the agent will move into the opposite
+  direction of the perceived opinion (therewith increasing the
+  distance). If an agent ends up having no neighbors, the perceived
+  public opinion mirrors its own opinion.
+\item
+  Inclination to Interact {[}0,Inf{]}: The willingness of agents to
+  share posts. A distribution function sets 80\% of the agents to
+  passive receivers who rarely share a post. Very few agents have a
+  higher inclination to interact than 1 and share multiple posts per
+  simulation step. After initial generation, this attribute is fixed.
+\item
+  Feed (Array of max. 15 posts): Storage of received posts. The feed of
+  agent x contains all shared posts from agents who are inneighbors of
+  agent x
+\end{itemize}
+
+The perceived public opinion is the only factor that has influence on an
+agent's opinion and is driven by the posts that are visible to this
+agent. The most important attributes of a post are:
+
+\begin{itemize}
+\tightlist
+\item
+  Opinion {[}-1,1{]}: A post's opinion is generated from the opinion of
+  the agent who publishes it. Its opinion is randomly varied by applying
+  a random addition between {[}-0.1,0.1{]}.
+\item
+  Weight: The weight of a post represents the publicity of an agent as
+  it is the count of outneighbors of the posting agent. Posts with high
+  weights are perceived as more important and influential through the
+  receiving agents compared to posts that have been published from
+  agents with low outdegree.
+\end{itemize}
+
+\hypertarget{the-simulation-architecture}{%
+\subsection{The Simulation
+Architecture}\label{the-simulation-architecture}}
+
+A simulation consists of an initiating phase that creates the required
+initial network and agents with their properties, a main simulation
+phase where the agents interact and time steps are performed and a data
+saving phase. Every simulation timestep follows the same order of
+actions. First, the agent list is shuffled to ensure that the order in
+which the agents perform their interactions don't have an impact on the
+simulation outcomes. Following, the actions of a certain agent ina
+simulation step are described:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{Update the feed:} The posts that were received in the previous
+  step get sorted by their weight and the weight of all posts in the
+  feed are reduced by the factor 0.5 to provide higher visibility to
+  newer posts. The feed is limited to the 15 highest-weighted posts, all
+  other posts are dropped and not further considered for calculation of
+  the perceived public opinion.
+\item
+  \emph{Update perceived public opinion:} The updated feed is used to
+  calculate the perceived public opinion. The opinion of posts with
+  higher weights have a higher influence in calculation. If the feed of
+  the agent is empty, the perceived public opinion mirrors the opinion
+  of the agent.
+\item
+  \emph{Update the opinion:} With the perceived public opinion an agent
+  now updates its own opinion. If the absolute distance between public
+  opinion and own opinion is inside a defined threshold, the agent
+  approaches towards the public opinion by a factor of 0.05. If the
+  absolute distance lies outside the range, the agent moves into the
+  opposing direction and therewith increases the distance what we call
+  the \enquote{backfire effect}.
+\item
+  \emph{Drop ingoing edges:} With regarding its updated opinion, an
+  agent checks if the current posts in his feed are in an accepted
+  absolute distance to the own opinion. If not, the agent also checks
+  the real opinion of the source agent and if this opinion is also
+  outside the accepted range, the agent drops the incoming edge so that
+  it won't receive further posts of the former followee. In one step, an
+  agent can only drop a tenth of his current number (rounded up) of
+  ingoing edges so that a realistic behavior is maintained.
+\item
+  \emph{Add ingoing edges:} After disconnecting from agents that are
+  outside of the accepted opinion range, an agent adds new ingoing edges
+  if his inneighbors count is below a desired value. All agents try to
+  maintain an indegree that equals a tenth of the network size.
+\end{enumerate}
+
 \hypertarget{results}{%
 \section{Results}\label{results}}
 
@@ -159,24 +276,64 @@ Our simulation study comprised in total 18 simulation runs that show the
 impact and relationships of the varied factors on the network evolution
 and opinion dynamics.
 
-\hypertarget{first-section}{%
-\section{First Section}\label{first-section}}
+\hypertarget{final-state}{%
+\subsection{Final state}\label{final-state}}
 
-\hypertarget{a-subsection-sample}{%
-\subsection{A Subsection Sample}\label{a-subsection-sample}}
+What can be learned from the simulation state after 1000 steps? Which
+factors have significant direct/indirect influence on degree
+distribution, centrality of nodes, cluster coefficient, and opinion
+distribution?
 
-Please note that the first paragraph of a section or subsection is not
-indented. The first paragraph that follows a table, figure, equation
-etc. does not need an indent, either.
+\begin{itemize}
+\tightlist
+\item
+  Threshold of annoyance shows direct influence on edgecount: With a
+  higher threshold for differing opinions, edge count decreases (effect
+  is stronger for smaller network sizes)
+\item
+  Agents can get isolated for certain reasons that depend on the
+  addfriends method: in random selection, radicalized agents have a
+  higher probability to get isolated as they won't add new friends if
+  all other agents' opinions are too far away. In Neighbors of
+  neighbors, agents who disconnect from their last neighbor have no
+  chance to get back into the network.
+\end{itemize}
 
-Subsequent paragraphs, however, are indented.
+\hypertarget{impact-of-the-network-factors-on-opinion-spread}{%
+\subsection{Impact of the network factors on opinion
+spread}\label{impact-of-the-network-factors-on-opinion-spread}}
 
-\hypertarget{sample-heading-third-level}{%
-\subsubsection{Sample Heading (Third
-Level)}\label{sample-heading-third-level}}
+Most significant impact: Unfriend threshold
 
-Only two levels of headings should be numbered. Lower level headings
-remain unnumbered; they are formatted as run-in headings.
+\begin{itemize}
+\tightlist
+\item
+  With lower tolerance of differing opinions the agents become more
+  consensual (on lowest level = 0.4, final opinion distribution has std
+  of 0.31). This effect increases with settings that use random or
+  hybrid picking of new friends to SD \textless= 0.08
+\end{itemize}
+
+\hypertarget{evolution-process}{%
+\subsection{Evolution Process}\label{evolution-process}}
+
+How does the network change during the simulation? Split-ups into
+multi-components, how fast does it recover? Do hubs vary over time? What
+influence has the opinion distribution on the network?
+
+\hypertarget{discussion}{%
+\section{Discussion}\label{discussion}}
+
+Our research provides important insight for simulating online social
+networks. We were able to show that the examined parameters play an
+important role for modelling a realistic network. The Barabasi-Albert
+generator proved to be a solid basis for building such simulations.
+Nevertheless, it is important to compare it with other generators and to
+enrich simulations by including more functionality like adding and
+removing agents to the network and experimenting with different initial
+opinion distributions. We will continue our work on simulating opinion
+and network dynamics with Julia to be able to include more parameters
+and to enhance the accuracy of our simulations.
 
 \hypertarget{sample-heading-fourth-level}{%
 \paragraph{Sample Heading (Fourth
