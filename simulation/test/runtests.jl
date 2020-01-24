@@ -1,17 +1,65 @@
 include(joinpath("..", "src", "simulation.jl"))
 
-testold = load("results\\old\\BAv2_run10.jld2")
-
 batchrun = Simulation[]
 
-readdir("results")[11]
-for file in readdir("results")[11:11]
+
+for file in readdir("results")
     if !occursin("jld2", file)
         continue
     end
     raw = load(joinpath("results", file))
     push!(batchrun, raw[first(keys(raw))])
+
+    # convert_results(specific_run = file)
 end
+
+edgeweights = DataFrame(
+    RunNr = Int64[],
+    EdgeNr = Int64[],
+    EdgeSrc = Int64[],
+    EdgeDst = Int64[],
+    Weight = Int64[]
+)
+
+for i in 1:length(batchrun)
+    current_graph = deepcopy(batchrun[i].final_state[1])
+    undirected_graph = deepcopy(Graph(current_graph))
+    for (index, e) in enumerate(edges(undirected_graph))
+        if has_edge(current_graph, dst(e), src(e))
+            edgeweight = 2
+        else
+            edgeweight = 1
+        end
+
+        append!(
+            edgeweights,
+            DataFrame(
+                RunNr = i,
+                EdgeNr = index,
+                EdgeSrc = src(e),
+                EdgeDst = dst(e),
+                Weight = edgeweight
+            )
+        )
+    end
+
+    runnr = "Bafinal_run" * lpad(
+        string(i),
+        length(string(length(batchrun))),
+        "0"
+        )
+
+    savegraph(
+        joinpath("dataexchange", runnr, "graph_undirected.gml"),
+        undirected_graph,
+        GraphIO.GML.GMLFormat()
+    )
+end
+
+using RCall
+
+@rput edgeweights
+R"save(edgeweights,file=\"edgeweights.Rda\")"
 
 resultcomparison = DataFrame(
     AddFriends = String[],

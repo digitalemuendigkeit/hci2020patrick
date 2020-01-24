@@ -89,7 +89,7 @@ function run!(
 
     config = simulation.config
 
-    graph = DiGraph(barabasi_albert(
+    graph = SimpleDiGraph(barabasi_albert(
                     config.network.agent_count,
                     config.network.m0))
     simulation.init_state = (graph, create_agents(graph))

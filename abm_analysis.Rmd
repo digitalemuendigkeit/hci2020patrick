@@ -23,42 +23,22 @@ library(gganimate)
 
 ```{r Data Import}
 
-results <- load("simulation/results.Rda")
+load("simulation/results.Rda")
 
 simruns <- list.files(file.path("simulation", "dataexchange"))
 
 
 for (i in 1:length(simruns)) {
   assign(paste0(simruns[i], "_agent_log"), read.csv(file.path("simulation", "dataexchange", simruns[i], "agent_log.csv")))
-  assign(paste0(simruns[i], "_post_log"), read.csv(file.path("simulation","dataexchange", simruns[i], "post_log.csv")))
-  assign(paste0(simruns[i], "_graph_final"), 
-            read_graph(file.path("simulation","dataexchange", simruns[i], paste0("graph_10.gml")), format = "gml"))
+  # assign(paste0(simruns[i], "_post_log"), read.csv(file.path("simulation","dataexchange", simruns[i], "post_log.csv")))
+  # assign(paste0(simruns[i], "_graph_final"),
+  #           read_graph(file.path("simulation","dataexchange", simruns[i], paste0("graph_11.gml")), format = "gml"))
+  assign(paste0(simruns[i], "_graph_undirected"), 
+            read_graph(file.path("simulation","dataexchange", simruns[i], paste0("graph_undirected.gml")), format = "gml"))
   
   print(paste0("Run ", i, " complete"))
     
 }
-
-
-
-
-
-ceb <- cluster_edge_betweenness(BAfinal_run02_graph_final, directed = TRUE)
-clp <- cluster_label_prop(BAfinal_run02_graph_final)
-dendPlot(ceb, mode="hclust")
-
-
-modularity(ceb)
-
-
-V(BAv2_run01_graph_final)$label <- NA
-V(BAv2_run01_graph_final)$size <- degree(BAv2_run01_graph_final, mode="out") * 0.3
-
-current_agent_log <- get(paste0(simruns[1], "_agent_log"))
-  current_graph <- get(paste0(simruns[1], "_graph_final"))
-  current_agent_log %>% 
-    filter(TickNr == 900) %>% 
-    .$Opinion %>% 
-    round() -> agent_opinions
 
 for (runname in simruns) {
   current_agent_log <- get(paste0(runname, "_agent_log"))
@@ -73,40 +53,49 @@ for (runname in simruns) {
 }
 
 
-
-test <- E(BAv2_run15_graph_final)$arrow.size
-E(BAfinal_run15_graph_final)$arrow.size <- 0.1
-E(BAfinal_run15_graph_final)$weight <- 1.0
-edges(BAv2_run15_graph_final)
-edge_attr(BAv2_run15_graph_final, "weight", index = 1) <- 2
-edge_attr(BAv2_run15_graph_final, "weight")
-edge(BAv2_run15_graph_final, index=1)
-set_edge_attr(BAv2_run15_graph_final, "weight", index = 1, 2.0)
-
-
-
-set_edge_attr(g, "weight", 1, 100) -> g
-degree(g)[1]
-V(g) %>% 
-  filter(.$weight > 1)
-
-E(g, 1,2)
-degree(g)
-g <- delete.vertices(g, c(3,7))
-
-vertex(g)
-for (i in vertices(g)) {
-  print(i)
+for (runname in simruns) {
+  plotit(runname)
 }
-# pdf(file = "myplot.pdf", 600, 600)
-png("my_plot.png", 3000, 3000)
-plot(clp, BAfinal_run02_graph_final, layout = layout_with_fr)
-title("Test")
-dev.off()
+
+```
+
+```{r plotting}
+plotit <- function(simrun) {
+  nodecolorgrad <- colorRampPalette(c("green", "blue", "red"))(2001)
+  current_agent_log <- get(paste0(simrun, "_agent_log"))
+  current_graph <- get(paste0(simrun, "_graph_undirected"))
+  
+  V(current_graph)$label <- NA
+  V(current_graph)$size <- 1 + degree(current_graph, mode="out") / length(V(current_graph)) * 30
+  current_agent_log %>% 
+      filter(TickNr == 1000) %>% 
+      .$Opinion %>% 
+      round(digits = 3) %>% 
+      + 1 %>% 
+      "*"(1000) + 1  -> agent_opinions
+  
+  nodecolors <- nodecolorgrad[agent_opinions]
+  # clp <- cluster_label_prop(current_graph)
+  cfg <- cluster_fast_greedy(current_graph)
+  
+  # plot(clp, current_graph, layout = layout_with_fr, col = nodecolors)
+  # png(paste0(simrun, ".png"), 3000, 3000)
+  # plot(clp, current_graph, layout = layout_with_fr, col = nodecolors)
+  # dev.off()
+  
+  plot(cfg, current_graph, layout = layout_with_fr, col = nodecolors)
+  png(paste0(simrun, ".png"), 3000, 3000)
+  plot(cfg, current_graph, layout = layout_with_fr, col = nodecolors)
+  dev.off()
+}
 
 ```
 
 ```{r}
+BAfinal_run10_agent_log %>% 
+  filter(Indegree == 0) %>% 
+  group_by(TickNr)
+
 resultcomparison %>% 
   mutate(RelEdgeCount = Agentcount/Edgecount * 100) %>%
   ggplot(data = ., aes(x=UnfriendThresh, y=RelEdgeCount)) +
@@ -139,9 +128,10 @@ resultcomparison %>%
   +1 %>% 
   "*"(10)
 
-nodecolorgrad <- colorRampPalette(c("green", "yellow", "red"))
+nodecolorgrad <- colorRampPalette(c("green", "blue", "red"))
 length(seq(-1,1, by=0.1))
 nodecolors <- nodegolorgrad
+nodecolorgrad(2001)
 
 
 deg <- degree(BAv2_run01_graph_10, mode="out")
