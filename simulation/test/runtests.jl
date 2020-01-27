@@ -13,6 +13,16 @@ for file in readdir("results")
     # convert_results(specific_run = file)
 end
 
+gccs = [global_clustering_coefficient(Graph(batchrun[i].final_state[1])) for i in 1:length(batchrun)]
+gccs_di = [global_clustering_coefficient(batchrun[i].final_state[1]) for i in 1:length(batchrun)]
+lccs_mean = mean(local_clustering_coefficient(batchrun[1].final_state[1]))
+modularity(Graph(batchrun[1].final_state[1]))
+strongly_connected_components(Graph(batchrun[13].final_state[1]))
+g = batchrun[14].final_state[1]
+diameter((g))
+outdegree
+using Plots
+histogram(degree_histogram(g))
 edgeweights = DataFrame(
     RunNr = Int64[],
     EdgeNr = Int64[],

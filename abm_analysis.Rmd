@@ -97,10 +97,17 @@ BAfinal_run10_agent_log %>%
   group_by(TickNr)
 
 resultcomparison %>% 
-  mutate(RelEdgeCount = Agentcount/Edgecount * 100) %>%
-  ggplot(data = ., aes(x=UnfriendThresh, y=RelEdgeCount)) +
-  # geom_line(aes(y=Agentcount)) +
-  geom_point(aes(color=Agentcount)) +
+  group_by(AddFriends) %>% 
+  summarise(MeanOutdegree = mean(OutdegreeAVG), MeanOutdegreeSD = mean(OutdegreeSD), meanOpSD = mean(OpinionAVG), MeanCentrality = mean(CentralityAVG))
+
+resultcomparison %>% 
+  select(Agentcount, Edgecount, UnfriendThresh) %>% 
+  mutate(RelEdgeCount = Edgecount/((Agentcount * Agentcount) - Agentcount) * 100) %>%
+  filter(Agentcount == 1000) %>% 
+  summarise(meanAgentcount = mean(RelEdgeCount))
+  ggplot(data = ., aes(x=Agentcount, y=RelEdgeCount)) +
+  # geom_line(aes(x=Agentcount, y=RelEdgeCount)) +
+  geom_point(aes(color=UnfriendThresh)) +
   scale_color_viridis_c()
 
 BAfinal_run10_agent_log %>% 

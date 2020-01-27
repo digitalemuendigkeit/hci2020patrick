@@ -100,17 +100,24 @@ Our simulation study comprised in total 27 simulation runs that show the impact 
 ## Final state
 What can be learned from the simulation state after 1000 steps? Which factors have significant direct/indirect influence on degree distribution, centrality of nodes, cluster coefficient, and opinion distribution?
 
+## Impact of Network Size
+Looking on the amount of edges relative to the complete network edge count for the certain network size, the coverage of edges was highest in the simulations with lowest agent count (n=100) with a mean coverage of 11.09%, not regarding the other factors. The other two settings showed mean coverage of 9.04% for 500 agents and and 8.83% for 1000 agents. The network shows also a significant correlation with the standard deviation of the outdegree when looking on the mean values for the 9 distinct simulations of the particular network size. The bigger the network, the higher the deviations in the distribution of outdegree from the mean outdegree in a network. With bigger network size also the mean centrality of a node increases.
+
+## Impact of the Unfriend Threshold
+
 - Threshold of annoyance shows direct influence on edgecount: With a higher threshold for differing opinions, edge count decreases (effect is stronger for smaller network sizes)
-- Agents can get isolated for certain reasons that depend on the addfriends method: in random selection, radicalized agents have a higher probability to get isolated as they won't add new friends if all other agents' opinions are too far away. In Neighbors of neighbors, agents who disconnect from their last neighbor have no chance to get back into the network.
-
-## Impact of the network factors on opinion spread
-Most significant impact: Unfriend threshold
-
 - With lower tolerance of differing opinions the agents become more consensual (on lowest level = 0.4, final opinion distribution has std of 0.31). This effect increases with settings that use random or hybrid picking of new friends to SD <= 0.08
+
+- Agents can get isolated for certain reasons that depend on the addfriends mechanic: in random selection, radicalized agents have a higher probability to get isolated as they won't add new friends if all other agents' opinions are too far away. In Neighbors of neighbors, agents who disconnect from their last neighbor have no chance to get back into the network.
+
+## Impact of the addfriends mechanic
+Regarding the approach how agents create new edges the most prominent impact on the network evolution showed in 
+Partial consensus calculation? Neighbors of neighbors seems to have higher partial agreement in opinion than random and hybrid approach
+
 
 
 ## Reasons to disconnect
-Reasons for disconnecting from the network and staying disconnected for the rest of the simulation varied between the different configurations. While disconnected agents in networks with random new friends picking would still be able to reconnect to others, agents who disconnected in the neighbors of neighbors setting were not able to reconnect. Complete disconnection of agents in the final state occured only in networks with an unfriend threshold of 0.4 and 0.8. It happened most often in simulations that used the neighbors of neighbors approach followed by the random approach and least often in simulations with hybrid approach of edge creation.
+Reasons for disconnecting from the network and staying disconnected for the rest of the simulation varied between the different configurations. While disconnected agents in networks with random or hybrid new friends picking would still be able to reconnect to others, agents who disconnected in the neighbors of neighbors setting were not able to reconnect. Complete disconnection of agents in the final state occured only in networks with an unfriend threshold of 0.4 and 0.8. It happened most often in simulations that used the neighbors of neighbors approach followed by the random approach and least often in simulations with hybrid approach of edge creation.
 
 # Discussion
 Our research provides important insight for simulating online social networks. We were able to show that the examined parameters play an important role for modelling a realistic network. The Barabasi-Albert generator proved to be a solid basis for building such simulations. Nevertheless, it is important to compare it with other generators and to enrich simulations by including more functionality like adding and removing agents to the network and experimenting with different initial opinion distributions. We will continue our work on simulating opinion and network dynamics with Julia to be able to include more parameters and to enhance the accuracy of our simulations.
