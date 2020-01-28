@@ -5,7 +5,7 @@ mutable struct Agent
     perceiv_publ_opinion::Float64
     inactive_ticks::Int16
     feed::Array{Post, 1}
-    function Agent(id, opinion)
+    function Agent(id, opinion, rng)
         # check if opinion value is valid
         if opinion < -1 || opinion > 1
             error("invalid opinion value")
@@ -14,7 +14,7 @@ mutable struct Agent
         new(
             id,
             opinion,
-            generate_inclin_interact(),
+            generate_inclin_interact(rng),
             opinion,
             0,
             Array{Post, 1}(undef, 0)

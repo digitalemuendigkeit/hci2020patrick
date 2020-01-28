@@ -1,6 +1,6 @@
 import ParserCombinator
 
-function convert_results(;specific_run::String="")
+function convert_results(;sub_path::String="", specific_run::String="")
 
     if specific_run != ""
         raw_data = load(joinpath("results", specific_run))
@@ -40,13 +40,19 @@ function convert_results(;specific_run::String="")
                 mkdir("dataexchange")
         end
 
-        for file in readdir("results")
+        if sub_path != ""
+            path = joinpath("results", sub_path)
+        else
+            path = "results"
+        end
+
+        for file in readdir(path)
 
             if !occursin("jld2", file)
                 continue
             end
 
-            raw_data = load(joinpath("results", file))
+            raw_data = load(joinpath(path, file))
             data = raw_data[first(keys(raw_data))]
             filename = file[1:first(findfirst(".jld2", file))-1]
 
@@ -64,19 +70,25 @@ function convert_results(;specific_run::String="")
                 data.post_log
             )
 
-            for i in 1:length(data.graph_list)
-                graphnr = lpad(
-                    string(i),
-                    length(string(length(data.graph_list))),
-                    "0"
-                )
+            savegraph(
+                joinpath("dataexchange", filename, "graph_final.gml"),
+                data.final_state[1],
+                GraphIO.GML.GMLFormat()
+            )
 
-                savegraph(
-                    joinpath("dataexchange", filename, "graph_$graphnr.gml"),
-                    data.graph_list[i],
-                    GraphIO.GML.GMLFormat()
-                )
-            end
+            # for i in 1:length(data.graph_list)
+            #     graphnr = lpad(
+            #         string(i),
+            #         length(string(length(data.graph_list))),
+            #         "0"
+            #     )
+            #
+            #     savegraph(
+            #         joinpath("dataexchange", filename, "graph_$graphnr.gml"),
+            #         data.graph_list[i],
+            #         GraphIO.GML.GMLFormat()
+            #     )
+            # end
         end
     end
 end

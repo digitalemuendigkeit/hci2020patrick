@@ -1,9 +1,9 @@
 function add_friends_neighbors_of_neighbors!(
     state::Tuple{AbstractGraph, AbstractArray},
     agent_idx::Integer,
-    post_list::AbstractArray,
     config::Config,
-    new_friends_count::Int64
+    new_friends_count::Int64,
+    rng::MersenneTwister
 )
     graph, agent_list = state
     this_agent = agent_list[agent_idx]
@@ -22,7 +22,7 @@ function add_friends_neighbors_of_neighbors!(
 
     end
 
-    shuffle!(friend_candidates)
+    shuffle!(rng, friend_candidates)
     # order neighbors by frequency of occurence in input_candidates descending
     if length(friend_candidates) > 0
         friends_queue = first.(
@@ -45,7 +45,6 @@ end
 function add_friends_random!(
     state::Tuple{AbstractGraph, AbstractArray},
     agent_idx::Integer,
-    post_list::AbstractArray,
     config::Config,
     new_friends_count::Int64
     )
@@ -78,7 +77,7 @@ function add_friends_random!(
             add_edge!(graph, new_neighbor, agent_idx)
         end
     end
-    
+
     return state
 end
 

@@ -28,16 +28,20 @@ load("simulation/results.Rda")
 simruns <- list.files(file.path("simulation", "dataexchange"))
 
 
+simruns[36]
+contains("BAfinal", simruns[36])
+
 for (i in 1:length(simruns)) {
-  assign(paste0(simruns[i], "_agent_log"), read.csv(file.path("simulation", "dataexchange", simruns[i], "agent_log.csv")))
+  if (grepl("addfriends|netsize|unfriend", simruns[i])) {
+    assign(paste0(simruns[i], "_agent_log"), read.csv(file.path("simulation", "dataexchange", simruns[i], "agent_log.csv")))
   # assign(paste0(simruns[i], "_post_log"), read.csv(file.path("simulation","dataexchange", simruns[i], "post_log.csv")))
-  # assign(paste0(simruns[i], "_graph_final"),
-  #           read_graph(file.path("simulation","dataexchange", simruns[i], paste0("graph_11.gml")), format = "gml"))
-  assign(paste0(simruns[i], "_graph_undirected"), 
-            read_graph(file.path("simulation","dataexchange", simruns[i], paste0("graph_undirected.gml")), format = "gml"))
+  assign(paste0(simruns[i], "_graph_final"),
+            read_graph(file.path("simulation","dataexchange", simruns[i], paste0("graph_final.gml")), format = "gml"))
+  # assign(paste0(simruns[i], "_graph_undirected"), 
+  #           read_graph(file.path("simulation","dataexchange", simruns[i], paste0("graph_undirected.gml")), format = "gml"))
   
   print(paste0("Run ", i, " complete"))
-    
+  }
 }
 
 for (runname in simruns) {
@@ -57,13 +61,20 @@ for (runname in simruns) {
   plotit(runname)
 }
 
+unfriend_comparison <- 
+for (runname in simruns) {
+  if (grepl("unfriend", runname)) {
+    
+  }
+}
+
 ```
 
 ```{r plotting}
 plotit <- function(simrun) {
   nodecolorgrad <- colorRampPalette(c("green", "blue", "red"))(2001)
   current_agent_log <- get(paste0(simrun, "_agent_log"))
-  current_graph <- get(paste0(simrun, "_graph_undirected"))
+  current_graph <- as.undirected(get(paste0(simrun, "_graph_final")))
   
   V(current_graph)$label <- NA
   V(current_graph)$size <- 1 + degree(current_graph, mode="out") / length(V(current_graph)) * 30
@@ -92,6 +103,11 @@ plotit <- function(simrun) {
 ```
 
 ```{r}
+resultcmp %>% 
+  filter(grepl("Unfriend", Runname)) %>% 
+  arrange(Runnr)
+
+
 BAfinal_run10_agent_log %>% 
   filter(Indegree == 0) %>% 
   group_by(TickNr)
@@ -299,7 +315,7 @@ for (runname in simruns){
   mtext3d("Agent Count", "z-+", line=2)
   
   snapshot3d(paste0("output_", runname, ".png"))
-  rgl.close()
+  # rgl.close()
 }
 
 

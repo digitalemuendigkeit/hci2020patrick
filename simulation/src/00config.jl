@@ -15,12 +15,14 @@ end
 function cfg_sim(
     ;
     ticks::Int64=100,
-    addfriends::String=""
+    addfriends::String="",
+    repcount::Int64=1
     )
 
     return(
         ticks=ticks,
-        addfriends=addfriends
+        addfriends=addfriends,
+        repcount=repcount
     )
 end
 
@@ -57,8 +59,8 @@ struct Config
         NTuple{3,Int64}
     }
     simulation::NamedTuple{
-    (:ticks, :addfriends),
-    <:Tuple{Int64, String}
+    (:ticks, :addfriends, :repcount),
+    <:Tuple{Int64, String, Int64}
     }
     opinion_threshs::NamedTuple{
         (:backfire, :befriend, :unfriend),
