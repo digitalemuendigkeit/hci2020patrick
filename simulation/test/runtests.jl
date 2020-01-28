@@ -1,5 +1,50 @@
 include(joinpath("..", "src", "simulation.jl"))
 
+netsize_run1 = load("results/Netsize_run1.jld2")
+netsize_run1 = netsize_run1["Netsize_run1"]
+typeof(netsize_run1)
+
+test = ([netsize_run1, netsize_run1])
+test
+test = Vector{Array{Simulation,1}}
+test = Vector{Simulation}[]
+
+push!(test, netsize_run1)
+
+for file in readdir("results")
+    if occursin()
+
+
+results = DataFrame(
+    OpinionSD = Float64[],
+    Densities = Float64[],
+    OutdegreeSD = Float64[],
+    OutdegreeMean = Float64[],
+    OutdegreeMax = Float64[],
+    IndegreeSD = Float64[],
+    IndegreeMean = Float64[],
+    Supernode_Centrality = Float64[],
+    Clust_Coeff = Float64[],
+    AgentsAboveMeanSD = Int64[],
+    CommunitiesMax = Int64[]
+)
+opinionsd = [std([agent.opinion for agent in netsize_run1[i].final_state[2]]) for i in 1:50]
+densities = [density(netsize_run1[i].final_state[1]) for i in 1:50]
+outdegree_sd = [std(outdegree(netsize_run1[i].final_state[1])) for i in 1:50]
+outdegree_mean = [mean(outdegree(netsize_run1[i].final_state[1])) for i in 1:50]
+outdegree_max = [maximum(outdegree(netsize_run1[i].final_state[1])) for i in 1:50]
+indegree_sd = [std(indegree(netsize_run1[i].final_state[1])) for i in 1:50]
+indegree_mean = [mean(indegree(netsize_run1[i].final_state[1])) for i in 1:50]
+supernode_centrality = [closeness_centrality(netsize_run1[i].final_state[1])[findmax(outdegree(netsize_run1[i].final_state[1]))[2]] for i in 1:50]
+clust_coeff = [global_clustering_coefficient(netsize_run1[i].final_state[1]) for i in 1:50]
+agents_above_meansd = [length([agent for agent in netsize_run1[i].final_state[2] if outdegree(netsize_run1[i].final_state[1], agent.id) > mean(outdegree(netsize_run1[i].final_state[1])) + std(outdegree(netsize_run1[i].final_state[1]))]) for i in 1:50]
+communities_max = [maximum(label_propagation((netsize_run1[i].final_state[1]))[1]) for i in 1:50]
+
+
+using Plots
+boxplot((outdegree(netsize_run1[1].final_state[1])))
+
+
 for file in readdir("results")
     if !occursin("jld2", file)
         continue
