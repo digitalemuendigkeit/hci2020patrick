@@ -66,7 +66,11 @@ def format_combine(data_dict, keys):
 data = {}
 for idx in range(len(configs)):
     cfg = configs.iloc[idx, 1] + '_' + configs.iloc[idx, 2] + '_' + str(configs.iloc[idx, 3])
-    data[cfg] = pd.read_csv(os.path.join('dataexchange', 'BAv2_run' + str(idx + 1).zfill(2), 'agent_log.csv'))
+    data[cfg] = pd.read_csv(
+        os.path.join(
+            'dataexchange', 'BAfinal_run' + str(idx + 1).zfill(2), 'agent_log.csv'
+        )
+    )
     data[cfg]['FriendRecScheme'] = configs.iloc[idx, 1]
     data[cfg]['UnfriendThresh'] = configs.iloc[idx, 2]
     data[cfg]['AgentCount'] = str(configs.iloc[idx, 3])
