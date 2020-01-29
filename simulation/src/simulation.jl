@@ -56,7 +56,7 @@ function tick!(
         if indegree(state[1], agent_idx) < config.network.m0
             if config.simulation.addfriends == "neighborsofneighbors"
                 add_friends_neighbors_of_neighbors!(
-                    state, agent_idx, post_list,
+                    state, agent_idx,
                     config, config.network.new_follows, rng
                 )
             elseif config.simulation.addfriends == "random"

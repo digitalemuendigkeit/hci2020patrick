@@ -11,10 +11,6 @@ test = Vector{Simulation}[]
 
 push!(test, netsize_run1)
 
-for file in readdir("results")
-    if occursin()
-
-
 results = DataFrame(
     OpinionSD = Float64[],
     Densities = Float64[],
@@ -28,18 +24,42 @@ results = DataFrame(
     AgentsAboveMeanSD = Int64[],
     CommunitiesMax = Int64[]
 )
-opinionsd = [std([agent.opinion for agent in netsize_run1[i].final_state[2]]) for i in 1:50]
-densities = [density(netsize_run1[i].final_state[1]) for i in 1:50]
-outdegree_sd = [std(outdegree(netsize_run1[i].final_state[1])) for i in 1:50]
-outdegree_mean = [mean(outdegree(netsize_run1[i].final_state[1])) for i in 1:50]
-outdegree_max = [maximum(outdegree(netsize_run1[i].final_state[1])) for i in 1:50]
-indegree_sd = [std(indegree(netsize_run1[i].final_state[1])) for i in 1:50]
-indegree_mean = [mean(indegree(netsize_run1[i].final_state[1])) for i in 1:50]
-supernode_centrality = [closeness_centrality(netsize_run1[i].final_state[1])[findmax(outdegree(netsize_run1[i].final_state[1]))[2]] for i in 1:50]
-clust_coeff = [global_clustering_coefficient(netsize_run1[i].final_state[1]) for i in 1:50]
-agents_above_meansd = [length([agent for agent in netsize_run1[i].final_state[2] if outdegree(netsize_run1[i].final_state[1], agent.id) > mean(outdegree(netsize_run1[i].final_state[1])) + std(outdegree(netsize_run1[i].final_state[1]))]) for i in 1:50]
-communities_max = [maximum(label_propagation((netsize_run1[i].final_state[1]))[1]) for i in 1:50]
 
+for file in readdir("results")
+    if occursin("netsize", file)
+        raw = load(joinpath("results", file))
+        current_run = raw[first(keys(raw))]
+
+        opinionsd = [std([agent.opinion for agent in current_run[i].final_state[2]]) for i in 1:50]
+        densities = [density(current_run[i].final_state[1]) for i in 1:50]
+        outdegree_sd = [std(outdegree(current_run[i].final_state[1])) for i in 1:50]
+        outdegree_mean = [mean(outdegree(current_run[i].final_state[1])) for i in 1:50]
+        outdegree_max = [maximum(outdegree(current_run[i].final_state[1])) for i in 1:50]
+        indegree_sd = [std(indegree(current_run[i].final_state[1])) for i in 1:50]
+        indegree_mean = [mean(indegree(current_run[i].final_state[1])) for i in 1:50]
+        supernode_centrality = [closeness_centrality(current_run[i].final_state[1])[findmax(outdegree(current_run[i].final_state[1]))[2]] for i in 1:50]
+        clust_coeff = [global_clustering_coefficient(current_run[i].final_state[1]) for i in 1:50]
+        agents_above_meansd = [length([agent for agent in current_run[i].final_state[2] if outdegree(current_run[i].final_state[1], agent.id) > mean(outdegree(current_run[i].final_state[1])) + std(outdegree(current_run[i].final_state[1]))]) for i in 1:50]
+        communities_max = [maximum(label_propagation((current_run[i].final_state[1]))[1]) for i in 1:50]
+
+        push!(
+            results,
+            DataFrame(
+                OpinionSD = opinionsd,
+                Densities = densities,
+                OutdegreeSD = outdegree_sd,
+                OutdegreeMean = outdegree_mean,
+                OutdegreeMax = outdegree_max,
+                IndegreeSD = indegree_sd,
+                IndegreeMean = indegree_mean,
+                Supernode_Centrality = supernode_centrality,
+                Clust_Coeff = clust_coeff,
+                AgentsAboveMeanSD = agents_above_meansd,
+                CommunitiesMax = communities_max
+            )
+        )
+    end
+end
 
 using Plots
 boxplot((outdegree(netsize_run1[1].final_state[1])))
