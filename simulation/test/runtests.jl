@@ -14,9 +14,9 @@ results = DataFrame(
     IndegreeMean = Float64[],
     SupernodeCentrality = Float64[],
     ClustCoeff = Float64[],
-    AgentsAboveMeanSD = Int64[],
     CommunityCount = Int64[],
-    ConnectedComponents = Int64[]
+    ConnectedComponents = Int64[],
+    CommunityOpMeanSDs = Float64[]
 )
 
 using Random
@@ -39,9 +39,19 @@ for file in readdir("results")
         indegree_mean = [mean(indegree(current_run[i].final_state[1])) for i in 1:50]
         supernode_centrality = [closeness_centrality(current_run[i].final_state[1])[findmax(outdegree(current_run[i].final_state[1]))[2]] for i in 1:50]
         clust_coeff = [global_clustering_coefficient(current_run[i].final_state[1]) for i in 1:50]
-        agents_above_meansd = [length([agent for agent in current_run[i].final_state[2] if outdegree(current_run[i].final_state[1], agent.id) > mean(outdegree(current_run[i].final_state[1])) + std(outdegree(current_run[i].final_state[1]))]) for i in 1:50]
         n_communities = [maximum(label_propagation((current_run[i].final_state[1]))[1]) for i in 1:50]
         conn_components = [length(connected_components(current_run[i].final_state[1])) for i in 1:50]
+
+        # Calc the SD of the opinion means of the identified clusters
+        community_opinion_mean_sds = Float64[]
+        for i in 1:50
+            label_prop = label_propagation(current_run[i].final_state[1])[1]
+            if maximum(label_prop) == 1
+                push!(community_opinion_mean_sds, 0)
+                continue
+            end
+            push!(community_opinion_mean_sds, std([mean([agent.opinion for agent in current_run[i].final_state[2] if agent.id in findall(x->x==j, label_prop)]) for j in 1:maximum(label_prop)]))
+        end
 
         append!(
             results,
@@ -59,9 +69,9 @@ for file in readdir("results")
                 IndegreeMean = indegree_mean,
                 SupernodeCentrality = supernode_centrality,
                 ClustCoeff = clust_coeff,
-                AgentsAboveMeanSD = agents_above_meansd,
                 CommunityCount = n_communities,
-                ConnectedComponents = conn_components
+                ConnectedComponents = conn_components,
+                CommunityOpMeanSDs = community_opinion_mean_sds
             )
         )
     end
