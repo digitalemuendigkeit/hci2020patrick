@@ -95,7 +95,13 @@ The beforehand described actions are performed by every agent during a simulatio
 
 
 # Results
-Our simulation study comprised in total 27 simulation runs that show the impact and relationships of the varied factors on the network evolution and opinion dynamics.
+We performed in total 13 different simulation runs that cover the following variations of factor configuration:
+
+- Network Size in 100, 200, 300, 400, 500 Agents
+- Addfriends Method as Neighbors of Neighbors, hybrid and random
+- Unfriend Threshold of 0.4, 0.6, 0.8, 1.0, 1.2
+
+This allows us to examine subsequently the influence of the factor levels seperately. Each distinct simulation configuration was repeated 50 times to clear out effects that are due to usage of random numbers in the simulations.
 
 ## Final state
 What can be learned from the simulation state after 1000 steps? Which factors have significant direct/indirect influence on degree distribution, centrality of nodes, cluster coefficient, and opinion distribution?
