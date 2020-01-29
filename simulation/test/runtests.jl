@@ -1,17 +1,10 @@
 include(joinpath("..", "src", "simulation.jl"))
 
-netsize_run1 = load("results/Netsize_run1.jld2")
-netsize_run1 = netsize_run1["Netsize_run1"]
-typeof(netsize_run1)
-
-test = ([netsize_run1, netsize_run1])
-test
-test = Vector{Array{Simulation,1}}
-test = Vector{Simulation}[]
-
-push!(test, netsize_run1)
-
 results = DataFrame(
+    BatchName = String[],
+    ConfigAgentCount = Int64[],
+    ConfigUnfriendThresh = Float64[],
+    ConfigAddfriendMethod = String[],
     OpinionSD = Float64[],
     Densities = Float64[],
     OutdegreeSD = Float64[],
@@ -19,16 +12,23 @@ results = DataFrame(
     OutdegreeMax = Float64[],
     IndegreeSD = Float64[],
     IndegreeMean = Float64[],
-    Supernode_Centrality = Float64[],
-    Clust_Coeff = Float64[],
+    SupernodeCentrality = Float64[],
+    ClustCoeff = Float64[],
     AgentsAboveMeanSD = Int64[],
-    CommunitiesMax = Int64[]
+    CommunityCount = Int64[],
+    ConnectedComponents = Int64[]
 )
 
+using Random
+
+Random.seed!(0)
+
 for file in readdir("results")
-    if occursin("netsize", file)
+    if occursin("Netsize", file) || occursin("Addfriends", file) || occursin("Unfriend", file)
         raw = load(joinpath("results", file))
         current_run = raw[first(keys(raw))]
+
+        addfriends = current_run[1].config.simulation.addfriends == "" ? "hybrid" : current_run[1].config.simulation.addfriends
 
         opinionsd = [std([agent.opinion for agent in current_run[i].final_state[2]]) for i in 1:50]
         densities = [density(current_run[i].final_state[1]) for i in 1:50]
@@ -40,11 +40,16 @@ for file in readdir("results")
         supernode_centrality = [closeness_centrality(current_run[i].final_state[1])[findmax(outdegree(current_run[i].final_state[1]))[2]] for i in 1:50]
         clust_coeff = [global_clustering_coefficient(current_run[i].final_state[1]) for i in 1:50]
         agents_above_meansd = [length([agent for agent in current_run[i].final_state[2] if outdegree(current_run[i].final_state[1], agent.id) > mean(outdegree(current_run[i].final_state[1])) + std(outdegree(current_run[i].final_state[1]))]) for i in 1:50]
-        communities_max = [maximum(label_propagation((current_run[i].final_state[1]))[1]) for i in 1:50]
+        n_communities = [maximum(label_propagation((current_run[i].final_state[1]))[1]) for i in 1:50]
+        conn_components = [length(connected_components(current_run[i].final_state[1])) for i in 1:50]
 
-        push!(
+        append!(
             results,
             DataFrame(
+                BatchName = file[1:first(findfirst("_", file)) - 1],
+                ConfigAgentCount = current_run[1].config.network.agent_count,
+                ConfigUnfriendThresh = current_run[1].config.opinion_threshs.unfriend,
+                ConfigAddfriendMethod = addfriends,
                 OpinionSD = opinionsd,
                 Densities = densities,
                 OutdegreeSD = outdegree_sd,
@@ -52,14 +57,21 @@ for file in readdir("results")
                 OutdegreeMax = outdegree_max,
                 IndegreeSD = indegree_sd,
                 IndegreeMean = indegree_mean,
-                Supernode_Centrality = supernode_centrality,
-                Clust_Coeff = clust_coeff,
+                SupernodeCentrality = supernode_centrality,
+                ClustCoeff = clust_coeff,
                 AgentsAboveMeanSD = agents_above_meansd,
-                CommunitiesMax = communities_max
+                CommunityCount = n_communities,
+                ConnectedComponents = conn_components
             )
         )
     end
 end
+
+results
+
+using CSV
+
+CSV.write("results.csv", results)
 
 using Plots
 boxplot((outdegree(netsize_run1[1].final_state[1])))
