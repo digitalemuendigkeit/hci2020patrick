@@ -1,4 +1,5 @@
 include(joinpath("..", "src", "simulation.jl"))
+include(joinpath("..", "src", "03runeval.jl"))
 
 results = DataFrame(
     BatchName = String[],
@@ -6,6 +7,7 @@ results = DataFrame(
     ConfigUnfriendThresh = Float64[],
     ConfigAddfriendMethod = String[],
     OpinionSD = Float64[],
+    OpChangeDeltaMean = Float64[],
     Densities = Float64[],
     OutdegreeSD = Float64[],
     OutdegreeMean = Float64[],
@@ -13,15 +15,53 @@ results = DataFrame(
     IndegreeSD = Float64[],
     IndegreeMean = Float64[],
     SupernodeCentrality = Float64[],
+    SupernodeOpinion = Float64[],
     ClustCoeff = Float64[],
     CommunityCount = Int64[],
     ConnectedComponents = Int64[],
     CommunityOpMeanSDs = Float64[]
 )
 
-using Random
+test = load("results/Addfriends_new_run2.jld2")
 
-Random.seed!(0)
+test = test[first(keys(test))]
+
+test[1]
+
+RunEval(test[1],1)
+test2 = rerun_single(test[1], name=test[1].name, rep_nr=1)
+RunEval(test2,1)
+runevals = RunEval[]
+
+for i in 1:length(test)
+    push!(runevals, RunEval(test[i],i))
+end
+
+test[minimum([RunEval(test[i], i) - mean(runevals) for i in 1:length(test)]).rep_nr].final_state[2]
+
+
+for file in readdir("results")
+    if (occursin("Netsize", file) || occursin("Addfriends", file) || occursin("Unfriend", file)) && occursin(".jld2", file)
+        raw = load(joinpath("results", file))
+        current_run = raw[first(keys(raw))]
+
+        prototype = current_run[minimum([RunEval(current_run[i], i) - mean(runevals) for i in 1:length(current_run)]).rep_nr]
+
+        CSV.write(
+            joinpath("results", "$(prototype.name)_prototype_agent_log" * ".csv"),
+            DataFrame(
+                AgentID = [agent.id for agent in prototype.final_state[2]],
+                Opinion = [agent.opinion for agent in prototype.final_state[2]]
+            )
+        )
+
+        savegraph(
+            joinpath("results", "$(prototype.name)_prototype_graph.gml"),
+            prototype.final_state[1],
+            GraphIO.GML.GMLFormat()
+        )
+    end
+end
 
 for file in readdir("results")
     if occursin("Netsize", file) || occursin("Addfriends", file) || occursin("Unfriend", file)
@@ -31,6 +71,7 @@ for file in readdir("results")
         addfriends = current_run[1].config.simulation.addfriends == "" ? "hybrid" : current_run[1].config.simulation.addfriends
 
         opinionsd = [std([agent.opinion for agent in current_run[i].final_state[2]]) for i in 1:50]
+        opchange_delta_mean = [mean([abs(current_run[j].init_state[2][i].opinion - current_run[j].final_state[2][i].opinion) for i in 1:current_run[j].config.network.agent_count]) for j in 1:50]
         densities = [density(current_run[i].final_state[1]) for i in 1:50]
         outdegree_sd = [std(outdegree(current_run[i].final_state[1])) for i in 1:50]
         outdegree_mean = [mean(outdegree(current_run[i].final_state[1])) for i in 1:50]
@@ -38,14 +79,16 @@ for file in readdir("results")
         indegree_sd = [std(indegree(current_run[i].final_state[1])) for i in 1:50]
         indegree_mean = [mean(indegree(current_run[i].final_state[1])) for i in 1:50]
         supernode_centrality = [closeness_centrality(current_run[i].final_state[1])[findmax(outdegree(current_run[i].final_state[1]))[2]] for i in 1:50]
+        supernode_opinion = [current_run[i].final_state[2][findmax(outdegree(current_run[i].final_state[1]))[2]].opinion for i in 1:50]
         clust_coeff = [global_clustering_coefficient(current_run[i].final_state[1]) for i in 1:50]
-        n_communities = [maximum(label_propagation((current_run[i].final_state[1]))[1]) for i in 1:50]
         conn_components = [length(connected_components(current_run[i].final_state[1])) for i in 1:50]
 
         # Calc the SD of the opinion means of the identified clusters
+        n_communities = Int64[]
         community_opinion_mean_sds = Float64[]
         for i in 1:50
             label_prop = label_propagation(current_run[i].final_state[1])[1]
+            push!(n_communities, maximum(label_prop))
             if maximum(label_prop) == 1
                 push!(community_opinion_mean_sds, 0)
                 continue
@@ -59,8 +102,9 @@ for file in readdir("results")
                 BatchName = file[1:first(findfirst("_", file)) - 1],
                 ConfigAgentCount = current_run[1].config.network.agent_count,
                 ConfigUnfriendThresh = current_run[1].config.opinion_threshs.unfriend,
-                ConfigAddfriendMethod = addfriends,
+                ConfigAddfriendMethod = current_run[1].config.simulation.addfriends,
                 OpinionSD = opinionsd,
+                OpChangeDeltaMean = opchange_delta_mean,
                 Densities = densities,
                 OutdegreeSD = outdegree_sd,
                 OutdegreeMean = outdegree_mean,
@@ -68,6 +112,7 @@ for file in readdir("results")
                 IndegreeSD = indegree_sd,
                 IndegreeMean = indegree_mean,
                 SupernodeCentrality = supernode_centrality,
+                SupernodeOpinion = supernode_opinion,
                 ClustCoeff = clust_coeff,
                 CommunityCount = n_communities,
                 ConnectedComponents = conn_components,

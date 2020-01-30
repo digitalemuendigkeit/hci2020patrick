@@ -4,10 +4,6 @@ run_batch(batch_netsize, batch_name = "Netsize")
 run_batch(batch_addfriends, batch_name = "Addfriends")
 run_batch(batch_unfriend, batch_name = "Unfriend")
 
-convert_results()
-
-configbatch = Config[]
-
 batch_netsize = Config[]
 
 for agent_count in 100:100:500
@@ -20,8 +16,9 @@ for agent_count in 100:100:500
             ),
             simulation = cfg_sim(
                 ticks = 1000,
-                addfriends = "",
-                repcount = 50
+                addfriends = "hybrid",
+                repcount = 50,
+                agent_logging = false
             ),
             opinion_threshs = cfg_ot(
                 backfire = 0.4,
@@ -39,7 +36,7 @@ end
 
 batch_unfriend = Config[]
 
-for unfriend in [0.4, 0.8, 1.2]
+for unfriend in [0.4, 0.6, 0.8, 1.0, 1.2]
 
     push!(batch_unfriend, Config(
             network = cfg_net(
@@ -49,8 +46,9 @@ for unfriend in [0.4, 0.8, 1.2]
             ),
             simulation = cfg_sim(
                 ticks = 1000,
-                addfriends = "",
-                repcount = 50
+                addfriends = "hybrid",
+                repcount = 50,
+                agent_logging = false
             ),
             opinion_threshs = cfg_ot(
                 backfire = 0.4,
@@ -68,7 +66,7 @@ end
 
 batch_addfriends = Config[]
 
-for addfriends in ["", "neighborsofneighbors", "random"]
+for addfriends in ["neighborsofneighbors", "hybrid", "random"]
 
     push!(batch_addfriends, Config(
             network = cfg_net(
@@ -79,7 +77,8 @@ for addfriends in ["", "neighborsofneighbors", "random"]
             simulation = cfg_sim(
                 ticks = 1000,
                 addfriends = addfriends,
-                repcount = 50
+                repcount = 50,
+                agent_logging = false
             ),
             opinion_threshs = cfg_ot(
                 backfire = 0.4,

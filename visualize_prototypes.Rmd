@@ -1,0 +1,19 @@
+---
+title: "Visualize Prototypes"
+author: "Patrick Halbach, Johannes Nakayama"
+date: "30 1 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(igraph)
+library(stats)
+
+library(plot3Drgl)
+library(viridis)
+library(dplyr)
+library(gganimate)
+```
