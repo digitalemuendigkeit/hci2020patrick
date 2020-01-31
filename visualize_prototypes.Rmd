@@ -17,3 +17,137 @@ library(viridis)
 library(dplyr)
 library(gganimate)
 ```
+
+
+```{r Data Import}
+fileimport <- list.files(file.path("simulation", "results"), pattern = ".csv|.gml")
+
+prototypes <- unique(sub('_prototype_agent_log.csv|_prototype_graph.gml', '', fileimport))
+
+
+prototypes[1]
+
+for (i in 1:length(prototypes)) {
+    assign(paste0(prototypes[i], "_graph"), read_graph(file.path("simulation","results", paste0(prototypes[i], "_prototype_graph.gml")), format = "gml"))
+  
+    assign(paste0(prototypes[i], "_agent_log"), read.csv(file.path("simulation", "results", paste0(prototypes[i], "_prototype_agent_log.csv"))))
+    
+    print(paste0("Run ", i, " completed"))
+
+}
+
+for (prototype in prototypes) {
+  plotit(prototype)
+}
+  
+
+```
+
+```{r Graph plotting}
+plotit <- function(simrun) {
+  nodecolorgrad <- colorRampPalette(c("green", "blue", "red"))(2001)
+  current_agent_log <- get(paste0(simrun, "_agent_log"))
+  current_graph <- as.undirected(get(paste0(simrun, "_graph")))
+  
+  V(current_graph)$label <- NA
+  V(current_graph)$size <- 1 + degree(current_graph, mode="out") / length(V(current_graph)) * 30
+  current_agent_log %>% 
+      filter(TickNr == 1000) %>% 
+      .$Opinion %>% 
+      round(digits = 3) %>% 
+      + 1 %>% 
+      "*"(1000) + 1  -> agent_opinions
+  
+  nodecolors <- nodecolorgrad[agent_opinions]
+  # clp <- cluster_label_prop(current_graph)
+  cfg <- cluster_fast_greedy(current_graph)
+  
+  # plot(clp, current_graph, layout = layout_with_fr, col = nodecolors)
+  # png(paste0(simrun, ".png"), 3000, 3000)
+  # plot(clp, current_graph, layout = layout_with_fr, col = nodecolors)
+  # dev.off()
+  
+  plot(cfg, current_graph, layout = layout_with_fr, col = nodecolors)
+  png(paste0(simrun, ".png"), 3000, 3000)
+  plot(cfg, current_graph, layout = layout_with_fr, col = nodecolors)
+  dev.off()
+}
+
+```
+
+```{r Opinion 3D Histogram}
+
+# Prepare for 3D Histogram
+viewpoint <- matrix(c(0.581680357,	-0.813347518,	-0.010670132,	27.88446792,
+                      0.311022758,	0.210274488,	0.926849186,	41.81242048,
+                      -0.751606762,	-0.54244858,	0.375282109,	-2.694485856,
+                      0, 0, 0, 1), nrow = 4, byrow = TRUE)
+
+# Build Array of Histograms
+
+for (runname in prototypes){
+  
+  df <- get(paste0(runname, "_agent_log"))
+  
+  seq(-1,1, by=0.1) %>%
+    round(digits=1) %>%
+    table() -> histarray
+  
+  if (exists(paste0(runname, "histarraymatrix"))) {
+    histarraymatrix <- get(paste0(runname, "histarraymatrix"))
+  } else {
+    
+    for (i in 1:max(df$TickNr)){
+    
+    if (i %% ceiling(max(df$TickNr) / 10) == 0 ) cat(paste0(round(i / max(df$TickNr) * 100), '% --- '))
+    df %>%
+        filter(.$TickNr == i) %>%
+        .[,3] %>%
+        round(digits=1) %>%
+        table() %>%
+        bind_rows(histarray,.) -> histarray
+    }
+    
+    print("\n")
+  
+    histarray[is.na(histarray)] <- 0
+    histarray %>%
+        .[-1,] %>%
+        as.matrix() -> histarraymatrix
+    
+    assign(paste0(runname, "histarraymatrix"), histarraymatrix)
+    
+  }
+  
+  # Build the 3D Histogram
+  persp3Drgl(
+      x=1:nrow(histarraymatrix), y = seq(-1,1, by=0.1),
+          contour=FALSE, z = histarraymatrix,
+          box=FALSE, shade=0.1, alpha=0.7,
+          xlab="", ylab="", zlab="",
+          col=viridis(n=2000, direction = -1), colkey=FALSE, axes=FALSE
+      )
+  
+  
+  # Formatting the Output
+  view3d(userMatrix=viewpoint, zoom=0.6)
+  par3d(windowRect = c(405, 104, 1795, 984))
+  aspect3d(x=1.4,y=1.2,z=0.5)
+  bbox3d(color=c("#EEEEEE","#AAAAAA"), xlen = 0, ylen = 0, zlen = 0)
+  grid3d(side="x++", col="white", lwd=2)
+  grid3d(side="y++", col="white", lwd=2)
+  grid3d(side="z--", col="white", lwd=2)
+  axis3d('x--', at = seq(0,floor(max(df$TickNr)/200)*200, by=200))
+  axis3d('y--')
+  axis3d('z-+', at = seq(0,floor(max(histarraymatrix)/50)*50, by=50))
+  mtext3d("Simulation Step", "x--", line=2)
+  mtext3d("Opinion", "y--", line=2)
+  mtext3d("Agent Count", "z-+", line=2)
+  
+  snapshot3d(paste0("output_", runname, ".png"))
+  # rgl.close()
+}
+
+
+```
+

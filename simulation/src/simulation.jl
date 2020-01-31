@@ -18,6 +18,8 @@ mutable struct Simulation
 
     name::String
     runnr::Int64
+    repnr::Int64
+    rng::MersenneTwister
     config::Config
     init_state::Any
     final_state::Any
@@ -37,6 +39,22 @@ mutable struct Simulation
             Array{AbstractGraph, 1}(undef, 0)
         )
     end
+
+    function Simulation(sim_transferred::Tuple{String,Int64,Int64,MersenneTwister,Config,Tuple{SimpleDiGraph{Int64},Array{Agent,1}},Tuple{SimpleDiGraph{Int64},Array{Agent,1}},DataFrame,DataFrame,Array{AbstractGraph,1}})
+        new(
+            sim_transferred[1],
+            sim_transferred[2],
+            sim_transferred[3],
+            sim_transferred[4],
+            sim_transferred[5],
+            sim_transferred[6],
+            sim_transferred[7],
+            sim_transferred[8],
+            sim_transferred[9],
+            sim_transferred[10]
+        )
+    end
+
 end
 
 
@@ -46,6 +64,10 @@ function tick!(
     tick_nr::Int64, config::Config, rng::MersenneTwister
 )
     agent_list = state[2]
+    if config.simulation.agent_logging
+        prev_state = deepcopy(state)
+    end
+
     for agent_idx in shuffle(rng, 1:length(agent_list))
         this_agent = agent_list[agent_idx]
         update_feed!(state, agent_idx, config)
@@ -86,7 +108,7 @@ function tick!(
     end
 
     if config.simulation.agent_logging
-        return log_network(state, tick_nr)
+        return log_network(state, prev_state, tick_nr)
     else
         return state
     end
@@ -170,15 +192,26 @@ function run_batch(
 end
 
 function rerun_single(
-    simulation::Simulation;
-    name::String = "result",
-    rep_nr::Int64 = 0
+    simulation_imported::Simulation;
+    logging::Bool = true
+    )
+    simulation = deepcopy(simulation_imported)
+
+    simulation.config = Config(
+        network = simulation.config.network,
+        simulation = cfg_sim(
+            ticks = simulation.config.simulation.ticks,
+            addfriends = simulation.config.simulation.addfriends,
+            repcount = simulation.config.simulation.repcount,
+            agent_logging = logging
+        ),
+        opinion_threshs = simulation.config.opinion_threshs,
+        agent_props = simulation.config.agent_props
     )
 
     config = simulation.config
-    simulation.name = name
 
-    rng = Random.seed!(sum(codeunits(name)) + rep_nr)
+    rng = Random.seed!(simulation.rng.seed)
 
     graph = SimpleDiGraph(barabasi_albert(
                     config.network.agent_count,
@@ -190,7 +223,9 @@ function rerun_single(
         simulation.agent_log = DataFrame(
         TickNr = 0,
         AgentID = [agent.id for agent in state[2]],
-        Opinion = [agent.opinion for agent in state[2]]
+        Opinion = [agent.opinion for agent in state[2]],
+        OpinionChange = 0.0,
+        PerceivPublOpinion = [agent.opinion for agent in state[2]]
         )
     end
 
@@ -203,18 +238,21 @@ function rerun_single(
         end
 
         if i % ceil(config.simulation.ticks / 10) == 0
-            if name != "result"
-                print(".")
-            end
+            print(".")
         end
     end
 
-    simulation.final_state = state
+    communities = DataFrame(
+        AgentID = 1:length(state[2]),
+        Community = label_propagation(state[1])[1]
+    )
+
+    simulation.final_state = state[1], state[2], communities
 
     if !in("results", readdir())
         mkdir("results")
     end
-    save(joinpath("results", name * "_singlerun.jld2"), name, simulation)
+    save(joinpath("results", simulation.name * "_singlerun.jld2"), simulation.name, simulation)
     # rm(joinpath("tmp", name * ".jld2"))
 
     print("\n---\nFinished simulation run with the following specifications:\n $config\n---\n")

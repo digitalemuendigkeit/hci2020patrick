@@ -1,9 +1,12 @@
 function log_network(
-    state::Tuple{AbstractGraph, AbstractArray}, tick_nr::Int64
+    state::Tuple{AbstractGraph, AbstractArray},
+    prev_state::Tuple{AbstractGraph, AbstractArray},
+    tick_nr::Int64
 )
     graph, agent_list = state
     agent_opinion = [a.opinion for a in agent_list]
-    # agent_perceiv_publ_opinion = [a.perceiv_publ_opinion for a in agent_list]
+    agent_opinion_change = [a.opinion for a in agent_list] - [a.opinion for a in prev_state[2]]
+    agent_perceiv_publ_opinion = [a.perceiv_publ_opinion for a in agent_list]
     # agent_indegree = indegree(graph)
     # agent_outdegree = outdegree(graph)
     # agent_centrality = closeness_centrality(graph)
@@ -16,8 +19,9 @@ function log_network(
     return DataFrame(
         TickNr = tick_nr,
         AgentID = 1:length(agent_list),
-        Opinion = agent_opinion#,
-        # PerceivPublOpinion = agent_perceiv_publ_opinion,
+        Opinion = agent_opinion,
+        OpinionChange = agent_opinion_change,
+        PerceivPublOpinion = agent_perceiv_publ_opinion#,
         # Indegree = agent_indegree,
         # Outdegree = agent_outdegree,
         # Centrality = agent_centrality,

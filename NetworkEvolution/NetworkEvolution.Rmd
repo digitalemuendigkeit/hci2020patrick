@@ -103,8 +103,7 @@ We performed in total 13 different simulation runs that cover the following vari
 
 This allows us to examine subsequently the influence of the factor levels seperately. Each distinct simulation configuration was repeated 50 times to clear out effects that are due to usage of random numbers in the simulations.
 
-## Final state
-What can be learned from the simulation state after 1000 steps? Which factors have significant direct/indirect influence on degree distribution, centrality of nodes, cluster coefficient, and opinion distribution?
+
 
 ## Impact of Network Size
 - Relative Edgecount decreases with higher net size

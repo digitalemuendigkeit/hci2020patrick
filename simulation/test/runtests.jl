@@ -22,37 +22,21 @@ results = DataFrame(
     CommunityOpMeanSDs = Float64[]
 )
 
-test = load("results/Addfriends_new_run2.jld2")
-
-test = test[first(keys(test))]
-
-test[1]
-
-RunEval(test[1],1)
-test2 = rerun_single(test[1], name=test[1].name, rep_nr=1)
-RunEval(test2,1)
-runevals = RunEval[]
-
-for i in 1:length(test)
-    push!(runevals, RunEval(test[i],i))
-end
-
-test[minimum([RunEval(test[i], i) - mean(runevals) for i in 1:length(test)]).rep_nr].final_state[2]
-
-
 for file in readdir("results")
     if (occursin("Netsize", file) || occursin("Addfriends", file) || occursin("Unfriend", file)) && occursin(".jld2", file)
         raw = load(joinpath("results", file))
         current_run = raw[first(keys(raw))]
 
-        prototype = current_run[minimum([RunEval(current_run[i], i) - mean(runevals) for i in 1:length(current_run)]).rep_nr]
+        prototype = rerun_single(get_prototype(current_run))
 
         CSV.write(
             joinpath("results", "$(prototype.name)_prototype_agent_log" * ".csv"),
-            DataFrame(
-                AgentID = [agent.id for agent in prototype.final_state[2]],
-                Opinion = [agent.opinion for agent in prototype.final_state[2]]
-            )
+            prototype.agent_log
+        )
+
+        CSV.write(
+            joinpath("results", "$(prototype.name)_prototype_agent_communities" * ".csv"),
+            prototype.final_state[3]
         )
 
         savegraph(
@@ -64,11 +48,12 @@ for file in readdir("results")
 end
 
 for file in readdir("results")
-    if occursin("Netsize", file) || occursin("Addfriends", file) || occursin("Unfriend", file)
+    if (
+        occursin("Netsize", file) || occursin("Addfriends", file) || occursin("Unfriend", file)
+        && occursin(".jld2", file)
+    )
         raw = load(joinpath("results", file))
         current_run = raw[first(keys(raw))]
-
-        addfriends = current_run[1].config.simulation.addfriends == "" ? "hybrid" : current_run[1].config.simulation.addfriends
 
         opinionsd = [std([agent.opinion for agent in current_run[i].final_state[2]]) for i in 1:50]
         opchange_delta_mean = [mean([abs(current_run[j].init_state[2][i].opinion - current_run[j].final_state[2][i].opinion) for i in 1:current_run[j].config.network.agent_count]) for j in 1:50]

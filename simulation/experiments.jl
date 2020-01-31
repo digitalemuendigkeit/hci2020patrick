@@ -1,8 +1,9 @@
 include(joinpath("src", "simulation.jl"))
+include(joinpath("src", "03runeval.jl"))
 
 run_batch(batch_netsize, batch_name = "Netsize")
 run_batch(batch_addfriends, batch_name = "Addfriends")
-run_batch(batch_unfriend, batch_name = "Unfriend")
+run_batch(batch_unfriend, batch_name = "Unfriend", resume_at=5)
 
 batch_netsize = Config[]
 
