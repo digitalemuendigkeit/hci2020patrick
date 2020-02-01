@@ -11,7 +11,7 @@ mutable struct RunEval
     opinionsd::Float64
     opchange_delta_mean::Float64
 
-    function RunEval(simulation::Simulation, index::Int64)
+    function RunEval(simulation::Simulation)
 
         Random.seed!(0)
         label_prop = label_propagation(simulation.final_state[1])[1]
@@ -22,7 +22,7 @@ mutable struct RunEval
         #     community_opinion_mean_sds = std([mean([agent.opinion for agent in simulation.final_state[2] if agent.id in findall(x->x==j, label_prop)]) for j in 1:maximum(label_prop)])
         # end
         new(
-            index,
+            simulation.repnr,
             density(simulation.final_state[1]),
             std(outdegree(simulation.final_state[1])),
             mean(outdegree(simulation.final_state[1])),
@@ -120,6 +120,14 @@ Base.:isless(runeval1::RunEval, runeval2::RunEval) = (
     + runeval2.indegree_mean + runeval2.supernode_centrality + runeval2.clust_coeff
     + runeval2.community_count + runeval2.opinionsd + runeval2.opchange_delta_mean)
 )
+
+function get_prototype(current_run::Vector{Simulation})
+    runevals = [RunEval(simulation) for simulation in current_run]
+    rep_mean = mean(runevals)
+    runeval_dist = [runeval - rep_mean for runeval in runevals]
+    best_candidate = minimum(runeval_dist)
+    return current_run[best_candidate.rep_nr]
+end
 
 # suppress output of include()
 ;

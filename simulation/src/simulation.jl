@@ -31,6 +31,8 @@ mutable struct Simulation
         new(
             "",
             0,
+            0,
+            MersenneTwister(),
             config,
             (nothing, nothing),
             (nothing, nothing),
@@ -118,7 +120,12 @@ function run!(
     simulation::Simulation;
     name::String = "result"
 )
-    rep = Simulation[]
+    if name * ".jld2" in readdir("results")
+        raw = load(joinpath("results", name * ".jld2"))
+        rep = raw[first(keys(raw))]
+    else
+        rep = Simulation[]
+    end
 
     config = simulation.config
     simulation.name = name
@@ -126,12 +133,14 @@ function run!(
 
     for current_rep in 1:config.simulation.repcount
 
-        rng = Random.seed!(sum(codeunits(name)) + current_rep)
+        simulation.repnr = length(rep) + 1
+
+        simulation.rng = Random.seed!(sum(codeunits(name)) + simulation.repnr)
 
         graph = SimpleDiGraph(barabasi_albert(
                         config.network.agent_count,
                         config.network.m0))
-        simulation.init_state = (graph, create_agents(graph, rng))
+        simulation.init_state = (graph, create_agents(graph, simulation.rng))
         state = deepcopy(simulation.init_state)
 
         if config.simulation.agent_logging
@@ -145,9 +154,9 @@ function run!(
         for i in 1:config.simulation.ticks
 
             if config.simulation.agent_logging
-                append!(simulation.agent_log, tick!(state, i, config, rng))
+                append!(simulation.agent_log, tick!(state, i, config, simulation.rng))
             else
-                tick!(state, i, config, rng)
+                tick!(state, i, config, simulation.rng)
             end
 
             if i % ceil(config.simulation.ticks / 10) == 0
@@ -211,12 +220,12 @@ function rerun_single(
 
     config = simulation.config
 
-    rng = Random.seed!(simulation.rng.seed)
+    simulation.rng = Random.seed!(simulation.rng.seed)
 
     graph = SimpleDiGraph(barabasi_albert(
                     config.network.agent_count,
                     config.network.m0))
-    simulation.init_state = (graph, create_agents(graph, rng))
+    simulation.init_state = (graph, create_agents(graph, simulation.rng))
     state = deepcopy(simulation.init_state)
 
     if config.simulation.agent_logging
@@ -232,9 +241,9 @@ function rerun_single(
     for i in 1:config.simulation.ticks
 
         if config.simulation.agent_logging
-            append!(simulation.agent_log, tick!(state, i, config, rng))
+            append!(simulation.agent_log, tick!(state, i, config, simulation.rng))
         else
-            tick!(state, i, config, rng)
+            tick!(state, i, config, simulation.rng)
         end
 
         if i % ceil(config.simulation.ticks / 10) == 0

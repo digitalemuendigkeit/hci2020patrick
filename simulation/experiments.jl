@@ -1,9 +1,21 @@
 include(joinpath("src", "simulation.jl"))
 include(joinpath("src", "03runeval.jl"))
 
-run_batch(batch_netsize, batch_name = "Netsize")
+run_batch(batch_netsize, batch_name = "Netsize", stop_at = 1)
 run_batch(batch_addfriends, batch_name = "Addfriends")
 run_batch(batch_unfriend, batch_name = "Unfriend", resume_at=5)
+
+
+raw = load("results/Netsize_run1.jld2")
+
+netsize = raw[first(keys(raw))]
+
+netsize
+RunEval(netsize[51])
+
+teest = rerun_single(netsize[51])
+
+RunEval(teest)
 
 batch_netsize = Config[]
 
@@ -18,7 +30,7 @@ for agent_count in 100:100:500
             simulation = cfg_sim(
                 ticks = 1000,
                 addfriends = "hybrid",
-                repcount = 50,
+                repcount = 2,
                 agent_logging = false
             ),
             opinion_threshs = cfg_ot(
