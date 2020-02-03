@@ -22,7 +22,7 @@ library(gganimate)
 ```{r Data Import}
 fileimport <- list.files(file.path("simulation", "results"), pattern = ".csv|.gml")
 
-prototypes <- unique(sub('_prototype_agent_log.csv|_prototype_graph.gml', '', fileimport))
+prototypes <- unique(sub('_prototype_agent_log.csv|_prototype_graph.gml|_prototype_agent_communities.csv', '', fileimport))
 
 
 prototypes[1]
@@ -31,7 +31,7 @@ for (i in 1:length(prototypes)) {
     assign(paste0(prototypes[i], "_graph"), read_graph(file.path("simulation","results", paste0(prototypes[i], "_prototype_graph.gml")), format = "gml"))
   
     assign(paste0(prototypes[i], "_agent_log"), read.csv(file.path("simulation", "results", paste0(prototypes[i], "_prototype_agent_log.csv"))))
-    
+    assign(paste0(prototypes[i], "_agent_communities"), read.csv(file.path("simulation", "results", paste0(prototypes[i], "_prototype_agent_communities.csv"))))
     print(paste0("Run ", i, " completed"))
 
 }
@@ -39,7 +39,10 @@ for (i in 1:length(prototypes)) {
 for (prototype in prototypes) {
   plotit(prototype)
 }
-  
+
+current_graph <- Netsize_run1_graph
+current_agent_log <- Netsize_run1_agent_log
+
 
 ```
 

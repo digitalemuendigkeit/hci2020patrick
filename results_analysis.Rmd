@@ -46,9 +46,14 @@ results %>%
   group_by(ConfigUnfriendThresh) %>% 
   summarise_all(mean) -> unfriend_aggregates
 
+
+as.integer(levels(factor(500)))
 ```
 
 ```{r netsize}
+
+
+
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
@@ -62,106 +67,116 @@ results %>%
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
-  select(ConfigAgentCountFactor, OutdegreeSD) %>% 
-  ggplot(aes(x = ConfigAgentCountFactor, y = OutdegreeSD)) +
+  select(ConfigAgentCount, OutdegreeSD) %>% 
+  ggplot(aes(x = ConfigAgentCount, y = OutdegreeSD)) +
   geom_jitter(alpha = 0.3, width = 0.2) +
   geom_violin(alpha = 0.1, fill = "black") +
-  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCountFactor)) +
+  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCount)) +
   theme_bw() +
   theme(legend.position = "none")
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
-  select(ConfigAgentCountFactor, OutdegreeMean) %>% 
-  ggplot(aes(x = ConfigAgentCountFactor, y = OutdegreeMean)) +
+  select(ConfigAgentCount, OutdegreeMean) %>% 
+  ggplot(aes(x = ConfigAgentCount, y = OutdegreeMean)) +
   geom_jitter(alpha = 0.3, width = 0.2) +
   geom_violin(alpha = 0.1, fill = "black") +
-  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCountFactor)) +
+  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCount)) +
   theme_bw() +
   theme(legend.position = "none")
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
-  select(ConfigAgentCountFactor, ConfigAgentCount, OutdegreeMax) %>% 
-  mutate(OutdegreeMaxRel = OutdegreeMax/ConfigAgentCount) %>% 
-  ggplot(aes(x = ConfigAgentCountFactor, y = OutdegreeMaxRel)) +
+  select(ConfigAgentCount, ConfigAgentCount, OutdegreeMax) %>% 
+  mutate(OutdegreeMaxRel = OutdegreeMax/as.integer(levels(ConfigAgentCount))) %>% 
+  ggplot(aes(x = ConfigAgentCount, y = OutdegreeMaxRel)) +
   geom_jitter(alpha = 0.3, width = 0.2) +
   geom_violin(alpha = 0.1, fill = "black") +
-  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCountFactor)) +
+  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCount)) +
   theme_bw() +
   theme(legend.position = "none")
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
-  select(ConfigAgentCountFactor, OutdegreeMean) %>% 
-  ggplot(aes(x = ConfigAgentCountFactor, y = OutdegreeMean)) +
+  select(ConfigAgentCount, OutdegreeMean) %>% 
+  ggplot(aes(x = ConfigAgentCount, y = OutdegreeMean)) +
   geom_jitter(alpha = 0.3, width = 0.2) +
   geom_violin(alpha = 0.1, fill = "black") +
-  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCountFactor)) +
+  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCount)) +
   theme_bw() +
   theme(legend.position = "none")
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
-  select(ConfigAgentCountFactor, IndegreeSD) %>% 
-  ggplot(aes(x = ConfigAgentCountFactor, y = IndegreeSD)) +
+  select(ConfigAgentCount, IndegreeSD) %>% 
+  ggplot(aes(x = ConfigAgentCount, y = IndegreeSD)) +
   geom_jitter(alpha = 0.3, width = 0.2) +
   geom_violin(alpha = 0.1, fill = "black") +
-  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCountFactor)) +
+  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCount)) +
   theme_bw() +
   theme(legend.position = "none")
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
-  select(ConfigAgentCountFactor, IndegreeMean) %>% 
-  ggplot(aes(x = ConfigAgentCountFactor, y = IndegreeMean)) +
+  select(ConfigAgentCount, IndegreeMean) %>% 
+  ggplot(aes(x = ConfigAgentCount, y = IndegreeMean)) +
   geom_jitter(alpha = 0.3, width = 0.2) +
   geom_violin(alpha = 0.1, fill = "black") +
-  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCountFactor)) +
+  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCount)) +
   theme_bw() +
   theme(legend.position = "none")
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
-  select(ConfigAgentCountFactor, SupernodeCentrality) %>% 
-  ggplot(aes(x = ConfigAgentCountFactor, y = SupernodeCentrality)) +
+  select(ConfigAgentCount, Betweenness_centrality_mean) %>% 
+  ggplot(aes(x = ConfigAgentCount, y = Betweenness_centrality_mean)) +
   geom_jitter(alpha = 0.3, width = 0.2) +
   geom_violin(alpha = 0.1, fill = "black") +
-  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCountFactor)) +
+  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCount)) +
   theme_bw() +
   theme(legend.position = "none")
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
-  select(ConfigAgentCountFactor, ClustCoeff) %>% 
-  ggplot(aes(x = ConfigAgentCountFactor, y = ClustCoeff)) +
+  select(ConfigAgentCount, SupernodeCentrality) %>% 
+  ggplot(aes(x = ConfigAgentCount, y = SupernodeCentrality)) +
   geom_jitter(alpha = 0.3, width = 0.2) +
   geom_violin(alpha = 0.1, fill = "black") +
-  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCountFactor)) +
+  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCount)) +
   theme_bw() +
   theme(legend.position = "none")
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
-  select(ConfigAgentCountFactor, Densities) %>% 
-  ggplot(aes(x = ConfigAgentCountFactor, y = Densities)) +
+  select(ConfigAgentCount, ClustCoeff) %>% 
+  ggplot(aes(x = ConfigAgentCount, y = ClustCoeff)) +
   geom_jitter(alpha = 0.3, width = 0.2) +
   geom_violin(alpha = 0.1, fill = "black") +
-  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCountFactor)) +
+  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCount)) +
   theme_bw() +
   theme(legend.position = "none")
 
 results %>% 
   filter(BatchName == "Netsize") %>% 
-  select(ConfigAgentCountFactor, CommunityCount, ConnectedComponents) %>% 
+  select(ConfigAgentCount, Densities) %>% 
+  ggplot(aes(x = ConfigAgentCount, y = Densities)) +
+  geom_jitter(alpha = 0.3, width = 0.2) +
+  geom_violin(alpha = 0.1, fill = "black") +
+  geom_boxplot(alpha = 0.5, aes(fill = ConfigAgentCount)) +
+  theme_bw() +
+  theme(legend.position = "none")
+
+results %>% 
+  # select(ConfigAgentCount, CommunityCount, ConnectedComponents) %>% 
   mutate(CommunityCountClean = CommunityCount - ConnectedComponents + 1) %>% 
-  ggplot(aes(x = ConfigAgentCountFactor, y = CommunityCountClean)) +
+  ggplot(aes(x = ConfigAgentCount, y = CommunityCountClean)) +
+  facet_wrap(facets = BatchName) +
   geom_jitter(alpha = 0.3, width = 0.2, height = 0.05) +
   geom_violin(alpha = 0.1, fill = "black") +
   geom_boxplot(
     alpha = 0.6, 
     lwd = 0.8, 
-    aes(fill = ConfigAgentCountFactor, color = ConfigAgentCountFactor)
+    aes(fill = ConfigAgentCount, color = ConfigAgentCount)
   ) +
   theme_bw() +
   theme(legend.position = "none") +
@@ -169,6 +184,8 @@ results %>%
     x = "Configuration", 
     y = "Number of Communities (Label Propagation)"
   )
+
+
 
 ```
 

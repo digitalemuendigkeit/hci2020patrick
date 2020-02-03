@@ -6,24 +6,36 @@ results = DataFrame(
     ConfigAgentCount = Int64[],
     ConfigUnfriendThresh = Float64[],
     ConfigAddfriendMethod = String[],
-    OpinionSD = Float64[],
-    OpChangeDeltaMean = Float64[],
     Densities = Float64[],
     OutdegreeSD = Float64[],
     OutdegreeMean = Float64[],
     OutdegreeMax = Float64[],
     IndegreeSD = Float64[],
     IndegreeMean = Float64[],
-    SupernodeCentrality = Float64[],
-    SupernodeOpinion = Float64[],
+    Closeness_centrality_mean = Float64[],
+    Closeness_centrality_max = Float64[],
+    Betweenness_centrality_mean = Float64[],
+    Betweenness_centrality_max = Float64[],
     ClustCoeff = Float64[],
     CommunityCount = Int64[],
     ConnectedComponents = Int64[],
+    OpinionSD = Float64[],
+    OpChangeDeltaMean = Float64[],
+    SupernodeCentrality = Float64[],
+    SupernodeOpinion = Float64[],
     CommunityOpMeanSDs = Float64[]
 )
 
 for file in readdir("results")
-    if (occursin("Netsize", file) || occursin("Addfriends", file) || occursin("Unfriend", file)) && occursin(".jld2", file)
+    if (
+            (
+                occursin("Netsize", file)
+                || occursin("Addfriends", file)
+                || occursin("Unfriend", file)
+            )
+            && occursin(".jld2", file)
+        )
+
         raw = load(joinpath("results", file))
         current_run = raw[first(keys(raw))]
 
@@ -47,31 +59,40 @@ for file in readdir("results")
     end
 end
 
+raw = load("results/Addfriends_run1.jld2")
+current_run = raw[first(keys(raw))]
+length(current_run)
+
 for file in readdir("results")
     if (
-        occursin("Netsize", file) || occursin("Addfriends", file) || occursin("Unfriend", file)
-        && occursin(".jld2", file)
+        (occursin("Netsize", file) || occursin("Addfriends", file) || occursin("Unfriend", file))
+        && occursin(".jld2", file) && !occursin("singlerun", file)
     )
         raw = load(joinpath("results", file))
         current_run = raw[first(keys(raw))]
+        repcount = length(current_run)
 
-        opinionsd = [std([agent.opinion for agent in current_run[i].final_state[2]]) for i in 1:50]
-        opchange_delta_mean = [mean([abs(current_run[j].init_state[2][i].opinion - current_run[j].final_state[2][i].opinion) for i in 1:current_run[j].config.network.agent_count]) for j in 1:50]
-        densities = [density(current_run[i].final_state[1]) for i in 1:50]
-        outdegree_sd = [std(outdegree(current_run[i].final_state[1])) for i in 1:50]
-        outdegree_mean = [mean(outdegree(current_run[i].final_state[1])) for i in 1:50]
-        outdegree_max = [maximum(outdegree(current_run[i].final_state[1])) for i in 1:50]
-        indegree_sd = [std(indegree(current_run[i].final_state[1])) for i in 1:50]
-        indegree_mean = [mean(indegree(current_run[i].final_state[1])) for i in 1:50]
-        supernode_centrality = [closeness_centrality(current_run[i].final_state[1])[findmax(outdegree(current_run[i].final_state[1]))[2]] for i in 1:50]
-        supernode_opinion = [current_run[i].final_state[2][findmax(outdegree(current_run[i].final_state[1]))[2]].opinion for i in 1:50]
-        clust_coeff = [global_clustering_coefficient(current_run[i].final_state[1]) for i in 1:50]
-        conn_components = [length(connected_components(current_run[i].final_state[1])) for i in 1:50]
+        opinionsd = [std([agent.opinion for agent in current_run[i].final_state[2]]) for i in 1:repcount]
+        opchange_delta_mean = [mean([abs(current_run[j].init_state[2][i].opinion - current_run[j].final_state[2][i].opinion) for i in 1:current_run[j].config.network.agent_count]) for j in 1:repcount]
+        densities = [density(current_run[i].final_state[1]) for i in 1:repcount]
+        outdegree_sd = [std(outdegree(current_run[i].final_state[1])) for i in 1:repcount]
+        outdegree_mean = [mean(outdegree(current_run[i].final_state[1])) for i in 1:repcount]
+        outdegree_max = [maximum(outdegree(current_run[i].final_state[1])) for i in 1:repcount]
+        indegree_sd = [std(indegree(current_run[i].final_state[1])) for i in 1:repcount]
+        indegree_mean = [mean(indegree(current_run[i].final_state[1])) for i in 1:repcount]
+        closeness_centrality_mean = [mean(closeness_centrality(current_run[i].final_state[1])) for i in 1:repcount]
+        closeness_centrality_max = [maximum(closeness_centrality(current_run[i].final_state[1])) for i in 1:repcount]
+        betweenness_centrality_mean = [mean(betweenness_centrality(current_run[i].final_state[1])) for i in 1:repcount]
+        betweenness_centrality_max = [maximum(betweenness_centrality(current_run[i].final_state[1])) for i in 1:repcount]
+        supernode_centrality = [closeness_centrality(current_run[i].final_state[1])[findmax(outdegree(current_run[i].final_state[1]))[2]] for i in 1:repcount]
+        supernode_opinion = [current_run[i].final_state[2][findmax(outdegree(current_run[i].final_state[1]))[2]].opinion for i in 1:repcount]
+        clust_coeff = [global_clustering_coefficient(current_run[i].final_state[1]) for i in 1:repcount]
+        conn_components = [length(connected_components(current_run[i].final_state[1])) for i in 1:repcount]
 
         # Calc the SD of the opinion means of the identified clusters
         n_communities = Int64[]
         community_opinion_mean_sds = Float64[]
-        for i in 1:50
+        for i in 1:repcount
             label_prop = label_propagation(current_run[i].final_state[1])[1]
             push!(n_communities, maximum(label_prop))
             if maximum(label_prop) == 1
@@ -88,19 +109,23 @@ for file in readdir("results")
                 ConfigAgentCount = current_run[1].config.network.agent_count,
                 ConfigUnfriendThresh = current_run[1].config.opinion_threshs.unfriend,
                 ConfigAddfriendMethod = current_run[1].config.simulation.addfriends,
-                OpinionSD = opinionsd,
-                OpChangeDeltaMean = opchange_delta_mean,
                 Densities = densities,
                 OutdegreeSD = outdegree_sd,
                 OutdegreeMean = outdegree_mean,
                 OutdegreeMax = outdegree_max,
                 IndegreeSD = indegree_sd,
                 IndegreeMean = indegree_mean,
-                SupernodeCentrality = supernode_centrality,
-                SupernodeOpinion = supernode_opinion,
+                Closeness_centrality_mean = closeness_centrality_mean,
+                Closeness_centrality_max = closeness_centrality_max,
+                Betweenness_centrality_mean = betweenness_centrality_mean,
+                Betweenness_centrality_max = betweenness_centrality_max,
                 ClustCoeff = clust_coeff,
                 CommunityCount = n_communities,
                 ConnectedComponents = conn_components,
+                OpinionSD = opinionsd,
+                OpChangeDeltaMean = opchange_delta_mean,
+                SupernodeCentrality = supernode_centrality,
+                SupernodeOpinion = supernode_opinion,
                 CommunityOpMeanSDs = community_opinion_mean_sds
             )
         )

@@ -66,6 +66,28 @@ The distribution of opinions throughout the agents was not varied, but uniformly
 
 To analyze the effect of our parameters, we chose different approaches of social network analysis and evaluated the resulting networks and their nodes regarding their degree, centrality, communality, diameter, and clustering coefficient.
 
+## Network analysis
+Chosen measures:
+
+- Density
+- In-/Outdegree Mean, SD and Maximum
+- Closeness centrality mean + max
+- Betweenness centrality mean + max
+- Clustering coefficient mean
+- Number of Communities found through label propagation algorithm
+- Connected components
+
+## Analysis of opinion dynamics
+
+We looked on multiple measures to detect the effect of network structure and the investigated factors on opinion dynamics in the network:
+
+- Opinion SD
+- Opinion Change Delta Mean (Opinion Change from initial to final opinion of an agent)
+- Supernode Opinion
+- SD of Disctinct communities opinion means
+
+The measures were all calculated for the final state of the simulation runs and averaged over all repetitions of the same run so that we are able to prove differences between the simulation runs.
+
 ## The Network Model
 We designed a network in which agents interact with each other through publishing posts to their followers and receiving content through their followees. The network is directed so that it is more suitable to represent a real online social network as currently most of the famous social networks allow for unidirectional relationships. The different edges are considered as direction of information spread: outgoing edges from agent x show to which agents the posts of agent x will be sent while incoming edges show from which agents the agent x receives posts. The initial network is created by using the Barabasi Albert Network generator of the LightGraphs package in Julia. This generator allows to define the size of the network and an initial average edge count per agent that follows a power law distribution.
 
@@ -101,20 +123,22 @@ We performed in total 13 different simulation runs that cover the following vari
 - Addfriends Method as Neighbors of Neighbors, hybrid and random
 - Unfriend Threshold of 0.4, 0.6, 0.8, 1.0, 1.2
 
-This allows us to examine subsequently the influence of the factor levels seperately. Each distinct simulation configuration was repeated 50 times to clear out effects that are due to usage of random numbers in the simulations.
+This allows us to examine subsequently the influence of the factor levels seperately. Each distinct simulation configuration was repeated 100 times to clear out effects that are due to usage of random numbers in the simulations.
 
 
 
 ## Impact of Network Size
-- Relative Edgecount decreases with higher net size
+- Density of network decreases with higher net size
 - Outdegree/Indegree SD increases
 - Closeness Centrality increases
+- Betweenness Centrality decreases
 - Clustering Coefficient decreases
+- Community Count increases
 - OpinionSD increases
 - OpinionSD of Top10 Nodes increases
 
 
-## Impact of the Unfriend Threshold
+## Impact of Unfriend Threshold
 
 - With higher Unfriend Threshold the overall edgecount increases
 - also does Outdegree/Indegree AVG and SD
@@ -135,6 +159,13 @@ This allows us to examine subsequently the influence of the factor levels sepera
 - Centrality is lowest for hybrid and equal at random and NoN approach
 - Clustering Coefficient is higher for random and hybrid approach than for NoN
 - OpinionSD is highest for NoN and lowest for random
+
+## Structure follows opinion or vice versa?
+For the different settings we were able to detect cases where the structure of the network influenced the individual agent's opinion formation significantly and also cases where the opinion distribution has lead to a change of network structure.
+
+Opinion follows structure: Unfriend Threshold (Below 0.6 leads always to consensus)
+
+Structure follows Opinion: Addfriends mechanic (NoN Approach leads to more communities and disconnected components, also higher diversity of the communities)
 
 
 ## Reasons to disconnect
