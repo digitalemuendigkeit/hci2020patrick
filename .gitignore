@@ -11,3 +11,6 @@
 /ipynb_checkpoints/*
 
 .ipynb_checkpoints/
+*.Rda
+*.log
+*.tex
