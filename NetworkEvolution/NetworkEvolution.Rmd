@@ -1,5 +1,5 @@
 ---
-title: "Influencing Factors on Social Network Evolution"
+title: "Investigating key factors for social network evolution and opinion dynamics in an agent-based simulation"
 author-inputfile: "anonauthors.tex" 
 abstract: |
   The abstract should briefly summarize the contents of the paper in 150--250 words.
@@ -49,7 +49,25 @@ rmdtemplates::write_bib(pkgs)
 # Introduction
 In the past decade the evolution of the internet and social media platforms raised new forms of social networks that changed our interpersonal communication and the methods of information procurement considerably. It has become very easy to connect to existing friends online, look for new friends and exchange information with them for example using platforms like Facebook or Twitter. As the formation of an individual's opinion is based on all available resources it is important to understand how the information received in online social networks is embedded into the process of opinion formation and how people behave in such networks. 
 
-# Theory
+- Basical Motivation for researching opinion dynamics in social networks: The uprising of echo chambers and their effects on the online opinion formation in social networks
+
+# Related Work
+
+Online social networks nowadays serve as important service for connecting to friends and other people that we are interested to see content from. Research on big platforms like Facebook and Twitter shows that those services are frequently used for gathering additional information on a current topic besides the reporting of public news agencies and that this additional information can even have a higher influence on our final opinion on a topic than conventional news outlets do. According to xy et al. this effect is caused by 
+
+- Research on Facebook/Twitter to highlight entry point for modelling abstract networks
+
+- Work on social network topologies
+
+
+
+- Work on opinion dynamics - how do opinions spread in social networks?
+
+
+- Bounded confidence
+
+The term bounded confidence was initially formed by Hegselmann and Krause and describes the behavior of an individual to approach towards a perceived public opinion if it is not to far apart from its own current opinion. The simulation setups described by Hegselmann and Krause provide various strategies to implement the bounded confidence of which we chose the symmetric confidence. With this strategy, all agents get the same bounded confidence independent of their individual properties and their current position within the range of opinions. Consequently, the effect of the bounded confidence for our simulation solely depends on the defined opinion threshold and the influence of this factor on the whole simulation are put into background.
+
 Existing research states that the vast availability of similar-minded people in online social networks leads us to enclose ourselves in so-called echo chambers and to disconnect from people who are too different from us. This leads us to reinforce our opinion solely through finding others that think similar. If this reinforcement would continue, people would be separated into different camps quickly and would not be able to agree on each other anymore. As most people prefer to make compromises it is interesting to have a closer look on the thresholds which let them keep in touch with people who they don’t agree on and how a variation of these thresholds changes the overall picture. Therefore, we created an agent-based model that allows us to simulate the desired behaviors and to compare the resulting network structures.
 
 To reproduce an online social network in a simulation we must rely on a network generator that is comparable to a real network. As social media platforms such as Facebook and Twitter are close to a scale-free network in their overall network structure and follow a powerlaw distribution, the Barabasi-Albert network generator is most suitable for generating a realistic network topology. Within a Barabasi-Albert network there exists a little amount of very well-connected hubs while most nodes have only few connections to others. The Barabasi-Albert generator provides several parameters like the initial network size, the number of new nodes that are added to an initial network and the number of edges which are created by the joining nodes to existing nodes using preferential attachment. This allows us to get the simulation close to a real social network structure.
@@ -65,28 +83,6 @@ In our research, we focused on the variation of limited parameters for answering
 The distribution of opinions throughout the agents was not varied, but uniformly distributed, because their variation would have blurred the effect of the examined parameters on the network evolution.
 
 To analyze the effect of our parameters, we chose different approaches of social network analysis and evaluated the resulting networks and their nodes regarding their degree, centrality, communality, diameter, and clustering coefficient.
-
-## Network analysis
-Chosen measures:
-
-- Density
-- In-/Outdegree Mean, SD and Maximum
-- Closeness centrality mean + max
-- Betweenness centrality mean + max
-- Clustering coefficient mean
-- Number of Communities found through label propagation algorithm
-- Connected components
-
-## Analysis of opinion dynamics
-
-We looked on multiple measures to detect the effect of network structure and the investigated factors on opinion dynamics in the network:
-
-- Opinion SD
-- Opinion Change Delta Mean (Opinion Change from initial to final opinion of an agent)
-- Supernode Opinion
-- SD of Disctinct communities opinion means
-
-The measures were all calculated for the final state of the simulation runs and averaged over all repetitions of the same run so that we are able to prove differences between the simulation runs.
 
 ## The Network Model
 We designed a network in which agents interact with each other through publishing posts to their followers and receiving content through their followees. The network is directed so that it is more suitable to represent a real online social network as currently most of the famous social networks allow for unidirectional relationships. The different edges are considered as direction of information spread: outgoing edges from agent x show to which agents the posts of agent x will be sent while incoming edges show from which agents the agent x receives posts. The initial network is created by using the Barabasi Albert Network generator of the LightGraphs package in Julia. This generator allows to define the size of the network and an initial average edge count per agent that follows a power law distribution.
@@ -115,6 +111,31 @@ A simulation consists of an initiating phase that creates the required initial n
 
 The beforehand described actions are performed by every agent during a simulation step. After all agents are finished, their current states and network measures are logged for analysis. After all steps are done, the simulation object is saved containing the initial and final state, intermediate states at each 10% of the simulation, agent and post logs and the configuration of the certain run.
 
+## Implementation of opinion dynamics
+As shown in the previous section there are several ways to model the dynamics in opinion formation. We decided to 
+
+## Network analysis
+Chosen measures:
+
+- Density
+- In-/Outdegree Mean, SD and Maximum
+- Closeness centrality mean + max
+- Betweenness centrality mean + max
+- Clustering coefficient mean
+- Number of Communities found through label propagation algorithm
+- Connected components
+
+## Analysis of opinion dynamics
+
+We looked on multiple measures to detect the effect of network structure and the investigated factors on opinion dynamics in the network:
+
+- Opinion SD
+- Opinion Change Delta Mean (Opinion Change from initial to final opinion of an agent)
+- Supernode Opinion
+- SD of Disctinct communities opinion means
+
+The measures were all calculated for the final state of the simulation runs and averaged over all repetitions of the same run so that we are able to prove differences between the simulation runs.
+
 
 # Results
 We performed in total 13 different simulation runs that cover the following variations of factor configuration:
@@ -123,42 +144,47 @@ We performed in total 13 different simulation runs that cover the following vari
 - Addfriends Method as Neighbors of Neighbors, hybrid and random
 - Unfriend Threshold of 0.4, 0.6, 0.8, 1.0, 1.2
 
-This allows us to examine subsequently the influence of the factor levels seperately. Each distinct simulation configuration was repeated 100 times to clear out effects that are due to usage of random numbers in the simulations.
+This allows us to examine subsequently the influence of the factor levels seperately. Each distinct simulation configuration was repeated 100 times to clear out effects that are due to usage of random number generators in the simulations. The values that are reported in the following are always averaged over the repetitions.
 
 
 
 ## Impact of Network Size
-- Density of network decreases with higher net size
-- Outdegree/Indegree SD increases
-- Closeness Centrality increases
-- Betweenness Centrality decreases
-- Clustering Coefficient decreases
-- Community Count increases
-- OpinionSD increases
-- OpinionSD of Top10 Nodes increases
+
+In our simulation, the size of a social network was especially influential for the deviation of network parameters and opinions throughout the members of a network. While the density of a network decreased significantly from 10.3% in a network of 100 agents to 8.6% for n=200 and further on to 8.2% for n=500, the standard deviations of outdegree and indegree increase which shows that the preferential attachment algorithm overruns the pursuit of each agent to connect to one tenth of the network members. In terms of network centrality, only the closeness centrality increases through more agents while betweenness and eigenvector centrality decrease. This shows that while the agents' connectivity to each other agent in the network rises, the agents have on average less influence on their neighbors.
+
+The influence and the outreach of the supernode in a network depends on the overall network size. While in a network of 100 agents every third follows the supernode directly, this value increases continously for networks with more agents. In a network with 500 agents already every other agent is a follower of the supernode. Regarding the other centrality measures, the supernode shows higher closeness centrality for larger networks, but lower betweenness and eigenvector centrality with higher network size. This shows that while the supernode is more central in terms of connectedness to all other nodes, its importance as a connector between all other agents is decreasing.
+
+The network size did not influence the cluster and community structure within a network consistently. Also the opinion dynamics did not differ significantly regarding network size. The opinion diversity in the network had a slight upgoing trend for larger networks. Also the mean difference between an agent's own opinion and its perceived public opinion in the final state increased slightly with network size.
+
+Most important outcomes:
+- Density
+- Supernode Outdegree
+- Mean Betweenness Centrality
 
 
 ## Impact of Unfriend Threshold
 
-- With higher Unfriend Threshold the overall edgecount increases
-- also does Outdegree/Indegree AVG and SD
-- Closeness Centrality increases with higher unfriend threshold
-- Clustering Coefficient shows no effect
-- OpinionSD increases with higher unfriend threshold
+The threshold of an agent to accept diverging opinions was influential for both the network structure and the opinion distribution in a network. If the agents in a network are more tolerant in keeping friendships, the density of the network increases significantly and with it also the variety of outdegrees and indegrees within the network members. The ratio between outdegree and indegree gets more balanced for networks of agents with higher opinion tolerance.
 
+The centrality of each agent in the network changes with the unfriend threshold as closeness and eigenvector centrality increase with higher tolerance of friends with diverging opinions. The betweenness in contrast decreases whith a rising threshold. The clustering and community measures show that while clustering increases through higher unfriend thresholds, the number of separate communities detected through label propagation decreases.
 
+The role of the agent with the highest follower count also depends on the unfriend threshold. While outdegree and closeness centrality stay rather equal for a threshold from 0.4 to 1.0, in a network with unfriend threshold of 1.2 both values increase significantly. So the supernode profits only in terms of post reach when every agent is very tolerant with keeping followships that bear a high opinion difference. The betweenness and eigenvector centrality decrease continously with rising unfriend threshold, but this trend seems to turn around at least for the eigenvector centrality with an unfriend threshold of 1.2.
 
-- Threshold of annoyance shows direct influence on edgecount: With a higher threshold for differing opinions, edge count decreases (effect is stronger for smaller network sizes)
-- With lower tolerance of differing opinions the agents become more consensual (on lowest level = 0.4, final opinion distribution has std of 0.31). This effect increases with settings that use random or hybrid picking of new friends to SD <= 0.08
+With changing the unfriend threshold it is possible to subsequently influence the opinion distribution within the network. While in networks with low threshold the standard deviation of opinions is below 0.1 on average, this measure rises notably up to 0.5 for a network with an unfriend threshold of 0.6 and even continues with higher thresholds to 0.6 for a threshold of 1.2. Meanwhile, the mean delta between initial and final opinion of all agents in the networks shows the opposite trend. While the opinion change is with 0.5 rather large for thresholds above or equal to 0.6, it falls below 0.3 for networks with a larger threshold. The least opinion change occurs for a threshold of 1.0 while with 1.2 the opinion change starts to increase again. With rising unfriend threshold also the distance between perceived public and own opinion increases significantly.
 
-- Agents can get isolated for certain reasons that depend on the addfriends mechanic: in random selection, radicalized agents have a higher probability to get isolated as they won't add new friends if all other agents' opinions are too far away. In Neighbors of neighbors, agents who disconnect from their last neighbor have no chance to get back into the network.
+- Density
+- Closeness Centrality
+- Opinion SD
+- Opinion Change
 
 ## Impact of the addfriends mechanic
-- Edgecount is least for Neighbors of Neighbors approach, medium for hybrid and highest for random
-- OutdegreeAVG is higher for hybrid and random approach, SD higher for Random and equal on hybrid and NoN
-- Centrality is lowest for hybrid and equal at random and NoN approach
-- Clustering Coefficient is higher for random and hybrid approach than for NoN
-- OpinionSD is highest for NoN and lowest for random
+
+The mechanic for adding new friends shows an influence for the network and the opinion distribution in it. When picking new friends only from friends of current friends, the density of a network stays lower than for picking randomly from all agents in the network with regard to the opinion difference and for a hybrid approach of both methods. While the standard deviations of outdegree and indegree for each agent to not differ significantly between the different approaches, the mean ratio between outdegree and indegree per agent is less balanced when agents only choose from neighbors of neighbors.
+
+The least influence of the addfriends mechanic can be perceived in terms of network centrality of each agent. Only the closeness centrality is slightly higher for the random and hybrid approach, while betweenness and eigenvector centrality do not show significant changes. Concerning clustering and community structure, the clustering coefficient increases slightly through using the random approach while the number of communities is higher for networks where agents only pick neighbors of neighbors and also the number of disconnected communities is higher for this configuration.
+
+The node with the highest influence and outreach in the network is not affected by the addfriends mechanic. The opinion distibution on the opposite is significantly higher if the agents only connect to others that are already in their indirect neighborhood. The amount of opinion change per agent slightly higher when agents pick their new friends randomly and according to the opinion difference. Looking on the distance between perceived public and own opinion in the final state, those two values are significantly closer to each other when the random or hybrid approach for choosing new friends is used.
+
 
 ## Structure follows opinion or vice versa?
 For the different settings we were able to detect cases where the structure of the network influenced the individual agent's opinion formation significantly and also cases where the opinion distribution has lead to a change of network structure.

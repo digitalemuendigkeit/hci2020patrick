@@ -24,9 +24,6 @@ fileimport <- list.files(file.path("simulation", "results"), pattern = ".csv|.gm
 
 prototypes <- unique(sub('_prototype_agent_log.csv|_prototype_graph.gml|_prototype_agent_communities.csv', '', fileimport))
 
-
-prototypes[1]
-
 for (i in 1:length(prototypes)) {
     assign(paste0(prototypes[i], "_graph"), read_graph(file.path("simulation","results", paste0(prototypes[i], "_prototype_graph.gml")), format = "gml"))
   

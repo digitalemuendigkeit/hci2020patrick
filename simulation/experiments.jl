@@ -6,9 +6,9 @@ run_batch(batch_addfriends, batch_name = "Addfriends")
 run_batch(batch_unfriend, batch_name = "Unfriend", resume_at=5)
 
 
-raw = load("results/Netsize_run1.jld2")
+raw = load("results/Addfriends_run1.jld2")
 
-netsize = raw[first(keys(raw))]
+addfriends = raw[first(keys(raw))]
 
 netsize
 RunEval(netsize[51])

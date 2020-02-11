@@ -1,6 +1,9 @@
 include(joinpath("..", "src", "simulation.jl"))
 include(joinpath("..", "src", "03runeval.jl"))
 
+################################################################################
+####                Calculate CSV for results evaluation in R               ####
+
 results = DataFrame(
     BatchName = String[],
     ConfigAgentCount = Int64[],
@@ -8,60 +11,24 @@ results = DataFrame(
     ConfigAddfriendMethod = String[],
     Densities = Float64[],
     OutdegreeSD = Float64[],
-    OutdegreeMean = Float64[],
-    OutdegreeMax = Float64[],
     IndegreeSD = Float64[],
-    IndegreeMean = Float64[],
-    Closeness_centrality_mean = Float64[],
-    Closeness_centrality_max = Float64[],
-    Betweenness_centrality_mean = Float64[],
-    Betweenness_centrality_max = Float64[],
+    OutdegreeIndegreeRatioMean = Float64[],
+    ClosenessCentralityMean = Float64[],
+    BetweennessCentralityMean = Float64[],
+    EigenCentralityMean = Float64[],
     ClustCoeff = Float64[],
     CommunityCount = Int64[],
     ConnectedComponents = Int64[],
     OpinionSD = Float64[],
     OpChangeDeltaMean = Float64[],
-    SupernodeCentrality = Float64[],
+    PublOwnOpinionDiff = Float64[],
+    SupernodeOutdegree = Int64[],
+    SupernodeCloseness = Float64[],
+    SupernodeBetweenness = Float64[],
+    SupernodeEigen = Float64[],
     SupernodeOpinion = Float64[],
     CommunityOpMeanSDs = Float64[]
 )
-
-for file in readdir("results")
-    if (
-            (
-                occursin("Netsize", file)
-                || occursin("Addfriends", file)
-                || occursin("Unfriend", file)
-            )
-            && occursin(".jld2", file)
-        )
-
-        raw = load(joinpath("results", file))
-        current_run = raw[first(keys(raw))]
-
-        prototype = rerun_single(get_prototype(current_run))
-
-        CSV.write(
-            joinpath("results", "$(prototype.name)_prototype_agent_log" * ".csv"),
-            prototype.agent_log
-        )
-
-        CSV.write(
-            joinpath("results", "$(prototype.name)_prototype_agent_communities" * ".csv"),
-            prototype.final_state[3]
-        )
-
-        savegraph(
-            joinpath("results", "$(prototype.name)_prototype_graph.gml"),
-            prototype.final_state[1],
-            GraphIO.GML.GMLFormat()
-        )
-    end
-end
-
-raw = load("results/Addfriends_run1.jld2")
-current_run = raw[first(keys(raw))]
-length(current_run)
 
 for file in readdir("results")
     if (
@@ -71,21 +38,24 @@ for file in readdir("results")
         raw = load(joinpath("results", file))
         current_run = raw[first(keys(raw))]
         repcount = length(current_run)
+        supernode = [findmax(outdegree(current_run[i].final_state[1]))[2] for i in 1:repcount]
 
         opinionsd = [std([agent.opinion for agent in current_run[i].final_state[2]]) for i in 1:repcount]
         opchange_delta_mean = [mean([abs(current_run[j].init_state[2][i].opinion - current_run[j].final_state[2][i].opinion) for i in 1:current_run[j].config.network.agent_count]) for j in 1:repcount]
         densities = [density(current_run[i].final_state[1]) for i in 1:repcount]
         outdegree_sd = [std(outdegree(current_run[i].final_state[1])) for i in 1:repcount]
         outdegree_mean = [mean(outdegree(current_run[i].final_state[1])) for i in 1:repcount]
-        outdegree_max = [maximum(outdegree(current_run[i].final_state[1])) for i in 1:repcount]
         indegree_sd = [std(indegree(current_run[i].final_state[1])) for i in 1:repcount]
-        indegree_mean = [mean(indegree(current_run[i].final_state[1])) for i in 1:repcount]
+        outinratio = [mean([outdegree(current_run[i].final_state[1], j) / degree(current_run[i].final_state[1], j) for j in 1:nv(current_run[i].final_state[1]) if degree(current_run[i].final_state[1], j) > 0]) for i in 1:repcount]
+        publownopiniondiff = [mean([abs(agent.perceiv_publ_opinion - agent.opinion) for agent in current_run[i].final_state[2]]) for i in 1:repcount]
         closeness_centrality_mean = [mean(closeness_centrality(current_run[i].final_state[1])) for i in 1:repcount]
-        closeness_centrality_max = [maximum(closeness_centrality(current_run[i].final_state[1])) for i in 1:repcount]
         betweenness_centrality_mean = [mean(betweenness_centrality(current_run[i].final_state[1])) for i in 1:repcount]
-        betweenness_centrality_max = [maximum(betweenness_centrality(current_run[i].final_state[1])) for i in 1:repcount]
-        supernode_centrality = [closeness_centrality(current_run[i].final_state[1])[findmax(outdegree(current_run[i].final_state[1]))[2]] for i in 1:repcount]
-        supernode_opinion = [current_run[i].final_state[2][findmax(outdegree(current_run[i].final_state[1]))[2]].opinion for i in 1:repcount]
+        eigen_centrality_mean = [mean(eigenvector_centrality(current_run[i].final_state[1])) for i in 1:repcount]
+        supernode_outdegree = [outdegree(current_run[i].final_state[1], supernode[i]) for i in 1:repcount]
+        supernode_closeness = [closeness_centrality(current_run[i].final_state[1])[supernode[i]] for i in 1:repcount]
+        supernode_betweenness = [betweenness_centrality(current_run[i].final_state[1])[supernode[i]] for i in 1:repcount]
+        supernode_eigen = [eigenvector_centrality(current_run[i].final_state[1])[supernode[i]] for i in 1:repcount]
+        supernode_opinion = [current_run[i].final_state[2][supernode[i]].opinion for i in 1:repcount]
         clust_coeff = [global_clustering_coefficient(current_run[i].final_state[1]) for i in 1:repcount]
         conn_components = [length(connected_components(current_run[i].final_state[1])) for i in 1:repcount]
 
@@ -111,20 +81,21 @@ for file in readdir("results")
                 ConfigAddfriendMethod = current_run[1].config.simulation.addfriends,
                 Densities = densities,
                 OutdegreeSD = outdegree_sd,
-                OutdegreeMean = outdegree_mean,
-                OutdegreeMax = outdegree_max,
                 IndegreeSD = indegree_sd,
-                IndegreeMean = indegree_mean,
-                Closeness_centrality_mean = closeness_centrality_mean,
-                Closeness_centrality_max = closeness_centrality_max,
-                Betweenness_centrality_mean = betweenness_centrality_mean,
-                Betweenness_centrality_max = betweenness_centrality_max,
+                OutdegreeIndegreeRatioMean = outinratio,
+                ClosenessCentralityMean = closeness_centrality_mean,
+                BetweennessCentralityMean = betweenness_centrality_mean,
+                EigenCentralityMean = eigen_centrality_mean,
                 ClustCoeff = clust_coeff,
                 CommunityCount = n_communities,
                 ConnectedComponents = conn_components,
                 OpinionSD = opinionsd,
                 OpChangeDeltaMean = opchange_delta_mean,
-                SupernodeCentrality = supernode_centrality,
+                PublOwnOpinionDiff = publownopiniondiff,
+                SupernodeOutdegree = supernode_outdegree,
+                SupernodeCloseness = supernode_closeness,
+                SupernodeBetweenness = supernode_betweenness,
+                SupernodeEigen = supernode_eigen,
                 SupernodeOpinion = supernode_opinion,
                 CommunityOpMeanSDs = community_opinion_mean_sds
             )
@@ -132,198 +103,49 @@ for file in readdir("results")
     end
 end
 
-results
-
 using CSV
 
 CSV.write("results.csv", results)
 
-using Plots
-boxplot((outdegree(netsize_run1[1].final_state[1])))
+####                                                                        ####
+################################################################################
 
+################################################################################
+####                Generate Prototype Data for batchruns                   ####
 
 for file in readdir("results")
-    if !occursin("jld2", file)
-        continue
-        # if file in ("netsize", "addfriends", "unfriend")
-        #     for subfile in readdir(joinpath("results", file))
-        #
-        #         raw = load(joinpath("results", file, subfile))
-        #         # raw_sim = raw[first(keys(raw))]
-        #         # new_sim = SimulationNew(raw_sim, subfile)
-        #         push!(batchrun, raw[first(keys(raw))])
-        #     end
-        # end
-    end
-    raw = load(joinpath("results", file))
-    push!(batchrun, raw[first(keys(raw))])
-
-    # convert_results(specific_run = file)
-end
-batchrun
-
-occursin("test", "test2")
-
-relEdgeCount = [ne(batchrun[i].final_state[1]) / (ne(CompleteDiGraph(batchrun[i].config.network.agent_count))) for i in 1:length(batchrun)]
-lccs = [mean(local_clustering_coefficient(batchrun[i].final_state[1])) for i in 1:length(batchrun)]
-gccs = [global_clustering_coefficient(batchrun[i].final_state[1]) for i in 1:length(batchrun)]
-opsd = [std([agent.opinion for agent in batchrun[i].final_state[2]]) for i in 1:length(batchrun)]
-outdegree_avg = [std(outdegree(batchrun[i].final_state[1])) for i in 1:length(batchrun)]
-[is_connected(batchrun[i].final_state[1]) for i in 1:length(batchrun)]
-
-toptensd = [std(last.(sort([(agent, outdegree(batchrun[i].final_state[1], agent.id)) for agent in batchrun[i].final_state[2]], by = last, rev = true)[1:10])) for i in 1:length(batchrun)]
-
-
-
-influencers = [(agent, outdegree(batchrun[5].final_state[1], agent.id)) for agent in batchrun[5].final_state[2] if outdegree(batchrun[5].final_state[1], agent.id) > (mean(outdegree(batchrun[5].final_state[1])) + std(outdegree(batchrun[5].final_state[1])))]
-lowlights = [(agent, outdegree(batchrun[5].final_state[1], agent.id)) for agent in batchrun[5].final_state[2] if outdegree(batchrun[5].final_state[1], agent.id) < (mean(outdegree(batchrun[5].final_state[1])) - std(outdegree(batchrun[5].final_state[1])))]
-rest = influencers = [(agent, outdegree(batchrun[5].final_state[1], agent.id)) for agent in batchrun[5].final_state[2] if outdegree(batchrun[5].final_state[1], agent.id) > (mean(outdegree(batchrun[5].final_state[1])) - std(outdegree(batchrun[5].final_state[1]))) && outdegree(batchrun[5].final_state[1], agent.id) < (mean(outdegree(batchrun[5].final_state[1])) + std(outdegree(batchrun[5].final_state[1])))]
-
-lccs_mean = mean(local_clustering_coefficient(batchrun[1].final_state[1]))
-modularity(Graph(batchrun[1].final_state[1]))
-weakly_connected_components(Graph(batchrun[7].final_state[1]))
-g = batchrun[14].final_state[1]
-diameter((g))
-outdegree
-using Plots
-histogram(degree_histogram(g))
-edgeweights = DataFrame(
-    RunNr = Int64[],
-    EdgeNr = Int64[],
-    EdgeSrc = Int64[],
-    EdgeDst = Int64[],
-    Weight = Int64[]
-)
-
-for i in 1:length(batchrun)
-    current_graph = deepcopy(batchrun[i].final_state[1])
-    undirected_graph = deepcopy(Graph(current_graph))
-    for (index, e) in enumerate(edges(undirected_graph))
-        if has_edge(current_graph, dst(e), src(e))
-            edgeweight = 2
-        else
-            edgeweight = 1
-        end
-
-        append!(
-            edgeweights,
-            DataFrame(
-                RunNr = i,
-                EdgeNr = index,
-                EdgeSrc = src(e),
-                EdgeDst = dst(e),
-                Weight = edgeweight
+    if (
+            (
+                occursin("Netsize", file)
+                || occursin("Addfriends", file)
+                || occursin("Unfriend", file)
             )
+            && occursin(".jld2", file)
+            && !occursin("singlerun", file)
+        )
+
+        raw = load(joinpath("results", file))
+        current_run = raw[first(keys(raw))]
+
+        prototype = rerun_single(get_prototype(current_run))
+
+        CSV.write(
+            joinpath("results", "$(prototype.name)_prototype_agent_log" * ".csv"),
+            prototype.agent_log
+        )
+
+        CSV.write(
+            joinpath("results", "$(prototype.name)_prototype_agent_communities" * ".csv"),
+            prototype.final_state[3]
+        )
+
+        savegraph(
+            joinpath("results", "$(prototype.name)_prototype_graph.gml"),
+            prototype.final_state[1],
+            GraphIO.GML.GMLFormat()
         )
     end
-
-    runnr = "Bafinal_run" * lpad(
-        string(i),
-        length(string(length(batchrun))),
-        "0"
-        )
-
-    savegraph(
-        joinpath("dataexchange", runnr, "graph_undirected.gml"),
-        undirected_graph,
-        GraphIO.GML.GMLFormat()
-    )
 end
 
-using RCall
-
-@rput edgeweights
-R"save(edgeweights,file=\"edgeweights.Rda\")"
-
-resultcmp = DataFrame(
-    Runname = String[],
-    Runnr = Int64[],
-    Agentcount = Int64[],
-    Edgecount = Int64[],
-    RelEdgecount = Float64[],
-    OutdegreeAVG = Float64[],
-    OutdegreeSD = Float64[],
-    OutdegreeMAX = Int64[],
-    IndegreeAVG = Float64[],
-    IndegreeSD = Float64[],
-    IndegreeMAX = Int64[],
-    CentralityAVG = Float64[],
-    CentralityMAX = Float64[],
-    CentralityMIN = Float64[],
-    CCAVG = Float64[],
-    CCMAX = Float64[],
-    OpinionAVG = Float64[],
-    OpinionSD = Float64[],
-    TopTenOpSD = Float64[]
-)
-
-
-function string_as_varname(s::AbstractString,v::Any)
-         s=Symbol(s)
-         @eval (($s) = ($v))
-end
-
-string_as_varname("test", 42)
-
-sort!(resultcmp, [:Agentcount, :Runname])
-
-
-for simulation in batchrun
-    # componentsizes = ""
-    # for i in 1:length(connected_components(simulation.final_state[1]))
-    #     componentsizes = componentsizes * "Component No.$i, $(length(connected_components(simulation.final_state[1])[i])) Agents. "
-    # end
-
-    if simulation.name == "BA_addfriends"
-        name = "Addfriends" * simulation.config.simulation.addfriends
-    elseif simulation.name == "BA_netsize"
-        name = "Netsize" * string(simulation.config.network.agent_count)
-    elseif simulation.name == "BA_unfriend"
-        name = "Unfriend" * string(simulation.config.opinion_threshs.unfriend)
-    else
-        name = simulation.name
-    end
-
-
-
-    push!(
-        resultcmp,
-        (
-            name,
-            simulation.runnr,
-            nv(simulation.final_state[1]),
-            ne(simulation.final_state[1]),
-            ne(simulation.final_state[1]) / (ne(CompleteDiGraph(simulation.config.network.agent_count))),
-            mean(outdegree(simulation.final_state[1])),
-            std(outdegree(simulation.final_state[1])),
-            maximum(outdegree(simulation.final_state[1])),
-            mean(indegree(simulation.final_state[1])),
-            std(indegree(simulation.final_state[1])),
-            maximum(indegree(simulation.final_state[1])),
-            mean(closeness_centrality(simulation.final_state[1])),
-            maximum(closeness_centrality(simulation.final_state[1])),
-            minimum(closeness_centrality(simulation.final_state[1])),
-            mean(local_clustering_coefficient(simulation.final_state[1])),
-            maximum(local_clustering_coefficient(simulation.final_state[1])),
-            mean([agent.opinion for agent in simulation.final_state[2]]),
-            std([agent.opinion for agent in simulation.final_state[2]]),
-            std(last.(sort([(agent, outdegree(simulation.final_state[1], agent.id)) for agent in simulation.final_state[2]], by = last, rev = true)[1:10]))
-        )
-    )
-end
-
-
-using Statistics
-using RCall
-using Cairo
-using Fontconfig
-
-@rput resultcmp
-R"save(resultcmp,file=\"results.Rda\")"
-
-histogram(mean(indegree(batchrun[18].final_state[1])))
-convert_results()
-using GraphPlot
-using Compose
-plot = gplot(batchrun[10].final_state[1])
-savefig(plot, "plot.pdf")
+####                                                                        ####
+################################################################################
