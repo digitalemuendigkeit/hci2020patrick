@@ -1,0 +1,20 @@
+# Related Work
+
+Online social networks nowadays serve as important service for connecting to friends and other people that we are interested to see content from. Research on big platforms like Facebook and Twitter shows that those services are frequently used for gathering additional information on a current topic besides the reporting of public news agencies and that this additional information can even have a higher influence on our final opinion on a topic than conventional news outlets do. According to xy et al. this effect is caused by 
+
+- Research on Facebook/Twitter to highlight entry point for modelling abstract networks
+
+- Work on social network topologies
+
+
+
+- Work on opinion dynamics - how do opinions spread in social networks?
+
+
+- Bounded confidence
+
+The term bounded confidence was initially formed by Hegselmann and Krause and describes the behavior of an individual to approach towards a perceived public opinion if it is not to far apart from its own current opinion. The simulation setups described by Hegselmann and Krause provide various strategies to implement the bounded confidence of which we chose the symmetric confidence. With this strategy, all agents get the same bounded confidence independent of their individual properties and their current position within the range of opinions. Consequently, the effect of the bounded confidence for our simulation solely depends on the defined opinion threshold and the influence of this factor on the whole simulation are put into background.
+
+Existing research states that the vast availability of similar-minded people in online social networks leads us to enclose ourselves in so-called echo chambers and to disconnect from people who are too different from us. This leads us to reinforce our opinion solely through finding others that think similar. If this reinforcement would continue, people would be separated into different camps quickly and would not be able to agree on each other anymore. As most people prefer to make compromises it is interesting to have a closer look on the thresholds which let them keep in touch with people who they don’t agree on and how a variation of these thresholds changes the overall picture. Therefore, we created an agent-based model that allows us to simulate the desired behaviors and to compare the resulting network structures.
+
+To reproduce an online social network in a simulation we must rely on a network generator that is comparable to a real network. As social media platforms such as Facebook and Twitter are close to a scale-free network in their overall network structure and follow a powerlaw distribution, the Barabasi-Albert network generator is most suitable for generating a realistic network topology. Within a Barabasi-Albert network there exists a little amount of very well-connected hubs while most nodes have only few connections to others. The Barabasi-Albert generator provides several parameters like the initial network size, the number of new nodes that are added to an initial network and the number of edges which are created by the joining nodes to existing nodes using preferential attachment. This allows us to get the simulation close to a real social network structure.

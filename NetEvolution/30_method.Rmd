@@ -1,0 +1,64 @@
+# Method
+
+We chose the programming language Julia to conduct our research. With the LightGraphs package, this language provides performant network simulation and the required network generators for our agent-based model. It is also possible to implement batch runs that are based on the same random seed so that the network evolution following different parameters can be analyzed subsequently.
+
+In our research, we focused on the variation of limited parameters for answering our research questions:
+
+-	Size of the network: How do network and opinion dynamics interplay with the size of a social network?
+-	Adding friends: What is the difference between randomly making friends in the network and choosing only from the friends of existing friends?
+-	Removing friends: How does the threshold for accepting opinion differences interfere with the overall opinion and network dynamics?
+The distribution of opinions throughout the agents was not varied, but uniformly distributed, because their variation would have blurred the effect of the examined parameters on the network evolution.
+
+To analyze the effect of our parameters, we chose different approaches of social network analysis and evaluated the resulting networks and their nodes regarding their degree, centrality, communality, diameter, and clustering coefficient.
+
+## The Network Model
+We designed a network in which agents interact with each other through publishing posts to their followers and receiving content through their followees. The network is directed so that it is more suitable to represent a real online social network as currently most of the famous social networks allow for unidirectional relationships. The different edges are considered as direction of information spread: outgoing edges from agent x show to which agents the posts of agent x will be sent while incoming edges show from which agents the agent x receives posts. The initial network is created by using the Barabasi Albert Network generator of the LightGraphs package in Julia. This generator allows to define the size of the network and an initial average edge count per agent that follows a power law distribution.
+
+After creating the network, the agents are generated with the following attributes:
+
+- Opinion [-1,1]: Main attribute to change their network of incoming edges (followees). Initially, the opinion is uniformly distributed over all agents.
+- Perceived Public Opinion [-1,1]: The mean opinion a particular agent perceives in its neighborhood through seeing the posts of inneighbors. If the absolute distance between the public and its own opinion is in a defined threshold, the agent approaches towards the public opinion. If not, the agent will move into the opposite direction of the perceived opinion (therewith increasing the distance). If an agent ends up having no neighbors, the perceived public opinion mirrors its own opinion.
+- Inclination to Interact [0,Inf]: The willingness of agents to share posts. A distribution function sets 80% of the agents to passive receivers who rarely share a post. Very few agents have a higher inclination to interact than 1 and share multiple posts per simulation step. After initial generation, this attribute is fixed.
+- Feed (Array of max. 15 posts): Storage of received posts. The feed of agent x contains all shared posts from agents who are inneighbors of agent x
+
+The perceived public opinion is the only factor that has influence on an agent's opinion and is driven by the posts that are visible to this agent. The most important attributes of a post are:
+
+- Opinion [-1,1]: A post's opinion is generated from the opinion of the agent who publishes it. Its opinion is randomly varied by applying a random addition between [-0.1,0.1].
+- Weight: The weight of a post represents the publicity of an agent as it is the count of outneighbors of the posting agent. Posts with high weights are perceived as more important and influential through the receiving agents compared to posts that have been published from agents with low outdegree.
+
+## The Simulation Architecture
+A simulation consists of an initiating phase that creates the required initial network and agents with their properties, a main simulation phase where the agents interact and time steps are performed and a data saving phase. Every simulation timestep follows the same order of actions. First, the agent list is shuffled to ensure that the order in which the agents perform their interactions don't have an impact on the simulation outcomes. Following, the actions of a certain agent in a simulation step are described:
+
+1. *Update the feed:* The posts that were received in the previous step get sorted by their weight and the weight of all posts in the feed are reduced by the factor 0.5 to provide higher visibility to newer posts. The feed is limited to the 15 highest-weighted posts, all other posts are dropped and not further considered for calculation of the perceived public opinion.
+2. *Update perceived public opinion:* The updated feed is used to calculate the perceived public opinion. The opinion of posts with higher weights have a higher influence in calculation. If the feed of the agent is empty, the perceived public opinion mirrors the opinion of the agent.
+3. *Update the opinion:* With the perceived public opinion an agent now updates its own opinion. If the absolute distance between public opinion and own opinion is inside a defined threshold, the agent approaches towards the public opinion by a factor of 0.05. If the absolute distance lies outside the range, the agent moves into the opposing direction and therewith increases the distance what we call the "backfire effect".
+4. *Drop ingoing edges:* With regarding its updated opinion, an agent checks if the current posts in his feed are in an accepted absolute distance to the own opinion. If not, the agent also checks the real opinion of the source agent and if this opinion is also outside the accepted range, the agent drops the incoming edge so that it won't receive further posts of the former followee. In one step, an agent can only drop a tenth of his current number (rounded up) of ingoing edges so that a realistic behavior is maintained.
+5. *Add ingoing edges:* After disconnecting from agents that are outside of the accepted opinion range, an agent adds new ingoing edges if his inneighbors count is below a desired value. All agents try to maintain an indegree that equals a tenth of the network size. Adding edges is based on the configuration either done by selecting candidates from the neighbors of the agent's inneighbors without regarding the opinion or selecting candidates randomly from the whole network that lie inside a defined absolute distance from the own opinion. In the third configuration both approaches are combined. From the selected candidates, an agent always chooses the one with the highest outdegree first and creates a new directed edge towards itself. This process is continued until the number of new inneighbors is reached or the list of candidates is empty.
+6. *Publish posts:* When the network maintenance is finished, an agent starts to publish posts with regard to its inclination to interact. A post is generated through multiplying the own opinion with a randomly chosen factor in [-0.1,0.1] and setting the post weight equals to the own current outdegree. After generating the post it is shared to all feeds of the current agent's outneighbors.
+
+The beforehand described actions are performed by every agent during a simulation step. After all agents are finished, their current states and network measures are logged for analysis. After all steps are done, the simulation object is saved containing the initial and final state, intermediate states at each 10% of the simulation, agent and post logs and the configuration of the certain run.
+
+## Implementation of opinion dynamics
+As shown in the previous section there are several ways to model the dynamics in opinion formation. We decided to 
+
+## Network analysis
+Chosen measures:
+
+- Density
+- In-/Outdegree Mean, SD and Maximum
+- Closeness centrality mean + max
+- Betweenness centrality mean + max
+- Clustering coefficient mean
+- Number of Communities found through label propagation algorithm
+- Connected components
+
+## Analysis of opinion dynamics
+
+We looked on multiple measures to detect the effect of network structure and the investigated factors on opinion dynamics in the network:
+
+- Opinion SD
+- Opinion Change Delta Mean (Opinion Change from initial to final opinion of an agent)
+- Supernode Opinion
+- SD of Disctinct communities opinion means
+
+The measures were all calculated for the final state of the simulation runs and averaged over all repetitions of the same run so that we are able to prove differences between the simulation runs.
