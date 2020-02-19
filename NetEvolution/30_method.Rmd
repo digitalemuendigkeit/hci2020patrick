@@ -39,7 +39,7 @@ A simulation consists of an initiating phase that creates the required initial n
 The beforehand described actions are performed by every agent during a simulation step. After all agents are finished, their current states and network measures are logged for analysis. After all steps are done, the simulation object is saved containing the initial and final state, intermediate states at each 10% of the simulation, agent and post logs and the configuration of the certain run.
 
 ## Implementation of opinion dynamics
-As shown in the previous section there are several ways to model the dynamics in opinion formation. We decided to 
+As shown in the previous section there are several ways to model the dynamics in opinion formation. We decided to implement a variant of the bounded confidence model proposed by Hegsemlann et al. that relies on a initially randoml generated social network. When in a certain threshold, agents approach towards the perceived public opinion 
 
 ## Network analysis
 Chosen measures:
@@ -47,7 +47,7 @@ Chosen measures:
 - Density
 - In-/Outdegree Mean, SD and Maximum
 - Closeness centrality mean + max
-- Betweenness centrality mean + max
+- Betweenness centrality mean + max --> The strength of intermediary ties, Grabowicz et al. 2012
 - Clustering coefficient mean
 - Number of Communities found through label propagation algorithm
 - Connected components

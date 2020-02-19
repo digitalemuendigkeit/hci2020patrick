@@ -16,6 +16,7 @@ library(tidyverse)
 
 results <- read_csv(file.path("simulation", "results.csv"))
 
+results$BatchName <- factor(x = results$BatchName, levels = c("Netsize", "Addfriends", "Unfriend"))
 results$ConfigAgentCount <- as.factor(results$ConfigAgentCount)
 results$ConfigUnfriendThresh <- as.factor(results$ConfigUnfriendThresh)
 results$ConfigAddfriendMethod <- factor(x = results$ConfigAddfriendMethod, 
@@ -56,112 +57,31 @@ results %>%
 
 ```
 
-```{r Combined Evaluation}
-# Density
+```{r Combined Evaluation, fig.height=8, fig.width=8}
 
 results %>% 
-  select(BatchName,ConfigAgentCount, ConfigUnfriendThresh, ConfigAddfriendMethod, 
-         Densities, OutdegreeIndegreeRatioMean, ClosenessCentralityMean, BetweennessCentralityMean, OpinionSD) %>% 
-  mutate(RunName = case_when(BatchName == "Addfriends" ~ case_when(ConfigAddfriendMethod == "neighborsofneighbors" ~ "Neighbors",
-                                                                   TRUE ~ as.character(ConfigAddfriendMethod)),
-                             BatchName == "Netsize" ~ paste0(ConfigAgentCount),
-                             BatchName == "Unfriend" ~ paste0(ConfigUnfriendThresh)),
-         RunNr = case_when(BatchName == "Addfriends" ~ as.numeric(ConfigAddfriendMethod),
-                           BatchName == "Netsize" ~ as.numeric(ConfigAgentCount),
-                           BatchName == "Unfriend" ~ as.numeric(ConfigUnfriendThresh))) %>% 
-  group_by(BatchName, RunNr, RunName) -> eval
-
-# Density
-
-eval %>% 
-  summarise(Mean_Density = mean(Densities),
-            SD_Density = sd(Densities)) %>% 
-  ggplot(aes(x = reorder(RunName, RunNr), y = Mean_Density, ymin = Mean_Density - SD_Density, ymax = Mean_Density + SD_Density)) +
-  geom_bar(stat = "identity", aes(fill = RunNr)) +
-  geom_errorbar(position=position_dodge(0.9),width = 0.4) +
-  facet_grid(~BatchName, scales = "free") +
-  scale_fill_viridis_c(begin = 0.2) +
-  labs(x="Name of the Configuration", y="Mean Density of a Run in percent", 
-       title="Network densities ") +
-  guides(fill = FALSE) +
-  NULL
-
-# Closeness Centrality
-
-eval %>% 
-  summarise(Mean = mean(ClosenessCentralityMean),
-            SD = sd(ClosenessCentralityMean)) %>% 
-  ggplot(aes(x = reorder(RunName, RunNr), y = Mean, ymin = Mean - SD, ymax = Mean + SD)) +
-  geom_bar(stat = "identity", aes(fill = RunNr)) +
-  geom_errorbar(position=position_dodge(0.9),width = 0.4) +
-  facet_grid(~BatchName, scales = "free") +
-  scale_fill_viridis_c(begin = 0.2) +
-  labs(x="Name of the Configuration", y="Mean Centrality of a Run", 
-       title="Closeness Centrality") +
-  guides(fill = FALSE) +
-  NULL
-
-# Betweenness Centrality
-
-eval %>% 
-  summarise(Mean = mean(BetweennessCentralityMean),
-            SD = sd(BetweennessCentralityMean)) %>% 
-  ggplot(aes(x = reorder(RunName, RunNr), y = Mean, ymin = Mean - SD, ymax = Mean + SD)) +
-  geom_bar(stat = "identity", aes(fill = RunNr)) +
-  geom_errorbar(position=position_dodge(0.9),width = 0.4) +
-  facet_grid(~BatchName, scales = "free") +
-  scale_fill_viridis_c(begin = 0.2) +
-  labs(x="Name of the Configuration", y="Mean Centrality of a Run", 
-       title="Closeness Centrality") +
-  guides(fill = FALSE) +
-  NULL
-
-results %>% 
-  select(BatchName,ConfigAgentCount, ConfigUnfriendThresh, ConfigAddfriendMethod, 
-         ClosenessCentralityMean, BetweennessCentralityMean, EigenCentralityMean) %>% 
-  mutate(RunName = case_when(BatchName == "Addfriends" ~ case_when(ConfigAddfriendMethod == "neighborsofneighbors" ~ "Neighbors",
-                                                                   TRUE ~ as.character(ConfigAddfriendMethod)),
-                             BatchName == "Netsize" ~ paste0(ConfigAgentCount),
-                             BatchName == "Unfriend" ~ paste0(ConfigUnfriendThresh)),
-         RunNr = case_when(BatchName == "Addfriends" ~ as.numeric(ConfigAddfriendMethod),
-                           BatchName == "Netsize" ~ as.numeric(ConfigAgentCount),
-                           BatchName == "Unfriend" ~ as.numeric(ConfigUnfriendThresh))) %>% 
-  group_by(BatchName, RunNr, RunName) -> eval
-  
-eval %>% 
-  summarise(mean = mean(ClosenessCentralityMean),
-            sd = sd(ClosenessCentralityMean)) %>% 
-  mutate(CurrentVar = "ClosenessCentralityMean") -> eval_closeness
-
-eval %>% 
-  summarise(mean = mean(BetweennessCentralityMean),
-            sd = sd(BetweennessCentralityMean)) %>% 
-  mutate(CurrentVar = "BetweennessCentralityMean") -> eval_betweenness
-
-eval %>% 
-  summarise(mean = mean(EigenCentralityMean),
-            sd = sd(EigenCentralityMean)) %>% 
-  mutate(CurrentVar = "EigenVectorCentrality") -> eval_eigencentrality
-
-
-bind_rows(eval_closeness, eval_betweenness, eval_eigencentrality) %>% 
-  ggplot(aes(x = reorder(RunName, -RunNr), y = mean, ymin = mean - sd, ymax = mean + sd)) +
-  coord_flip() +
-  facet_grid(BatchName~CurrentVar, scales = "free", switch = "y", labeller = label_wrap_gen(width=10)) +
-  geom_bar(stat = "identity", aes(fill = RunNr)) +
-  geom_errorbar(position=position_dodge(0.9),width = 0.4) +
-  scale_fill_viridis_c() +
+  # filter(BatchName == "Netsize") %>% 
+  select(BatchName, Densities,ClosenessCentralityMean, CommunityCountNontrivial, OpinionSD, SupernodeBetweenness, Xlabel, Xlevel) %>% 
+  gather("key", "value", Densities, ClosenessCentralityMean, CommunityCountNontrivial, OpinionSD, SupernodeBetweenness) %>% 
+  mutate(key = factor(key, levels = c("Densities", 
+                                      "ClosenessCentralityMean", 
+                                      "CommunityCountNontrivial", 
+                                      "OpinionSD", 
+                                      "SupernodeBetweenness"))) %>% 
+  group_by(BatchName, Xlabel,key) %>%
+  arrange(Xlevel) %>% 
+  ggplot(aes(x=reorder(Xlabel, Xlevel), y=value)) +
+  facet_grid(key~BatchName, scales = "free", switch = "y", labeller = label_wrap_gen(width=10)) +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
+  geom_boxplot(alpha = 0.5, aes(fill=Xlevel)) +
   theme(strip.text.y = element_text(angle = 180),
           axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
           axis.title.y = element_blank(),
           panel.spacing = unit(1, "lines")) +
   scale_y_continuous(position = "right") +
-  labs(x="Name of the Configuration", y="", 
-       title="Centrality") +
-  guides(fill = FALSE) +
-  scale_x_discrete(position="top", labels = function(x) lapply(strwrap(x, width = 14, simplify = FALSE), paste, collapse="\n")) +
-  scale_y_continuous(position = "left") +
-  NULL
+  labs(x="Factor level", title="Factor influence overview") +
+  theme(legend.position = "none") +
+  scale_fill_viridis_c()
 ```
 
 
@@ -173,20 +93,20 @@ results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = Densities)) +
   facet_grid(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Densities") +
+  labs(x="Factor Configuration", title="Densities") +
   scale_fill_viridis_c()
 
 results %>% 
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = OutdegreeSD)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Outdegree SD") +
+  labs(x="Factor Configuration", title="Outdegree SD") +
   scale_fill_viridis_c()
 
 # results %>% 
@@ -194,30 +114,30 @@ results %>%
 #   ggplot(aes(x = reorder(Xlabel, Xlevel), y = OutdegreeMean)) +
 #   facet_wrap(~BatchName, scales = "free_x") +
 #   
-#   geom_violin(alpha = 0.1, fill = "black") +
+#   geom_violin(alpha = 0.1, fill = "black", color = "NA") +
 #   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
 #   theme(legend.position = "none") +
-#   labs(x="Name of the Configuration", title="Outdegree Mean relative to Network Size") +
+#   labs(x="Factor Configuration", title="Outdegree Mean relative to Network Size") +
 #   scale_fill_viridis_c()
 
 results %>% 
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = IndegreeSD)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Indegree SD") +
+  labs(x="Factor Configuration", title="Indegree SD") +
   scale_fill_viridis_c()
 
 results %>% 
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = OutdegreeIndegreeRatioMean)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Outdegree Indegree Ratio") +
+  labs(x="Factor Configuration", title="Outdegree Indegree Ratio") +
   scale_fill_viridis_c()
 
 ####    Centrality Measures ####
@@ -226,30 +146,30 @@ results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = ClosenessCentralityMean)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Closeness Centrality") +
+  labs(x="Factor Configuration", title="Closeness Centrality") +
   scale_fill_viridis_c()
 
 results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = BetweennessCentralityMean)) +
   facet_wrap(~BatchName, scales = "free") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Betweenness Centrality") +
+  labs(x="Factor Configuration", title="Betweenness Centrality") +
   scale_fill_viridis_c()
 
 results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = EigenCentralityMean)) +
   facet_wrap(~BatchName, scales = "free") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Eigenvector Centrality") +
+  labs(x="Factor Configuration", title="Eigenvector Centrality") +
   scale_fill_viridis_c()
 
 ####    Clustering and Community Structure    ####
@@ -258,30 +178,30 @@ results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = ClustCoeff)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Cluster Coefficient") +
+  labs(x="Factor Configuration", title="Cluster Coefficient") +
   scale_fill_viridis_c()
 
 results %>%
-  ggplot(aes(x = reorder(Xlabel, Xlevel), y = CommunityCount)) +
+  ggplot(aes(x = reorder(Xlabel, Xlevel), y = CommunityCountNontrivial)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Community Count") +
+  labs(x="Factor Configuration", title="Community Count") +
   scale_fill_viridis_c()
 
 results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = ConnectedComponents)) +
   facet_wrap(~BatchName, scales = "free") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Connected Components") +
+  labs(x="Factor Configuration", title="Connected Components") +
   scale_fill_viridis_c()
 
 ####    Opinion Distribution    ####
@@ -290,20 +210,20 @@ results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = OpinionSD)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Opinion SD") +
+  labs(x="Factor Configuration", title="Opinion SD") +
   scale_fill_viridis_c()
 
 results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = OpChangeDeltaMean)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Opinion Change Delta") +
+  labs(x="Factor Configuration", title="Opinion Change Delta") +
   scale_fill_viridis_c()
 
 results %>%
@@ -311,20 +231,20 @@ results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = PublOwnOpinionDiff)) +
   # facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Difference between perceived public and own opinion") +
+  labs(x="Factor Configuration", title="Difference between perceived public and own opinion") +
   scale_fill_viridis_c()
 
 results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = CommunityOpMeanSDs)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Community Opinion Differences") +
+  labs(x="Factor Configuration", title="Community Opinion Differences") +
   scale_fill_viridis_c()
 
 ####    Supernode Properties    ####
@@ -334,40 +254,40 @@ results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = SupernodeOutdegree)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Supernode Outdegree relative to Net size") +
+  labs(x="Factor Configuration", title="Supernode Outdegree relative to Net size") +
   scale_fill_viridis_c()
 
 results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = SupernodeCloseness)) +
   facet_wrap(~BatchName, scales = "free_x") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Supernode Closeness") +
+  labs(x="Factor Configuration", title="Supernode Closeness") +
   scale_fill_viridis_c()
 
 results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = SupernodeBetweenness)) +
   facet_wrap(~BatchName, scales = "free") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Supernode Betweenness") +
+  labs(x="Factor Configuration", title="Supernode Betweenness") +
   scale_fill_viridis_c()
 
 results %>%
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = SupernodeEigen)) +
   facet_wrap(~BatchName, scales = "free") +
   
-  geom_violin(alpha = 0.1, fill = "black") +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Supernode Eigenvector") +
+  labs(x="Factor Configuration", title="Supernode Eigenvector") +
   scale_fill_viridis_c()
 
 results %>%
@@ -377,8 +297,20 @@ results %>%
   geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
-  labs(x="Name of the Configuration", title="Supernode Opinion") +
+  labs(x="Factor Configuration", title="Supernode Opinion") +
   scale_fill_viridis_c()
+
+results %>%
+  filter(BatchName == "Addfriends") %>%
+  ggplot(aes(x = reorder(Xlabel, Xlevel), y = Supernode1st2ndOpdiff)) +
+  # facet_wrap(~BatchName, scales = "free_x") +
+  
+  geom_violin(alpha = 0.3, fill = "black", color = "NA") +
+  geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
+  theme(legend.position = "none") +
+  labs(x="Factor Configuration", title="Opinion Difference between 1st and 2nd supernode") +
+  scale_fill_viridis_c()
+
 
 ```
 
