@@ -2,8 +2,10 @@
 
 In the past decade the evolution of the internet and social media platforms raised new forms of social networks that changed our interpersonal communication and the methods of information procurement considerably. It has become very easy to connect to existing friends online, look for new friends and exchange information with them for example using platforms like Facebook or Twitter. As the formation of an individual's opinion is based on all available resources it is important to understand how the information received in online social networks is embedded into the process of opinion formation and how people behave in such networks. 
 
-- Basical Motivation for researching opinion dynamics in social networks: The uprising of echo chambers and their effects on the online opinion formation in social networks
+- Basical Motivation for researching opinion dynamics in social networks: The uprising of echo chambers and their effects on the online opinion formation in social networks (e.g. Williams, H. T. P., McMurray, J. R., Kurz, T., & Hugo Lambert, F. (2015). Network analysis reveals open forums and echo chambers in social media discussions of climate change. Global Environmental Change, 32, 126–138. https://doi.org/10.1016/j.gloenvcha.2015.03.006)
 
+- Social media platforms facilitate voicing the own opinion as publishing a post is already more comfortable than participating in an actual discussion. "Like" and "share" features facilitate the voicing of opinion even more as one can easily show with whom she agrees, thus making a statement about the own opinion with just one click (Neubaum und Krämer 2017)
 
+- Social Media can help learning about politics, discussing with others and keep people updated about political events. Currently not yet fully realized/ausgereizt (Bode 2016)
 
-
+- Polarization through Social Media? Marozzo, F., & Bessi, A. (2018). Analyzing polarization of social media users and news sites during political campaigns. Social Network Analysis and Mining, 8(1), 1. https://doi.org/10.1007/s13278-017-0479-5

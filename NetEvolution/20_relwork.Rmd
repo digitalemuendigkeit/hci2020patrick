@@ -9,18 +9,32 @@ Existing research states that the vast availability of similar-minded people in 
 
 - Work on social network topologies
 
+- Social Media exposes an individual more to counter-attitudinal information than other media (Anspach 2017)
 
+- Incidental news exposure leads users of social media platforms towards experiencing a broader spectrum of diverse opinions (Fletcher 2018)
 
 - Work on opinion dynamics - how do opinions spread in social networks?
 
+- Evidence for Twitters influence: Halberstam 2016, people who are politically more engaged, have more ties and influence
+
+- In social media it is very easy for users to take specific roles - from passive news consumer like the majority of social media users to others who use their networks for spreading their opinions
+
+- Individuals with higher influence seem naturally more involved and active in spreading their opinions and discuss/interact with others - they act as opinion leaders (Schäfer et al. 2015)
+
+- People who perceive themselves as opinion leaders also have higher intention to share news on social media 
+
 
 ## Role of social networks for opinion formation
+
+- Besides sociocultural factors, also social network dynamics show an influence on the evolution of political opinions in multicultural social networks (Szymanski et al. 2016)
 
 ## Modelling opinion dynamics
 
 After shedding light on the role of social media platforms on providing social ties and their importance for information and opinion spread it is also central for our research approach to understand, how opinion dynamics can be modelled. We therefore take a closer look on research that deals with the operationalization of opinion on the one hand and the modeling of social networks in simulation environments on the other hand.
 
 It is necessary to transform the opinion of a social network member into a value that allows for transforming and comparing to others based on mathematical operations. Only this way we can implement mechanisms for the interaction and mutual influence of opinions inside the simulated network community.
+
+- Initial idea of simulating opinion dynamics: measure what factors lead to consensus finding (DeGroot 1974). Therefore: Handling opinion as a concrete variable and weighting its influence depending on the importance of a certain agent
 
 Agent-based simulation models regarding a bounded confidence approach were initially proposed by Deffuant et al. as they showed how a fixed threshold in which opinion change occurs alters the overall opinion distribution in a simulation. They chose to opinion is modelled on a one-dimensional, continuous scale from 0 to 1. Besides the condition that the agents talk to each other randomly and each conversation is considered for a possible opinion change, they also applied a network model for regulating communication partners within the agents. Using square lattices as underlying topology, the agents were restricted to only talking to four others directly adjacent to them. In comparison with a model that uses complete mixing of agents, the network version shows especially for low opinion thresholds that consensus is no longer found for a major group of agents but rather depends on the connectedness of agent clusters.
 
