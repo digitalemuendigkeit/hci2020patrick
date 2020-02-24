@@ -16,7 +16,7 @@ The influence of the factors was evaluated with various measures that can be cla
 2) Centrality Measures
 3) Community Measures
 4) Opinion Dynamics
-5) supernode properties
+5) Supernode properties
 
 Figure XY shows the influence of each factor on one representative measure of those facets.
 As can be seen, the network size did not affect the community structure and opinion dynamics significantly. 
@@ -24,7 +24,7 @@ In comparison, the addfriends method had additional on the opinion dynamics and 
 
 
 ## Impact of Network Size
-
+<!-- In dem Unterkapitel springst du etwas zwischen den Zeiten, ich würde glaube ich alles im past schreiben -->
 In our simulation, the size of a social network was especially influential for the deviation of network parameters and opinions throughout the members of a network. 
 While the density of a network decreased significantly from 10.3% in a network of 100 agents to 8.6% for n=200 and further on to 8.2% for n=500, the standard deviations of outdegree and indegree increase which shows that the preferential attachment algorithm overruns the pursuit of each agent to connect to one tenth of the network members. 
 In terms of network centrality, only the closeness centrality increases through more agents while betweenness and eigenvector centrality decrease. 
@@ -35,12 +35,11 @@ While in a network of 100 agents every third follows the supernode directly, thi
 In a network with 500 agents already every other agent is a follower of the supernode. 
 Regarding the other centrality measures, the supernode shows higher closeness centrality for larger networks, but lower betweenness and eigenvector centrality with higher network size. 
 This shows that while the supernode is more central in terms of connectedness to all other nodes, its importance as a connector between all other agents is decreasing. 
-The network size did not affect the opinion difference between the two agents with highest outdegrees as their opinion was always rather conform to each torher.
-
+The network size did not affect the opinion difference between the two agents with highest outdegrees as their opinions were always rather conform with each other.  
 The network size did not influence the cluster and community structure within a network consistently. 
-Also the opinion dynamics did not differ significantly regarding network size.
+The opinion dynamics did not differ significantly regarding network size either.
 The opinion diversity in the network had a slight upgoing trend for larger networks. 
-Also the mean difference between an agent's own opinion and its perceived public opinion in the final state increased slightly with network size.
+The mean difference between an agent's own opinion and its perceived public opinion in the final state increased slightly with network size as well.
 
 Most important outcomes:
 - Density
@@ -55,12 +54,12 @@ While the standard deviations of outdegree and indegree for each agent to not di
 
 The least influence of the addfriends mechanic can be perceived in terms of network centrality of each agent. 
 Only the closeness centrality is slightly higher for the random and hybrid approach, while betweenness and eigenvector centrality do not show significant changes. 
-Concerning clustering and community structure, the clustering coefficient increases slightly through using the random approach while the number of communities is higher for networks where agents only pick neighbors of neighbors and also the number of disconnected communities is higher for this configuration.
-
+Concerning clustering and community structure, the clustering coefficient increases slightly by using the random approach while the number of communities is higher for networks where agents only pick neighbors of neighbors and also the number of disconnected communities is higher for this configuration.  
 The node with the highest influence and outreach in the network is not affected by the addfriends mechanic. 
 The opinion difference of the two nodes with highest outdegree shows more extreme outliers for the random addfriends method but no significant difference to the other approaches. 
-The opinion distibution on the opposite is significantly higher if the agents only connect to others that are already in their indirect neighborhood. 
-The amount of opinion change per agent slightly higher when agents pick their new friends randomly and according to the opinion difference. 
+The opinion distibution, on the opposite, is significantly higher if the agents only connect to others that are already in their indirect neighborhood. 
+The amount of opinion changes per agent is slightly higher when agents pick their new friends randomly and according to the opinion difference. 
+<!-- Bei dem satz habe ich ein bisschen geraten was du da sagen wolltest, schau dir das am besten noch mal an  -->
 Looking on the distance between perceived public and own opinion in the final state, those two values are significantly closer to each other when the random or hybrid approach for choosing new friends is used.
 
 - 
@@ -75,11 +74,10 @@ The centrality of each agent in the network changes with the unfriend threshold 
 The clustering and community measures show that while clustering increases through higher unfriend thresholds, the number of separate communities detected through label propagation decreases.
 
 The role of the agent with the highest follower count also depends on the unfriend threshold. 
-While outdegree and closeness centrality stay rather equal for a threshold from 0.4 to 1.0, in a network with unfriend threshold of 1.2 both values increase significantly. 
+While outdegree and closeness centrality stay rather equal for a threshold from 0.4 to 1.0, in a network with unfriend threshold of 1.2, both values increase significantly. 
 So the supernode profits only in terms of post reach when every agent is very tolerant with keeping followships that bear a high opinion difference. 
 The betweenness and eigenvector centrality decrease continously with rising unfriend threshold, but this trend seems to turn around at least for the eigenvector centrality with an unfriend threshold of 1.2. 
-Comparing the opinion of the most important and second most important agent we observe a significantly higher difference for unfriend thresholds of 0.8 and 1.2 whereas for the lower and higher thresholds the opinions of them is close to each other.
-
+Comparing the opinion of the most important and second most important agent we observe a significantly higher difference for unfriend thresholds of 0.8 and 1.2 whereas for the lower and higher thresholds the opinions of them is close to each other.  
 With changing the unfriend threshold it is possible to subsequently influence the opinion distribution within the network.
 While in networks with low threshold the standard deviation of opinions is below 0.1 on average, this measure rises notably up to 0.5 for a network with an unfriend threshold of 0.6 and even continues with higher thresholds to 0.6 for a threshold of 1.2. 
 Meanwhile, the mean delta between initial and final opinion of all agents in the networks shows the opposite trend. 
