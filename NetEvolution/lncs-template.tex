@@ -130,7 +130,9 @@ $if(title)$
 \title{$title$}
 $endif$
 %
-%\titlerunning{Abbreviated paper title}
+$if(title-running)$
+\titlerunning{$title-running$}
+$endif$
 % If the paper title is too long for the running head, you can set
 % an abbreviated paper title here
 %
