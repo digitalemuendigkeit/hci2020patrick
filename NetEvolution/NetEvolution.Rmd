@@ -1,5 +1,6 @@
 ---
-title: "Investigating key factors for social network evolution and opinion dynamics in an agent-based simulation"
+title: "Investigating Key Factors for Social Network Evolution and Opinion Dynamics in an Agent-Based Simulation"
+shorttitle: "Social Network Evolution and Opinion Dynamics"
 author-inputfile: "authors.tex" 
 abstract: |
   The abstract should briefly summarize the contents of the paper in 150--250 words.
