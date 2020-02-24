@@ -1,6 +1,6 @@
 ---
 title: "Investigating key factors for social network evolution and opinion dynamics in an agent-based simulation"
-author-inputfile: "anonauthors.tex" 
+author-inputfile: "authors.tex" 
 abstract: |
   The abstract should briefly summarize the contents of the paper in 150--250 words.
 keywords: "First keyword \\and Second keyword \\and Another keyword."
