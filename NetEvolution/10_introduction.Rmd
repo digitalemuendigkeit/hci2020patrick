@@ -16,7 +16,7 @@ Through analyzing online social networks and their users' interactions it is pos
 But besides passively analyzing the influence of social networks, it is also important to actively develop approaches for facilitating an independent political opinion exchange online which can be done through adjusting the mechanisms of information spread, friendhip maintenance and providing further clues for credibility evaluation of particular posts.
 
 For gathering better knowledge about the effects that occur in such social networks, it is necessary to develop simulation models that allow for replicating the reality and also testing imaginable assumptions about the effect of individual behaviors on the overall system.
-<!-- sind die annahmen wirklich über das Gesamte systemverhalten oder eher über individuen (agenten)? -->
+
 Online social networks consist of human beings who are very different from each other in terms of behavior, information reception, networking and lots of other factors due to their particular personality.
 Thus, it seems rather impossible to create a equation-based model that would aggregate all individuals' behavior into one singular kind of acting.
 Agent-based modelling (ABM), in contrast, provides a toolbox for modelling the desired behavior bottom-up, starting at an individual's or rather agent's called behavior space.

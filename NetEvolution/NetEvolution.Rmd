@@ -3,8 +3,8 @@ title: "Investigating Key Factors for Social Network Evolution and Opinion Dynam
 shorttitle: "Social Network Evolution and Opinion Dynamics"
 author-inputfile: "authors.tex" 
 abstract: |
-  The abstract should briefly summarize the contents of the paper in 150--250 words.
-keywords: "First keyword \\and Second keyword \\and Another keyword."
+  In recent years social media platforms experienced an uprising attention of researchers due to their capabilities of providing information and spreading opinions of individuals, thus establishing a new environment for opinion formation at a rather social level. To gain a better understanding of the occuring opinion dynamics especially the interactions between the users and the content that has been shared in those environments have been investigated. With our work we want to shed light on the part played by the underlying network structure as information spread relies directly on it and every user of social media is affected by it. We therefore analyzed the role of network properties and the nature of relationships in such networks using an agent-based model. Our results reveal the capability of such models for investigating the influence of such factors on opinion dynamics and encourage for further investigation in this field of research.
+keywords: "Opinion Dynamics \\and Social Networks Analysis \\and Agent-based Modelling \\and Network Structure."
 bibliography: ["rpackages.bib", "bibliography.bib"]
 #biblio-style: "apalike"
 link-citations: true
