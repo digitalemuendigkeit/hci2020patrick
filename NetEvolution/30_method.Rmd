@@ -2,8 +2,8 @@
 
 We chose the programming language Julia to conduct our research.
 With the LightGraphs package, this language provides performant network simulation and the required network generators for our agent-based model.
-It is also possible to implement batch runs that are based on the same random seed so that the network evolution following different parameters can be analyzed subsequently.
-<!-- Ist as ein alleinstellungsmerkmal von Julia? Das müsste doch in anderen Sprachen auch gehen. Also vielleicht eher sagen, dass du die random seed gesetzt hast anstatt das es möglich ist. -->
+We also implemented random seeds so that the performed batch runs can be repeated with reaching the same results as in our analysis.
+
 
 In our research, we focused on the variation of limited parameters for answering our research questions:
 
@@ -19,7 +19,7 @@ We designed a network in which agents interact with each other through publishin
 Currently, most of the popular social networks allow for unidirectional relationships therefore we chose a directed network for our simulation.
 The different edges represent the direction of information spread: outgoing edges from agent x show to which agents the posts of agent x will be sent while incoming edges show from which agents the agent x receives posts.  
 The initial network is created by using the Barabási Albert Network generator of the LightGraphs package in Julia.
-We decided for the Barabási Albert topology as it provides an artificial network structure that is similar to real world social networks [@Wilson2009].
+We decided for the Barabási Albert topology as it provides an artificial network structure that is similar to real world social networks [@wilson_user_2009].
 This generator allows to define the size of the network and an initial average edge count per agent that follows a power law distribution.
 Through following a preferential attachment algorithm, the degree distribution of the nodes sticks to the power law, including very few nodes with high degrees and a long tail of nodes with rather low degrees [@Barabasi1999].
 

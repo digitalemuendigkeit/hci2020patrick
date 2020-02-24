@@ -12,7 +12,7 @@ It has been shown that social media platforms expose their users to a larger ran
 While this increased exposure could be suspected as positive influence on the opinion formation, this type of media also shows more vulnerability for misleading the public discourse on certain topics like it got evident for events as the Brexit [@del_vicario_mapping_2017] or most recently the spread of wrong information about the corona virus [@McCloskey2020].
 
 Furthermore, it is crucial to consider the imbalance of activity of social media users.
-As Romero et al. found, the majority of users passively consume content on social media platforms and rarely take part in interactions, while only a little part of the users utilize those platforms to actively contribute new content and spread their opinions which transforms them into secondary gate keepers of information spread [@Romero2011a, @singer_user-generated_2014].
+As Romero et al. found, the majority of users passively consume content on social media platforms and rarely take part in interactions, while only a little part of the users utilize those platforms to actively contribute new content and spread their opinions which transforms them into secondary gate keepers of information spread [@Romero2011a; @singer_user-generated_2014].
 Those individuals are also referred to as opinion leaders [@Burt1999].
 Besides a higher intention to share news and other information via social media [@schafer2015opinion], opinion leaders also get apparent through their prominent position in social networks as they show more ties to other users and a higher influence on information spread [@Halberstam2016a].
 
@@ -52,9 +52,9 @@ Most prominent, the use of scale-free networks lead to far more isolated agents 
 It could be shown that such supernodes were most influential compared to all other nodes and processed themselves also a significant opinion change during the clustering process.
 With decreasing density, differences to the standard mixed variant get more visible.
 Further motivation for investigating the effect of Barabási-Albert networks is given by the research of Stauffer et al. who also differentiated between directed and undirected networks.
-They discovered that especially for small \epsilon < 0.4 for the bounded confidence intervals the opinions of the simulated agents show stronger deviations from each other.
-For \epsilon > 0.4 their agents always end up with finding a consensus.
-Studies of Fortunato et al. show equal indications that for \epsilon < 0.5, an opinion dynamics model based on the approach of Deffuant et al. always leads to the formation of a consensus, independent of the underlying network structure [@Weisbuch2004].
+They discovered that especially for small $\epsilon < 0.4$ for the bounded confidence intervals the opinions of the simulated agents show stronger deviations from each other.
+For $\epsilon > 0.4$ their agents always end up with finding a consensus.
+Studies of Fortunato et al. show equal indications that for $\epsilon < 0.5$, an opinion dynamics model based on the approach of Deffuant et al. always leads to the formation of a consensus, independent of the underlying network structure [@Weisbuch2004].
 
 Later on, Hegselmann and Krause extended the complexity of the bounded confidence approach by implementing dependencies on symmetry and individual agent properties for the confidence value.
 Looking on the continuous scale of opinions, the threshold for bounded confidence therewith can adapt to the actual position of an agent on this scale and the direction of potential consensus finding.

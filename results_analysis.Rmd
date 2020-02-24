@@ -33,6 +33,24 @@ results %>%
                            BatchName == "Unfriend" ~ as.numeric(ConfigUnfriendThresh),
                            BatchName == "Netsize" ~ as.numeric(ConfigAgentCount))) -> results
 
+results %>% 
+  filter(BatchName == "Netsize") %>% 
+  select(-c(BatchName, ConfigUnfriendThresh, ConfigAddfriendMethod, Xlabel, Xlevel)) %>% 
+  group_by(ConfigAgentCount) %>% 
+  summarise_all(mean) -> netsize_aggregates
+
+results %>% 
+  filter(BatchName == "Addfriends") %>% 
+  select(-c(BatchName, ConfigUnfriendThresh, ConfigAgentCount, Xlabel, Xlevel)) %>% 
+  group_by(ConfigAddfriendMethod) %>% 
+  summarise_all(mean) -> addfriends_aggregates
+
+results %>% 
+  filter(BatchName == "Unfriend") %>% 
+  select(-c(BatchName, ConfigAddfriendMethod, ConfigAgentCount, Xlabel, Xlevel)) %>% 
+  group_by(ConfigUnfriendThresh) %>% 
+  summarise_all(mean) -> unfriend_aggregates
+
 ```
 
 ```{r}
@@ -57,7 +75,7 @@ results %>%
 
 ```
 
-```{r Combined Evaluation, fig.height=8, fig.width=8}
+```{r CombinedEval, fig.height=8, fig.width=8, fig.cap=overview}
 
 results %>% 
   # filter(BatchName == "Netsize") %>% 

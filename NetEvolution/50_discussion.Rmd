@@ -40,7 +40,7 @@ Along with the implementation of more complex friendships connections we will al
 Another important question while simulating opinion dynamics is how one assumes a simulation state to be final or converged.
 While in cases with consensus formation the answer seems trivial, other cases with unstable opinion distributions in the network might hardly get into a stable final state.
 Meng et al. found that the convergence time of models operating under the bounded confidence approach of Deffuant et al. strongly depends on the underlying network structure.
-Also they stated that there is a critical border for the bounded confidence of epsilon = 0.5 for certain network topologies.
+Also they stated that there is a critical border for the bounded confidence of $\epsilon = 0.5$ for certain network topologies.
 When this border is crossed, the convergence time of simulation runs increases significantly [@Meng2018].
 Hence, for advancing our approach in the future it will be also inevitable to investigate the convergence behavior of our simulation.
 

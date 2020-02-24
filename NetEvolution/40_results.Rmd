@@ -1,5 +1,45 @@
 # Results
 
+```{r results preps}
+
+results <- read_csv("results.csv")
+
+results$BatchName <- factor(x = results$BatchName, levels = c("Netsize", "Addfriends", "Unfriend"))
+results$ConfigAgentCount <- as.factor(results$ConfigAgentCount)
+results$ConfigUnfriendThresh <- as.factor(results$ConfigUnfriendThresh)
+results$ConfigAddfriendMethod <- factor(x = results$ConfigAddfriendMethod, 
+                                        levels = c("neighborsofneighbors", "hybrid", "random"), 
+                                        labels = c("neighbors", "hybrid", "random"))
+
+levels(results$ConfigAddfriendMethod)[1] <- "neighbors"
+
+results %>% 
+   mutate(Xlabel = case_when(BatchName == "Addfriends" ~ as.character(ConfigAddfriendMethod),
+                           BatchName == "Unfriend" ~ as.character(ConfigUnfriendThresh),
+                           BatchName == "Netsize" ~ as.character(ConfigAgentCount)),
+         Xlevel = case_when(BatchName == "Addfriends" ~ as.numeric(ConfigAddfriendMethod),
+                           BatchName == "Unfriend" ~ as.numeric(ConfigUnfriendThresh),
+                           BatchName == "Netsize" ~ as.numeric(ConfigAgentCount))) -> results
+
+results %>% 
+  filter(BatchName == "Netsize") %>% 
+  select(-c(BatchName, ConfigUnfriendThresh, ConfigAddfriendMethod, Xlabel, Xlevel)) %>% 
+  group_by(ConfigAgentCount) %>% 
+  summarise_all(mean) -> netsize_aggregates
+
+results %>% 
+  filter(BatchName == "Addfriends") %>% 
+  select(-c(BatchName, ConfigUnfriendThresh, ConfigAgentCount, Xlabel, Xlevel)) %>% 
+  group_by(ConfigAddfriendMethod) %>% 
+  summarise_all(mean) -> addfriends_aggregates
+
+results %>% 
+  filter(BatchName == "Unfriend") %>% 
+  select(-c(BatchName, ConfigAddfriendMethod, ConfigAgentCount, Xlabel, Xlevel)) %>% 
+  group_by(ConfigUnfriendThresh) %>% 
+  summarise_all(mean) -> unfriend_aggregates
+```
+
 We performed in total 13 different simulation runs that cover the following variations of factor configuration:
 
 - Network Size in 100, 200, 300, 400, 500 Agents
@@ -18,9 +58,35 @@ The influence of the factors was evaluated with various measures that can be cla
 4) Opinion Dynamics
 5) Supernode properties
 
-Figure XY shows the influence of each factor on one representative measure of those facets.
+Figure \@ref(fig:CombinedEval) shows the influence of each factor on one representative measure of those facets.
 As can be seen, the network size did not affect the community structure and opinion dynamics significantly.
 In comparison, the addfriends method had additional on the opinion dynamics and only the unfriend threshold showed influence on all facets. Subsequently, the particular effects are examined more detailed and seperately per factor.
+
+```{r CombinedEval, fig.height=8, fig.width=8, fig.cap="This is the overview"}
+results %>% 
+  select(BatchName, Densities,ClosenessCentralityMean, CommunityCountNontrivial, OpinionSD, SupernodeBetweenness, Xlabel, Xlevel) %>% 
+  gather("key", "value", Densities, ClosenessCentralityMean, CommunityCountNontrivial, OpinionSD, SupernodeBetweenness) %>% 
+  mutate(key = factor(key, levels = c("Densities", 
+                                      "ClosenessCentralityMean", 
+                                      "CommunityCountNontrivial", 
+                                      "OpinionSD", 
+                                      "SupernodeBetweenness"))) %>% 
+  group_by(BatchName, Xlabel,key) %>%
+  arrange(Xlevel) %>% 
+  ggplot(aes(x=reorder(Xlabel, Xlevel), y=value)) +
+  facet_grid(key~BatchName, scales = "free", switch = "y", labeller = label_wrap_gen(width=10)) +
+  geom_violin(alpha = 0.1, fill = "black", color = "NA") +
+  geom_boxplot(alpha = 0.5, aes(fill=Xlevel)) +
+  theme(strip.text.y = element_text(angle = 180),
+          axis.title.x = element_text(margin = margin(t = 20, r = 0, b = 0, l = 0)),
+          axis.title.y = element_blank(),
+          panel.spacing = unit(1, "lines")) +
+  scale_y_continuous(position = "right") +
+  labs(x="Factor level", title="Factor influence overview") +
+  theme(legend.position = "none") +
+  scale_fill_viridis_c()
+```
+
 
 
 ## Impact of Network Size
