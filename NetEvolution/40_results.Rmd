@@ -90,26 +90,10 @@ results %>%
 
 
 ## Impact of Network Size
-In our simulation, the size of a social network is especially influential for the deviation of network parameters and opinions throughout the members of a network.
+In our simulation, the size of a social network is especially influential for the deviation of network parameters and opinions throughout the members of a network  (see Table \@ref(tab:NetsizeTable)).
 While the density of a network decreases significantly from 10.3% in a network of 100 agents to 8.6% for n=200 and further on to 8.2% for n=500, the standard deviations of outdegree and indegree increase (outdegree from 5.48 for n=100 up to 28.09 for n=500, indegree from 5.18 for n=100 up to 23.13 for n=500) which shows that the preferential attachment algorithm overruns the pursuit of each agent to connect to one tenth of the network members.
-In terms of network centrality, only the closeness centrality increases through more agents while betweenness and eigenvector centrality decrease (see Table \@ref(tab:netsizecentrality)).
+In terms of network centrality, only the closeness centrality increases through more agents while betweenness and eigenvector centrality decrease.
 This shows that while the agents' connectivity to each other agent in the network rises, the agents have on average less influence on their neighbors.
-
-\begin{table}[]
-\caption{Influence of network size on centrality measures.}\label{tab:netsizecentrality}
-\begin{tabular}{lllllll}
-\hline
-             & \multicolumn{2}{l}{Closeness Centrality} & \multicolumn{2}{l}{Betweenness Centrality} & \multicolumn{2}{l}{Eigenvector Centrality} \\
-Network size & mean                & sd                 & mean                 & sd                  & mean                 & sd                  \\
-\hline
-100          & 0.3957              & 0.0242             & 0.0156               & 0.0017              & 0.0816               & 0.0043              \\
-200          & 0.4303              & 0.0096             & 0.0067               & 0.0003              & 0.0551               & 0.0019              \\
-300          & 0.4477              & 0.0060             & 0.0042               & 0.0001              & 0.0447               & 0.0012              \\
-400          & 0.4551              & 0.0090             & 0.0030               & 0.0002              & 0.0382               & 0.0011              \\
-500          & 0.4610              & 0.0070             & 0.0024               & 0.0001              & 0.0341               & 0.0007         \\
-\hline
-\end{tabular}
-\end{table}
 
 The influence and the outreach of the supernode in a network depends on the overall network size.
 While in a network of 100 agents every third follows the supernode directly, this value increases continuously for networks with more agents.
@@ -122,9 +106,34 @@ The opinion dynamics did not differ significantly regarding network size either.
 The opinion diversity in the network had a slight upgoing trend for larger networks.
 The mean difference between an agent's own opinion and its perceived public opinion in the final state increased slightly with network size as well.
 
+\begin{table}[]
+\caption{Influence of the Network Size.}\label{tab:NetsizeTable}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llllll}
+\hline
+Network Size & 100 & 200 & 300 & 400 & 500 \\ \hline
+Densities & 0.103 & 0.086 & 0.085 & 0.084 & 0.082 \\
+OutdegreeSD & 5.483701 & 11.163 & 16.946 & 22.654 & 28.092 \\
+IndegreeSD & 5.182528 & 9.722809 & 14.309 & 18.885 & 23.130 \\
+OutdegreeIndegreeRatioMean & 0.503 & 0.495 & 0.493 & 0.491 & 0.491 \\
+ClosenessCentralityMean & 0.396 & 0.430 & 0.448 & 0.455 & 0.461 \\
+BetweennessCentralityMean & 0.016 & 0.007 & 0.004 & 0.003 & 0.002 \\
+EigenCentralityMean & 0.082 & 0.055 & 0.045 & 0.038 & 0.034 \\
+ClustCoeff & 0.069 & 0.056 & 0.056 & 0.056 & 0.055 \\
+CommunityCount & 3.010 & 3.020 & 3.090 & 3.420 & 2.960 \\
+OpinionSD & 0.062 & 0.065 & 0.063 & 0.082 & 0.105 \\
+OpChangeDeltaMean & 0.484 & 0.498 & 0.498 & 0.493 & 0.487 \\
+PublOwnOpinionDiff & 0.020 & 0.021 & 0.021 & 0.023 & 0.026 \\
+SupernodeOutdegree & 32.83 & 75.74 & 121.670 & 161.250 & 210.860 \\
+SupernodeCloseness & 0.551 & 0.609 & 0.625 & 0.625 & 0.633 \\
+SupernodeBetweenness & 0.126 & 0.082 & 0.060 & 0.047 & 0.043 \\
+SupernodeEigen & 0.283 & 0.238 & 0.205 & 0.178 & 0.164 \\
+Supernode1st2ndOpdiff & 0.023 & 0.007 & 0.009 & 0.009 & 0.032 \\ \hline
+\end{tabular*}
+\end{table}
+
 ## Impact of the addfriends mechanic
 
-The mechanic for adding new friends shows an influence for the network and the opinion distribution in it.
+The mechanic for adding new friends shows an influence for the network and the opinion distribution in it (see Table \@ref(tab:AddfriendsTable)).
 When picking new friends only from friends of current friends, the density of a network stays with 7.7% lower than for picking randomly from all agents in the network with regard to the opinion difference (8.2%) and for a hybrid approach of both methods (8.2%).
 While the standard deviations of outdegree and indegree for each agent to not differ significantly between the different approaches, the mean ratio between outdegree and indegree per agent is less balanced when agents only choose from neighbors of neighbors (0.48) compared to random and hybrid approaches (both 0.49).
 
@@ -137,6 +146,31 @@ The opinion distribution, on the opposite, is significantly higher if the agents
 The sum of opinion changes per agent is slightly higher when agents pick their new friends randomly and according to the opinion difference (0.49 for random and 0.44 for neighborhood approaches).
 Looking on the distance between perceived public and own opinion in the final state, those two values are significantly closer to each other when the random or hybrid approach for choosing new friends is used (0.03 for random and hybrid approach and 0.04 for neighborhood approach).
 
+\begin{table}[]
+\caption{Influence of the Addfriends method.}\label{tab:AddfriendsTable}
+\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}lll@{}}
+\hline
+Addfriends Method & neighbors & hybrid & random \\ \hline
+Densities & 0.077 & 0.082 & 0.082 \\
+OutdegreeSD & 29.148 & 28.074 & 28.230 \\
+IndegreeSD & 24.148 & 23.102 & 23.263 \\
+OutdegreeIndegreeRatioMean & 0.483 & 0.491 & 0.491 \\
+ClosenessCentralityMean & 0.451 & 0.461 & 0.460 \\
+BetweennessCentralityMean & 0.002 & 0.002 & 0.002 \\
+EigenCentralityMean & 0.034 & 0.034 & 0.034 \\
+ClustCoeff & 0.052 & 0.055 & 0.055 \\
+CommunityCount & 6.410 & 3.820 & 3.470 \\
+OpinionSD & 0.226 & 0.106 & 0.110 \\
+OpChangeDeltaMean & 0.442 & 0.488 & 0.489 \\
+PublOwnOpinionDiff & 0.041 & 0.026 & 0.026 \\
+SupernodeOutdegree & 206.700 & 209.100 & 207.850 \\
+SupernodeCloseness & 0.626 & 0.631 & 0.630 \\
+SupernodeBetweenness & 0.043 & 0.042 & 0.041 \\
+SupernodeEigen & 0.165 & 0.165 & 0.163 \\
+SupernodeOpinion & -0.019 & -0.007 & 0.000 \\
+Supernode1st2ndOpdiff & 0.090 & 0.028 & 0.047 \\ \hline
+\end{tabular*}
+\end{table}
 
 
 ## Impact of Unfriend Threshold
@@ -162,25 +196,25 @@ With rising unfriend threshold also the distance between perceived public and ow
 
 \begin{table}[]
 \caption{Influence of the unfriend threshold.}\label{tab:UnfriendTable}
-\begin{tabular}{llllll}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llllll}
 \hline
-ConfigUnfriendThresh & 0.4 & 0.6 & 0.8 & 1 & 1.2 \\ \hline
+Unfriend Threshold & 0.4 & 0.6 & 0.8 & 1.0 & 1.2 \\ \hline
 Densities & 0.063 & 0.082 & 0.094 & 0.108 & 0.115 \\
-Outdegree SD & 26.693 & 27.921 & 29.209 & 31.545 & 36.109 \\
-Indegree SD & 19.050 & 23.133 & 26.923 & 30.335 & 35.134 \\
-Outdegree/Indegre Ratio & 0.479 & 0.491 & 0.496 & 0.498 & 0.498 \\
-Closeness Centrality & 0.426 & 0.460 & 0.482 & 0.499 & 0.521 \\
-Betweenness Centrality & 0.003 & 0.002 & 0.002 & 0.002 & 0.002 \\
-Eigenvector Centrality & 0.031 & 0.034 & 0.036 & 0.038 & 0.038 \\
-Clustering Coefficient & 0.051 & 0.055 & 0.055 & 0.058 & 0.060 \\
-Communitycount & 6.700 & 3.200 & 1.170 & 1.350 & 1.290 \\
-Opinion SD & 0.070 & 0.096 & 0.470 & 0.582 & 0.589 \\
-Opinionchange Delta & 0.496 & 0.487 & 0.256 & 0.215 & 0.274 \\
-Difference public/own opinion & 0.021 & 0.025 & 0.120 & 0.170 & 0.184 \\
-Supernode Outdegree & 208.030 & 205.920 & 201.590 & 206.360 & 244.780 \\
-Supernode Closeness Centrality & 0.629 & 0.628 & 0.624 & 0.631 & 0.663 \\
-Supernode Betweenness Centrality & 0.054 & 0.041 & 0.033 & 0.029 & 0.037 \\
-Supernode Eigenvector Centrality & 0.183 & 0.164 & 0.152 & 0.139 & 0.148 \\
-Opinion Diff 1st to 2nd supernode & 0.005 & 0.027 & 0.252 & 0.362 & 0.085 \\ \hline
-\end{tabular}
+OutdegreeSD & 26.693 & 27.921 & 29.209 & 31.545 & 36.109 \\
+IndegreeSD & 19.050 & 23.133 & 26.923 & 30.335 & 35.134 \\
+OutdegreeIndegreeRatioMean & 0.479 & 0.491 & 0.496 & 0.498 & 0.498 \\
+ClosenessCentralityMean & 0.426 & 0.460 & 0.482 & 0.499 & 0.521 \\
+BetweennessCentralityMean & 0.003 & 0.002 & 0.002 & 0.002 & 0.002 \\
+EigenCentralityMean & 0.031 & 0.034 & 0.036 & 0.038 & 0.038 \\
+ClustCoeff & 0.051 & 0.055 & 0.055 & 0.058 & 0.060 \\
+CommunityCount & 6.700 & 3.200 & 1.170 & 1.350 & 1.290 \\
+OpinionSD & 0.070 & 0.096 & 0.470 & 0.582 & 0.589 \\
+OpChangeDeltaMean & 0.496 & 0.487 & 0.256 & 0.215 & 0.274 \\
+PublOwnOpinionDiff & 0.021 & 0.025 & 0.120 & 0.170 & 0.184 \\
+SupernodeOutdegree & 208.030 & 205.920 & 201.590 & 206.360 & 244.780 \\
+SupernodeCloseness & 0.629 & 0.628 & 0.624 & 0.631 & 0.663 \\
+SupernodeBetweenness & 0.054 & 0.041 & 0.033 & 0.029 & 0.037 \\
+SupernodeEigen & 0.183 & 0.164 & 0.152 & 0.139 & 0.148 \\
+Supernode1st2ndOpdiff & 0.005 & 0.027 & 0.252 & 0.362 & 0.085 \\ \hline
+\end{tabular*}
 \end{table}
