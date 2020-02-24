@@ -1,12 +1,12 @@
 # Discussion
 
 Our work revealed several results that call for further investigation.
-Subsequently we will discuss the results in relation to other research and look into the lessons learned from our initial approach and possible further steps.
+Subsequently, we will discuss the results in relation to other research and look into the lessons learned from our initial approach and possible further steps.
 
-As could be shown, the overall model configuration was capable of simulating the opinion dynamics in a social network and suitable to perform experiments regarding specific factors of the network size and behavior.
-The programming language Julia prove robust as a simulation environment and provided all necessary flexibility to implement our approach as well as enough performance to run several configurations and repetitions in a reasonable time.
+As we could show, the overall model configuration was capable of simulating the opinion dynamics in a social network and suitable to perform experiments regarding specific factors of the network size and behavior.
+The programming language Julia proved robust as a simulation environment and provided all necessary flexibility to implement our approach as well as enough performance to run several configurations and repetitions in a reasonable time.
 
-With changing the overall agent count in the network we wanted to observe how a higher availability of possible friends in a network and the strengthening of supernodes through the preferential attachment mechanism will change the structure and dynamics in the network.
+With changing the overall agent count in the network, we wanted to observe how a higher availability of possible friends in a network and the strengthening of supernodes through the preferential attachment mechanism will change the structure and dynamics in the network.
 The obtained results indicate that through increasing the network size, the agents grow closer together although the overall network density decreases significantly.
 This counterintuitive result can be explained with the significant influence growth of the supernode in the network.
 We interpret the absent influence of network size on all measures of opinion dynamics except for the obviously higher deviation of opinions in larger networks as confirmation for the robustness of our implementation.
