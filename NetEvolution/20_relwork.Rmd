@@ -26,6 +26,8 @@ They investigated multiple factors that could lead to opinion polarization and s
 Higher clustering, for example, increases polarization while it has no effect on the spread of misinformation.
 Regarding centrality it is the other way round: if potential spreaders of misinformation occupy positions in the network with high follower count, the dissemination of misinformation is facilitated whereas the polarization is not significantly promoted [@NBERw24462].
 
+In addition to the deception that is initiated through particular users, the algorithms that are used by social media platforms for presenting relevant content can also lead to misguided perceptions of the oppinion climate [@Nguyen2014]. To reveal the true effect of such algorithms it is inevitable to precisely analyze their interaction with the users [@CaleroValdez2018a].
+
 ## Modelling opinion dynamics
 
 After shedding light on the role of social media platforms on providing social ties and their importance for information and opinion spread it is also central for our research approach to understand, how opinion dynamics can be modelled.
