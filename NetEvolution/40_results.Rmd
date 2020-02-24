@@ -137,7 +137,7 @@ The opinion distribution, on the opposite, is significantly higher if the agents
 The amount of opinion changes per agent is slightly higher when agents pick their new friends randomly and according to the opinion difference.
 Looking on the distance between perceived public and own opinion in the final state, those two values are significantly closer to each other when the random or hybrid approach for choosing new friends is used.
 
--
+
 
 ## Impact of Unfriend Threshold
 
