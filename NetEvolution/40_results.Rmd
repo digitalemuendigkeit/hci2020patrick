@@ -62,7 +62,7 @@ Figure \@ref(fig:CombinedEval) shows the influence of each factor on one represe
 As can be seen, the network size did not affect the community structure and opinion dynamics significantly.
 In comparison, the addfriends method had additional on the opinion dynamics and only the unfriend threshold showed influence on all facets. Subsequently, the particular effects are examined more detailed and seperately per factor.
 
-```{r CombinedEval, fig.height=8, fig.width=8, fig.cap="This is the overview"}
+```{r CombinedEval, fig.height=8, fig.width=8, fig.cap="Overview of the factor influences on exemplary measures of the analyzed facets."}
 results %>% 
   select(BatchName, Densities,ClosenessCentralityMean, CommunityCountNontrivial, OpinionSD, SupernodeBetweenness, Xlabel, Xlevel) %>% 
   gather("key", "value", Densities, ClosenessCentralityMean, CommunityCountNontrivial, OpinionSD, SupernodeBetweenness) %>% 
@@ -91,8 +91,8 @@ results %>%
 
 ## Impact of Network Size
 <!-- In dem Unterkapitel springst du etwas zwischen den Zeiten, ich würde glaube ich alles im past schreiben -->
-In our simulation, the size of a social network was especially influential for the deviation of network parameters and opinions throughout the members of a network.
-While the density of a network decreased significantly from 10.3% in a network of 100 agents to 8.6% for n=200 and further on to 8.2% for n=500, the standard deviations of outdegree and indegree increase which shows that the preferential attachment algorithm overruns the pursuit of each agent to connect to one tenth of the network members.
+In our simulation, the size of a social network is especially influential for the deviation of network parameters and opinions throughout the members of a network.
+While the density of a network decreases significantly from 10.3% in a network of 100 agents to 8.6% for n=200 and further on to 8.2% for n=500, the standard deviations of outdegree and indegree increase which shows that the preferential attachment algorithm overruns the pursuit of each agent to connect to one tenth of the network members.
 In terms of network centrality, only the closeness centrality increases through more agents while betweenness and eigenvector centrality decrease.
 This shows that while the agents' connectivity to each other agent in the network rises, the agents have on average less influence on their neighbors.
 
@@ -125,7 +125,6 @@ The node with the highest influence and outreach in the network is not affected 
 The opinion difference of the two nodes with highest outdegree shows more extreme outliers for the random addfriends method but no significant difference to the other approaches.
 The opinion distribution, on the opposite, is significantly higher if the agents only connect to others that are already in their indirect neighborhood.
 The amount of opinion changes per agent is slightly higher when agents pick their new friends randomly and according to the opinion difference.
-<!-- Bei dem satz habe ich ein bisschen geraten was du da sagen wolltest, schau dir das am besten noch mal an  -->
 Looking on the distance between perceived public and own opinion in the final state, those two values are significantly closer to each other when the random or hybrid approach for choosing new friends is used.
 
 -
@@ -147,7 +146,7 @@ Comparing the opinion of the most important and second most important agent we o
 With changing the unfriend threshold it is possible to subsequently influence the opinion distribution within the network.
 While in networks with low threshold the standard deviation of opinions is below 0.1 on average, this measure rises notably up to 0.5 for a network with an unfriend threshold of 0.6 and even continues with higher thresholds to 0.6 for a threshold of 1.2.
 Meanwhile, the mean delta between initial and final opinion of all agents in the networks shows the opposite trend.
-While the opinion change is with 0.5 rather large for thresholds above or equal to 0.6, it falls below 0.3 for networks with a larger threshold.
+While the opinion change is with 0.5 rather large for thresholds below or equal to 0.6, it falls below 0.3 for networks with a larger threshold.
 The least opinion change occurs for a threshold of 1.0 while with 1.2 the opinion change starts to increase again.
 With rising unfriend threshold also the distance between perceived public and own opinion increases significantly.
 
