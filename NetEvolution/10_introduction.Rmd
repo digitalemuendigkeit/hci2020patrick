@@ -5,20 +5,24 @@ It has become very easy to connect to existing friends online, making new friend
 Looking on the formation of political opinions in our digital society it becomes evident that such social media platforms do also play an important role in that process as those social networks facilitate information and opinion sharing tremendously. 
 Through Facebook for example it is now very easy to voice the own opinion, even through just liking or sharing posts of others [@Neubaum2017].
 
-One problem that arises through social media platforms is that certain behaviors and heuristics of humans like selective exposure and spirals of silence can interfere an independent opinion formation process as individuals tend to surround themselves with like-minded others [@Williams2015] and opinion minorities get hard to perceive in such environments. As a consequence, echo chambers in social networks may lead to reducing the tolerance of other opinions and reinforcing and reinforcing the own political stance, thus hampering important democratical processes like consensus formation and acceptance of other opinions.
+One problem that arises through social media platforms is that certain behaviors and heuristics of humans like selective exposure and spirals of silence can interfere with an independent opinion formation process as individuals tend to surround themselves with like-minded others [@Williams2015] and opinion minorities are harder to perceive in such environments. 
+As a consequence, echo chambers in social networks may lead to reducing the tolerance of other opinions and reinforcing the own political stance, thus hampering important democratical processes like consensus formation and acceptance of other opinions.
 
-On the other side, social media can also provide an opportunity to enhance political information and participation among citizens as those platforms can encourage discussions and opinion exchange among individuals who wouldn't have met in the real world. 
-Besides providing a public discourse and revealing more diverse political opinions that would not have been voiced offline, Facebook or Twitter for example also can help with encourage offline political events and actual political participation. 
-However, as current research shows the potential for this has not been exhausted yet [@Bode2016].
+On the other side, social media can also provide an opportunity to enhance political information and participation among citizens as those platforms can encourage discussions and opinion exchange among individuals who would not meet in the real world. 
+Besides providing a public discourse and revealing more diverse political opinions that would not have been voiced offline, social networks like Facebook or Twitter can also help with encourage offline political events and actual political participation. 
+However, current research shows that the potential for this has not been exhausted yet [@Bode2016].
 
 Through analyzing online social networks and their users' interactions it is possible to understand how certain political campaigns may influence the public discourse and the opinion formation of social media users [@Marozzo2018]. 
-But besides passively analyzing the influence of social networks it is also important to actively develop approaches for facilitating an independent political opinion exchange online which can be done through adjusting the mechanisms of information spread, friendhip maintenance and providing further clues for credibility evaluation of particular posts.
+But besides passively analyzing the influence of social networks, it is also important to actively develop approaches for facilitating an independent political opinion exchange online which can be done through adjusting the mechanisms of information spread, friendhip maintenance and providing further clues for credibility evaluation of particular posts.
 
-For gathering better knowledge about the effects that occur in such social networks it is necessary to develop simulation models that allow for replicating the reality and also testing imaginable assumptions about the overall system behavior. 
-As online social networks consist of human beings who are very different from each other in terms of behavior, information reception, networking and lots of other factors due to their particular personality it seems rather impossible to create a equation-based model that would aggregate all individuals' behavior into one singular kind of acting. 
-Agent-based modelling (ABM) in contrast provides a toolbox for modelling the desired behavior bottom-up, starting at an individual's or rather agent's called behavior space. 
-A particular agent can hold its own beliefs and will act in the simulation according to them, while she is still interdependent to other agents. Through their adaptivity and the dependency on the past, agents behaviors in sum lead to so-called emergent behavior. 
-This means that the overall system behavior evoked by bottom-up modelling are not describable through a formula that summarizes all individual behavior [@Macy2002].
+For gathering better knowledge about the effects that occur in such social networks, it is necessary to develop simulation models that allow for replicating the reality and also testing imaginable assumptions about the overall system behavior. 
+<!-- sind die annahmen wirklich über das Gesamte systemverhalten oder eher über individuen (agenten)? -->
+Online social networks consist of human beings who are very different from each other in terms of behavior, information reception, networking and lots of other factors due to their particular personality. 
+Thus, it seems rather impossible to create a equation-based model that would aggregate all individuals' behavior into one singular kind of acting. 
+Agent-based modelling (ABM), in contrast, provides a toolbox for modelling the desired behavior bottom-up, starting at an individual's or rather agent's called behavior space. 
+A particular agent can hold its own beliefs and will act in the simulation according to them, while she is still interdependent to other agents. 
+Through their adaptivity and the dependency on the past, agents behaviors in sum lead to so-called emergent behavior. 
+This means that the overall system behavior evoked by bottom-up modelling is harder to describe by a formula that summarizes all individual behavior [@Macy2002].
 
 We therefore decided for implementing an agent-based model that consists of an environment and behavior space comparable to realistic social media platforms. 
 Our study contributes to the existing research on opinion dynamics in social networks by combining existing theories about opinion dynamics in agent-based systems with topologies and mechanisms of real-world social media platforms. 
