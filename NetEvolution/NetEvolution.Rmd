@@ -1,5 +1,6 @@
 ---
-title: "Investigating key factors for social network evolution and opinion dynamics in an agent-based simulation"
+title: "Investigating Key Factors for Social Network Evolution and Opinion Dynamics in an Agent-Based Simulation"
+shorttitle: "Social Network Evolution and Opinion Dynamics"
 author-inputfile: "authors.tex" 
 abstract: |
   The abstract should briefly summarize the contents of the paper in 150--250 words.
@@ -60,7 +61,7 @@ rmdtemplates::write_bib(pkgs)
 ```
 
 # Acknowledgements {-}
-We would like to thank xyz.
+This research was supported by the Digital Society research program funded by the Ministry of Culture and Science of the German State of North Rhine-Westphalia.
 We would further like to thank the authors of the packages we have used.
 ```{r r_citations, eval=TRUE, include=TRUE, results="asis"}
 rmdtemplates::line_cite(pkgs) # This creates a single line citing all packages
