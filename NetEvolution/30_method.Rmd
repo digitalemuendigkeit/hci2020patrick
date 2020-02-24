@@ -11,14 +11,16 @@ In our research, we focused on the variation of limited parameters for answering
 -	Removing friends: How does the threshold for accepting opinion differences interfere with the overall opinion and network dynamics?
 The distribution of opinions throughout the agents was not varied, but uniformly distributed, because their variation would have blurred the effect of the examined parameters on the network evolution.
 
-To analyze the effect of our parameters, we chose different approaches of social network analysis and evaluated the resulting networks and their nodes regarding their degree, centrality, communality, diameter, and clustering coefficient.
+To analyze the effect of our parameters, we chose different approaches of social network analysis and evaluated the resulting networks and their nodes regarding their degree distribution, centrality, community structure and the opinion dynamics.
 
 ## The Network Model
 We designed a network in which agents interact with each other through publishing posts to their followers and receiving content through their followees. 
 The network is directed so that it is more suitable to represent a real online social network as currently most of the famous social networks allow for unidirectional relationships. 
 The different edges are considered as direction of information spread: outgoing edges from agent x show to which agents the posts of agent x will be sent while incoming edges show from which agents the agent x receives posts. 
-The initial network is created by using the Barabasi Albert Network generator of the LightGraphs package in Julia. 
-This generator allows to define the size of the network and an initial average edge count per agent that follows a power law distribution.
+The initial network is created by using the Barabási Albert Network generator of the LightGraphs package in Julia.
+We decided for the Barabási Albert topology as it provides an artificial network structure that is similar to real world social networks [@Wilson2009].
+This generator allows to define the size of the network and an initial average edge count per agent that follows a power law distribution. 
+Through following a preferential attachment algorithm, the degree distribution of the nodes sticks to the power law, including very few nodes with high degrees and a long tail of nodes with rather low degrees [@Barabasi1999].
 
 After creating the network, the agents are generated with the following attributes:
 
@@ -73,21 +75,16 @@ After all steps are done, the simulation object is saved containing the initial 
 
 ## Implementation of opinion dynamics
 As shown in the previous section there are several ways to model the dynamics in opinion formation.
-We decided to implement a variant of the bounded confidence model proposed by Hegsemlann et al. that relies on a initially randoml generated social network. 
-When in a certain threshold, agents approach towards the perceived public opinion 
+We decided to implement a variant of the bounded confidence model proposed by Hegsemlann et al. that relies on a initially randomly generated social network. 
+When in a certain threshold, agents approach towards the perceived public opinion with regarding the outdegree of the other agents who have an influence on them. Outside this threshold a backfire effect is triggered that leads the agent to reinforcing her own opinion by increasing the distance between the own and the perceived public opinion. As a result, the agent will tend to disconnect from others who are too far apart in their in opinion and thus again reducing the distance between public and own opinion.
 
 ## Network analysis
-Chosen measures:
 
-- Density
-- In-/Outdegree Mean, SD and Maximum
-- Closeness centrality mean + max
-- Betweenness centrality mean + max --> The strength of intermediary ties, Grabowicz et al. 2012
-- Clustering coefficient mean
-- Number of Communities found through label propagation algorithm
-- Connected components
+For an appropriate analysis of the resulting social networks we investigated various measures to evaluate effects on the distribution of degrees, centrality and community structure. Our chosen measures comprise the following:
 
-## Analysis of opinion dynamics
+- Density of the networks, standard Deviation of degrees for ingoing and outgoing edges, ratio of Outdegree to Indegree for the analysis of degree distribution
+- Closeness betweenness, and eigenvector centrality for the understanding of centrality features
+- Clustering coefficient and community detection through label propagation for gaining insights on the community structure
 
 We looked on multiple measures to detect the effect of network structure and the investigated factors on opinion dynamics in the network:
 

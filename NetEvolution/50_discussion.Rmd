@@ -32,22 +32,23 @@ Like other research showed it is difficult to set a limit on fitting the model t
 Han et al. for example considered more precisely the personality of agents and focused specifically on the effect of adding "stubborn" agents to a simulation. 
 For simulations with a higher share of agents who stick stubbornly to their opinion they found that the number of opinion clusters decreased [@Han2019]. 
 
-As Dunbar et al. found we tend to interact on social media platforms within certain communicational layers [@Dunbar2015]. 
-That means that our connections to other individuals hold similar connotations to those in the offline world and that we would differentiate our interactions with friends, colleagues and more distant acquaintances. 
-For introducing such dynamics into simulation models Salehi et al. showed a first approach through varying additional trust levels for the friendship connections of the agents [@Salehi2016].
+As Dunbar et al. found, people tend to interact on social media platforms within certain communicational layers [@Dunbar2015]. 
+That means that our connections to other individuals hold similar connotations to those in the offline world and that we would differentiate between our interactions with friends, colleagues and more distant acquaintances. 
+For introducing such dynamics into simulation models Salehi et al. showed an approach through varying additional trust levels for the friendship connections of the agents [@Salehi2016].
+Along with the implementation of more complex friendships connections we will also strive to incorporate more features of social networks like the function to share a post from the individual's news feed into her own friendship network.
 
+Another important question while simulating opinion dynamics is how one assumes a simulation state to be final or converged. 
+While in cases with consensus formation the answer seems trivial, other cases with unstable opinion distributions in the network might hardly get into a stable final state. 
+Meng et al. found that the convergence time of models operating under the bounded confidence approach of Deffuant et al. strongly depends on the underlying network structure. 
+Also they stated that there is a critical border for the bounded confidence of epsilon = 0.5 for certain network topologies.
+When this border is crossed, the convergence time of simulation runs increases significantly [@Meng2018].
+Hence, for advancing our approach in the future it will be also inevitable to investigate the convergence behavior of our simulation.
 
-Possible extensions:
+A last consideration has to be given to the modelling of the network structure. 
+As we aim to simulate the opinion dynamics in real social networks it is also crucial to run our models on suitable network structures which are capable of replicating the real-world conditions. 
+An extensive analysis of the friendship relations in Facebook of Wilson et al. shows that the actual structure of the social graph shows similarities and a powerl-law distribution of degrees like in Barabási-Albert networks.
+Nevertheless a fitting of the model parameters is required to facilitate the generation of a realistic artificial network and additional factors as network growth have to be taken into account [@Wilson2009].
 
-- Incorporation of a converged simulation state? How much change appears when simulation is continued after 1.000 steps? (Meng et al., 2018)
-
-Stuff to think about:
-
-- News consumption on Social Media platforms is connected to lower trusts in the consumed content compared to information/news websites (Ceron 2015)
-
-- Extensive analysis of Facebook's social graph shows deviations from small-world properties --> motivation for looking for other approaches to model the network topology (Wilson 2009)
-
-
-Outlook:
-
-- Forecasting opinion dynamics (Valera et al. 2016)
+In conclusion there is still a lot do be done for simulating the opinion dynamics on social media platforms as realistic as possible.
+Nevertheless this process is worth tackling all the obstacles as it will facilitate the understanding of opinion formation in online social networks and help with designing social media platforms in a way so that they actually will support an independent and democratic opinion formation in online environments. 
+As shown by Valera et al., the prediction of opinion dynamics in social media platforms is a solvable problem and will be of high value for reaching this goal ultimately [@Valera2016].
