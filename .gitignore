@@ -9,8 +9,8 @@
 *.png
 *.ipynb
 /ipynb_checkpoints/*
-
 .ipynb_checkpoints/
 *.Rda
 *.log
 Gephi/
+.DS_Store
