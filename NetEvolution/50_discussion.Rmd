@@ -47,8 +47,8 @@ Hence, for advancing our approach in the future it will be also inevitable to in
 A last consideration has to be given to the modelling of the network structure.
 As we aim to simulate the opinion dynamics in real social networks it is also crucial to run our models on suitable network structures which are capable of replicating the real-world conditions.
 An extensive analysis of the friendship relations in Facebook of Wilson et al. shows that the actual structure of the social graph shows similarities and a power-law distribution of degrees like in Barabási-Albert networks.
-Nevertheless a fitting of the model parameters is required to facilitate the generation of a realistic artificial network and additional factors as network growth have to be taken into account [@Wilson_user_2009].
+Nevertheless a fitting of the model parameters is required to facilitate the generation of a realistic artificial network and additional factors as network growth have to be taken into account [@wilson_user_2009].
 
 In conclusion there is still a lot do be done for simulating the opinion dynamics on social media platforms as realistic as possible.
 Nevertheless this process is worth tackling all the obstacles as it will facilitate the understanding of opinion formation in online social networks and help with designing social media platforms in a way so that they actually will support an independent and democratic opinion formation in online environments.
-As shown by Valera et al., the prediction of opinion dynamics in social media platforms is a solvable problem and will be of high value for reaching this goal ultimately [@Valera2016].
+As shown by De et al., the prediction of opinion dynamics in social media platforms is a solvable problem and will be of high value for reaching this goal ultimately [@De2016].
