@@ -90,16 +90,31 @@ results %>%
 
 
 ## Impact of Network Size
-<!-- In dem Unterkapitel springst du etwas zwischen den Zeiten, ich würde glaube ich alles im past schreiben -->
 In our simulation, the size of a social network is especially influential for the deviation of network parameters and opinions throughout the members of a network.
-While the density of a network decreases significantly from 10.3% in a network of 100 agents to 8.6% for n=200 and further on to 8.2% for n=500, the standard deviations of outdegree and indegree increase which shows that the preferential attachment algorithm overruns the pursuit of each agent to connect to one tenth of the network members.
-In terms of network centrality, only the closeness centrality increases through more agents while betweenness and eigenvector centrality decrease.
+While the density of a network decreases significantly from 10.3% in a network of 100 agents to 8.6% for n=200 and further on to 8.2% for n=500, the standard deviations of outdegree and indegree increase (outdegree from 5.48 for n=100 up to 28.09 for n=500, indegree from 5.18 for n=100 up to 23.13 for n=500) which shows that the preferential attachment algorithm overruns the pursuit of each agent to connect to one tenth of the network members.
+In terms of network centrality, only the closeness centrality increases through more agents while betweenness and eigenvector centrality decrease (see Table \@ref(tab:netsizecentrality).
 This shows that while the agents' connectivity to each other agent in the network rises, the agents have on average less influence on their neighbors.
+
+\begin{table}[]
+\caption{Influence of network size on centrality measures.}\label{tab:netsizecentrality}
+\begin{tabular}{lllllll}
+\hline
+             & \multicolumn{2}{l}{Closeness Centrality} & \multicolumn{2}{l}{Betweenness Centrality} & \multicolumn{2}{l}{Eigenvector Centrality} \\
+Network size & mean                & sd                 & mean                 & sd                  & mean                 & sd                  \\
+\hline
+100          & 0.3957              & 0.0242             & 0.0156               & 0.0017              & 0.0816               & 0.0043              \\
+200          & 0.4303              & 0.0096             & 0.0067               & 0.0003              & 0.0551               & 0.0019              \\
+300          & 0.4477              & 0.0060             & 0.0042               & 0.0001              & 0.0447               & 0.0012              \\
+400          & 0.4551              & 0.0090             & 0.0030               & 0.0002              & 0.0382               & 0.0011              \\
+500          & 0.4610              & 0.0070             & 0.0024               & 0.0001              & 0.0341               & 0.0007         \\
+\hline
+\end{tabular}
+\end{table}
 
 The influence and the outreach of the supernode in a network depends on the overall network size.
 While in a network of 100 agents every third follows the supernode directly, this value increases continuously for networks with more agents.
-In a network with 500 agents already every other agent is a follower of the supernode.
-Regarding the other centrality measures, the supernode shows higher closeness centrality for larger networks, but lower betweenness and eigenvector centrality with higher network size.
+In a network with 500 agents already every second agent is a follower of the supernode.
+Regarding the other centrality measures, the supernode shows higher closeness centrality for larger networks (from 0.55 for n=100 to 0.63 for n=500), but lower betweenness (from 0.12 for n=100 to 0.04 for n=500) and eigenvector centrality (from 0.28 for n=100 to 0.16 for n=500) with higher network size.
 This shows that while the supernode is more central in terms of connectedness to all other nodes, its importance as a connector between all other agents is decreasing.
 The network size did not affect the opinion difference between the two agents with highest outdegrees as their opinions were always rather conform with each other.  
 The network size did not influence the cluster and community structure within a network consistently.
@@ -107,20 +122,15 @@ The opinion dynamics did not differ significantly regarding network size either.
 The opinion diversity in the network had a slight upgoing trend for larger networks.
 The mean difference between an agent's own opinion and its perceived public opinion in the final state increased slightly with network size as well.
 
-Most important outcomes:
-- Density
-- Supernode Outdegree
-- Mean Betweenness Centrality
-
 ## Impact of the addfriends mechanic
 
 The mechanic for adding new friends shows an influence for the network and the opinion distribution in it.
-When picking new friends only from friends of current friends, the density of a network stays lower than for picking randomly from all agents in the network with regard to the opinion difference and for a hybrid approach of both methods.
-While the standard deviations of outdegree and indegree for each agent to not differ significantly between the different approaches, the mean ratio between outdegree and indegree per agent is less balanced when agents only choose from neighbors of neighbors.
+When picking new friends only from friends of current friends, the density of a network stays with 7.7% lower than for picking randomly from all agents in the network with regard to the opinion difference (8.2%) and for a hybrid approach of both methods (8.2%).
+While the standard deviations of outdegree and indegree for each agent to not differ significantly between the different approaches, the mean ratio between outdegree and indegree per agent is less balanced when agents only choose from neighbors of neighbors (0.48) compared to random (0.49) and hybrid (0.49) approaches.
 
 The least influence of the addfriends mechanic can be perceived in terms of network centrality of each agent.
-Only the closeness centrality is slightly higher for the random and hybrid approach, while betweenness and eigenvector centrality do not show significant changes.
-Concerning clustering and community structure, the clustering coefficient increases slightly by using the random approach while the number of communities is higher for networks where agents only pick neighbors of neighbors and also the number of disconnected communities is higher for this configuration.  
+Only the closeness centrality is slightly higher for the random and hybrid approach (0.45 for neighborhood and 0.46 for random and hybrid approach), while betweenness and eigenvector centrality do not show significant changes.
+Concerning clustering and community structure, the clustering coefficient increases slightly by using the random approach (0.055 compared to 0.052 for the neighborhood approach) while the number of communities is higher for networks where agents only pick neighbors of neighbors (6.41 compared to 3.47 for the random approach).  
 The node with the highest influence and outreach in the network is not affected by the addfriends mechanic.
 The opinion difference of the two nodes with highest outdegree shows more extreme outliers for the random addfriends method but no significant difference to the other approaches.
 The opinion distribution, on the opposite, is significantly higher if the agents only connect to others that are already in their indirect neighborhood.
