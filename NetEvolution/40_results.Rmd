@@ -97,7 +97,7 @@ This shows that while the agents' connectivity to each other agent in the networ
 
 \begin{table}[]
 \caption{Influence of network size on centrality measures.}\label{tab:netsizecentrality}
-\begin{tabular}{lllllll}
+\begin{tabular}{rrrrrrr}
 \hline
              & \multicolumn{2}{l}{Closeness Centrality} & \multicolumn{2}{l}{Betweenness Centrality} & \multicolumn{2}{l}{Eigenvector Centrality} \\
 Network size & mean                & sd                 & mean                 & sd                  & mean                 & sd                  \\
