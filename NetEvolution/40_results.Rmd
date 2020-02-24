@@ -93,6 +93,7 @@ While the density of a network decreases significantly from 10.3% in a network o
 In terms of network centrality, only the closeness centrality increases through more agents while betweenness and eigenvector centrality decrease.
 This shows that while the agents' connectivity to each other agent in the network rises, the agents have on average less influence on their neighbors.
 
+
 The influence and the outreach of the supernode in a network depends on the overall network size.
 While in a network of 100 agents every third follows the supernode directly, this value increases continuously for networks with more agents.
 In a network with 500 agents already every second agent is a follower of the supernode.
