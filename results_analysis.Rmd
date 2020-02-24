@@ -49,7 +49,8 @@ results %>%
   filter(BatchName == "Unfriend") %>% 
   select(-c(BatchName, ConfigAddfriendMethod, ConfigAgentCount, Xlabel, Xlevel)) %>% 
   group_by(ConfigUnfriendThresh) %>% 
-  summarise_all(mean) -> unfriend_aggregates
+  summarise_all(mean) %>% 
+  t() -> unfriend_aggregates
 
 ```
 
@@ -59,19 +60,29 @@ results %>%
   filter(BatchName == "Netsize") %>% 
   select(-c(BatchName, ConfigUnfriendThresh, ConfigAddfriendMethod, Xlabel, Xlevel)) %>% 
   group_by(ConfigAgentCount) %>% 
-  summarise_all(mean) -> netsize_aggregates
+  # summarise(CCmean = mean(ClosenessCentralityMean), CCsd = sd(ClosenessCentralityMean),
+  #           BTWmean = mean(BetweennessCentralityMean), BTWsd = sd(BetweennessCentralityMean),
+  #           EVmean = mean(EigenCentralityMean), EVsd = sd(EigenCentralityMean))
+  summarise_all(mean) %>% 
+  t -> netsize_t
+-> netsize_aggregates
 
 results %>% 
   filter(BatchName == "Addfriends") %>% 
   select(-c(BatchName, ConfigUnfriendThresh, ConfigAgentCount, Xlabel, Xlevel)) %>% 
   group_by(ConfigAddfriendMethod) %>% 
-  summarise_all(mean) -> addfriends_aggregates
+  summarise_all(mean) %>% 
+  t -> addfriends_t
+
+-> addfriends_aggregates
 
 results %>% 
   filter(BatchName == "Unfriend") %>% 
   select(-c(BatchName, ConfigAddfriendMethod, ConfigAgentCount, Xlabel, Xlevel)) %>% 
   group_by(ConfigUnfriendThresh) %>% 
-  summarise_all(mean) -> unfriend_aggregates
+  summarise_all(mean) %>% 
+  t -> unfriends_t
+-> unfriend_aggregates
 
 ```
 
@@ -108,9 +119,9 @@ results %>%
 ####    Degree Distributions    ####
 
 results %>% 
+  # filter(BatchName == "Netsize") %>% 
   ggplot(aes(x = reorder(Xlabel, Xlevel), y = Densities)) +
   facet_grid(~BatchName, scales = "free_x") +
-  
   geom_violin(alpha = 0.1, fill = "black", color = "NA") +
   geom_boxplot(alpha = 0.5, aes(fill = Xlevel)) +
   theme(legend.position = "none") +
