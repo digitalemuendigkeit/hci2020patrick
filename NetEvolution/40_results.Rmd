@@ -148,7 +148,7 @@ The ratio between outdegree and indegree gets more balanced for networks of agen
 The centrality of each agent in the network changes with the unfriend threshold as closeness and eigenvector centrality increase with higher tolerance of friends with diverging opinions. The betweenness in contrast decreases with a rising threshold.
 The clustering and community measures show that while clustering increases through higher unfriend thresholds, the number of separate communities detected through label propagation decreases.
 
-The role of the agent with the highest follower count also depends on the unfriend threshold (see Table \@ref(tab:unfriendthresh)).
+The role of the agent with the highest follower count also depends on the unfriend threshold (see Table \@ref(tab:UnfriendTable)).
 While outdegree and closeness centrality stay rather equal for a threshold from 0.4 to 1.0, in a network with unfriend threshold of 1.2, both values increase significantly.
 So the supernode profits only in terms of post reach when every agent is very tolerant with keeping fellowships that bear a high opinion difference. 
 The betweenness and eigenvector centrality decrease continuously with rising unfriend threshold, but this trend seems to turn around at least for the eigenvector centrality with an unfriend threshold of 1.2.
@@ -160,27 +160,13 @@ While the opinion change is with 0.5 rather large for thresholds below or equal 
 The least opinion change occurs for a threshold of 1.0 while with 1.2 the opinion change starts to increase again.
 With rising unfriend threshold also the distance between perceived public and own opinion increases significantly.
 
-\begin{table}[]
-\caption{Influence of unfriend threshold.}\label{tab:unfriendthresh}
-\begin{tabular}{llllll}
-\hline
-ConfigUnfriendThresh                                                                        & 0.4     & 0.6     & 0.8     & 1       & 1.2     \\ \hline
-Densities                                                                                   & 0.063   & 0.082   & 0.094   & 0.108   & 0.115   \\
-Outdegree SD                                                                                & 26.693  & 27.921  & 29.209  & 31.545  & 36.109  \\
-Indegree SD                                                                                 & 19.050  & 23.133  & 26.923  & 30.335  & 35.134  \\
-Outdegree/Indegre Ratio                                                                     & 0.479   & 0.491   & 0.496   & 0.498   & 0.498   \\
-Closeness Centrality                                                                        & 0.426   & 0.460   & 0.482   & 0.499   & 0.521   \\
-Betweenness Centrality                                                                      & 0.003   & 0.002   & 0.002   & 0.002   & 0.002   \\
-Eigenvector Centrality                                                                      & 0.031   & 0.034   & 0.036   & 0.038   & 0.038   \\
-Clustering Coefficient                                                                      & 0.051   & 0.055   & 0.055   & 0.058   & 0.060   \\
-Communitycount                                                                              & 6.700   & 3.200   & 1.170   & 1.350   & 1.290   \\
-Opinion SD                                                                                  & 0.070   & 0.096   & 0.470   & 0.582   & 0.589   \\
-Opinionchange Delta                                                                         & 0.496   & 0.487   & 0.256   & 0.215   & 0.274   \\
-Difference public/own opinion                                                               & 0.021   & 0.025   & 0.120   & 0.170   & 0.184   \\
-Supernode Outdegree                                                                         & 208.030 & 205.920 & 201.590 & 206.360 & 244.780 \\
-Supernode Closeness Centrality                                                              & 0.629   & 0.628   & 0.624   & 0.631   & 0.663   \\
-Supernode Betweenness Centrality                                                            & 0.054   & 0.041   & 0.033   & 0.029   & 0.037   \\
-Supernode Eigenvector Centrality                                                            & 0.183   & 0.164   & 0.152   & 0.139   & 0.148   \\
-\begin{tabular}[c]{@{}l@{}}Opinion Difference between \\ 1st and 2nd supernode\end{tabular} & 0.005   & 0.027   & 0.252   & 0.362   & 0.085   \\ \hline
-\end{tabular}
-\end{table}
+```{r UnfriendTable}
+results %>% 
+  filter(BatchName == "Unfriend") %>% 
+  select(-c(BatchName, ConfigAddfriendMethod, ConfigAgentCount, Xlabel, Xlevel)) %>% 
+  group_by(ConfigUnfriendThresh) %>% 
+  summarise_all(mean) %>% 
+  t %>% 
+  knitr::kable(caption = "The influence of the unfriend threshold.", booktabs=T, longtable=T)
+```
+
