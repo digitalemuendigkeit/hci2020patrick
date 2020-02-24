@@ -58,11 +58,7 @@ The influence of the factors was evaluated with various measures that can be cla
 4) Opinion Dynamics
 5) Supernode properties
 
-Figure \@ref(fig:CombinedEval) shows the influence of each factor on one representative measure of those facets.
-As can be seen, the network size did not affect the community structure and opinion dynamics significantly.
-In comparison, the addfriends method had additional on the opinion dynamics and only the unfriend threshold showed influence on all facets. Subsequently, the particular effects are examined more detailed and seperately per factor.
-
-```{r CombinedEval, fig.height=8, fig.width=8, fig.cap="Overview of the factor influences on exemplary measures of the analyzed facets."}
+```{r CombinedEval, fig.height=6, fig.width=7, fig.cap="Overview of the factor influences on exemplary measures of the analyzed facets."}
 results %>% 
   select(BatchName, Densities,ClosenessCentralityMean, CommunityCountNontrivial, OpinionSD, SupernodeBetweenness, Xlabel, Xlevel) %>% 
   gather("key", "value", Densities, ClosenessCentralityMean, CommunityCountNontrivial, OpinionSD, SupernodeBetweenness) %>% 
@@ -87,7 +83,9 @@ results %>%
   scale_fill_viridis_c()
 ```
 
-
+Figure \@ref(fig:CombinedEval) shows the influence of each factor on one representative measure of those facets.
+As can be seen, the network size did not affect the community structure and opinion dynamics significantly.
+In comparison, the addfriends method had additional on the opinion dynamics and only the unfriend threshold showed influence on all facets. Subsequently, the particular effects are examined more detailed and seperately per factor.
 
 ## Impact of Network Size
 In our simulation, the size of a social network is especially influential for the deviation of network parameters and opinions throughout the members of a network  (see Table \@ref(tab:NetsizeTable)).
@@ -131,16 +129,16 @@ Supernode1st2ndOpdiff & 0.023 & 0.007 & 0.009 & 0.009 & 0.032 \\ \hline
 \end{tabular*}
 \end{table}
 
-## Impact of the addfriends mechanic
+## Impact of the addfriends mechanism
 
-The mechanic for adding new friends shows an influence for the network and the opinion distribution in it (see Table \@ref(tab:AddfriendsTable)).
+The mechanism for adding new friends shows an influence for the network and the opinion distribution in it (see Table \@ref(tab:AddfriendsTable)).
 When picking new friends only from friends of current friends, the density of a network stays with 7.7% lower than for picking randomly from all agents in the network with regard to the opinion difference (8.2%) and for a hybrid approach of both methods (8.2%).
 While the standard deviations of outdegree and indegree for each agent to not differ significantly between the different approaches, the mean ratio between outdegree and indegree per agent is less balanced when agents only choose from neighbors of neighbors (0.48) compared to random and hybrid approaches (both 0.49).
 
-The least influence of the addfriends mechanic can be perceived in terms of network centrality of each agent.
+The least influence of the addfriends mechanism can be perceived in terms of network centrality of each agent.
 Only the closeness centrality is slightly higher for the random and hybrid approach (0.45 for neighborhood and 0.46 for random and hybrid approach), while betweenness and eigenvector centrality do not show significant changes.
 Concerning clustering and community structure, the clustering coefficient increases slightly by using the random approach (0.055 compared to 0.052 for the neighborhood approach) while the number of communities is higher for networks where agents only pick neighbors of neighbors (6.41 compared to 3.47 for the random approach).  
-The node with the highest influence and outreach in the network is not affected by the addfriends mechanic.
+The node with the highest influence and outreach in the network is not affected by the addfriends mechanism.
 The opinion difference of the two nodes with highest outdegree shows more extreme outliers for the random addfriends method but no significant difference to the other approaches.
 The opinion distribution, on the opposite, is significantly higher if the agents only connect to others that are already in their indirect neighborhood.
 The sum of opinion changes per agent is slightly higher when agents pick their new friends randomly and according to the opinion difference (0.49 for random and 0.44 for neighborhood approaches).
