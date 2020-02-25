@@ -14,3 +14,5 @@
 *.log
 Gephi/
 .DS_Store
+NetEvolution/NetEvolution.tex
+*.zip
