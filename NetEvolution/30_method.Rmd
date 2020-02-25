@@ -7,37 +7,37 @@ We also implemented random seeds so that the performed batch runs can be repeate
 
 In our research, we focused on the variation of limited parameters for answering our research questions:
 
--	Size of the network: How do network and opinion dynamics interplay with the size of a social network?
--	Adding friends: What is the difference between randomly making friends in the network and choosing only from the friends of existing friends?
--	Removing friends: How does the threshold for accepting opinion differences interfere with the overall opinion and network dynamics?
-The distribution of opinions throughout the agents was not varied, but uniformly distributed, because their variation would have blurred the effect of the examined parameters on the network evolution.
+-    Size of the network: How do network and opinion dynamics interplay with the size of a social network?
+-    Adding friends: What is the difference between randomly making friends in the network and choosing only from the friends of existing friends?
+-    Removing friends: How does the threshold for accepting opinion differences interfere with the overall opinion and network dynamics?
+The distribution of opinions throughout the agents was not varied but uniformly distributed, because their variation would have blurred the effect of the examined parameters on the network evolution.
 
-To analyze the effect of our parameters, we chose different approaches of social network analysis and evaluated the resulting networks and their nodes regarding their degree distribution, centrality, community structure and the opinion dynamics.
+To analyze the effect of our parameters, we chose different approaches of social network analysis and evaluated the resulting networks and their nodes regarding their degree distribution, centrality, community structure, and the opinion dynamics.
 
 ## The Network Model
 We designed a network in which agents interact with each other through publishing posts to their followers and receiving content through their followees.
 Currently, most of the popular social networks allow for unidirectional relationships therefore we chose a directed network for our simulation.
 The different edges represent the direction of information spread: outgoing edges from agent x show to which agents the posts of agent x will be sent while incoming edges show from which agents the agent x receives posts.  
 The initial network is created by using the Barabási Albert Network generator of the LightGraphs package in Julia.
-We decided for the Barabási Albert topology as it provides an artificial network structure that is similar to real world social networks [@wilson_user_2009].
-This generator allows to define the size of the network and an initial average edge count per agent that follows a power law distribution.
+We decided on the Barabási Albert topology as it provides an artificial network structure that is similar to real-world social networks [@wilson_user_2009].
+This generator allows defining the size of the network and an initial average edge count per agent that follows a power-law distribution.
 Through following a preferential attachment algorithm, the degree distribution of the nodes sticks to the power law, including very few nodes with high degrees and a long tail of nodes with rather low degrees [@Barabasi1999].
 
 After creating the network, the agents are generated with the following attributes:
 
-- Opinion [-1,1]: Main attribute to change their network of incoming edges (followees).
+- Opinion [-1,1]: The Main attribute to change their network of incoming edges (followees).
 Initially, the opinion is uniformly distributed over all agents.
-- Perceived Public Opinion [-1,1]: The mean opinion a particular agent perceives in its neighborhood through seeing the posts of inneighbors.
+- Perceived Public Opinion [-1,1]: The mean opinion a particular agent perceives in its neighborhood through seeing the posts of in-neighbors.
 If the absolute distance between the public and its own opinion is within a defined threshold, the agent's opinion converges towards the public opinion.
 If not, the agent's position will move into the opposite direction of the perceived opinion (therewith increasing the distance).
 If an agent ends up having no neighbors, the perceived public opinion mirrors its own opinion.
-- Inclination to Interact [0,Inf]: The willingness of agents to share posts.
+- The inclination to Interact [0,Inf]: The willingness of agents to share posts.
 A distribution function sets 80% of the agents to passive receivers who rarely share a post.
 Very few agents have a higher inclination to interact than 1 and share multiple posts per simulation step.
-After initial generation, this attribute is fixed.
-- Feed (Array of max. 15 posts): Storage of received posts. The feed of agent x contains all shared posts from agents who are inneighbors of agent x.
+After its initial generation, this attribute is fixed.
+- Feed (Array of max. 15 posts): Storage of received posts. The feed of agent x contains all shared posts from agents who are in-neighbors of agent x.
 
-The perceived public opinion is the only factor that has influence on an agent's opinion and is driven by the posts that are visible to this agent.
+The perceived public opinion is the only factor that has an influence on an agent's opinion and is driven by the posts that are visible to this agent.
 The most important attributes of a post are:
 
 - Opinion [-1,1]: A post's opinion is generated from the opinion of the agent who publishes it.
@@ -46,30 +46,30 @@ Its opinion is randomly varied by applying a random addition between [-0.1,0.1].
 Posts with high weights are perceived as more important and influential through the receiving agents compared to posts that have been published from agents with low outdegree.
 
 ## The Simulation Architecture
-A simulation consists of an initiating phase that creates the required initial network and agents with their properties, a main simulation phase where the agents interact and time steps are performed and a data saving phase.
+A simulation consists of an initiating phase that creates the required initial network and agents with their properties, the main simulation phase where the agents interact and time steps are performed and a data saving phase.
 Every simulation timestep follows the same order of actions.
 First, the agent list is shuffled to ensure that the order in which the agents perform their interactions don't have an impact on the simulation outcomes.
 Following, the actions of a certain agent in a simulation step are described:
 
-1. *Update the feed:* The posts that were received in the previous step get sorted by their weight and the weight of all posts in the feed are reduced by the factor 0.5 to provide higher visibility to newer posts.
+1. *Update the feed:* The posts that were received in the previous step get sorted by their weight and the weight of all posts in the feed is reduced by the factor 0.5 to provide higher visibility to newer posts.
 The feed is limited to the 15 highest-weighted posts, all other posts are dropped and not further considered for calculation of the perceived public opinion.
-2. *Update perceived public opinion:* The updated feed is used to calculate the perceived public opinion. The opinion of posts with higher weights have a higher influence in calculation.
+2. *Update perceived public opinion:* The updated feed is used to calculate the perceived public opinion. The opinion of posts with higher weights have a higher influence on the calculation.
 If the feed of the agent is empty, the perceived public opinion mirrors the opinion of the agent.
 3. *Update the opinion:* With the perceived public opinion an agent now updates its own opinion.
-If the absolute distance between public opinion and own opinion is inside a defined threshold, the agent approaches towards the public opinion by a factor of 0.05.
+If the absolute distance between public opinion and own opinion is inside a defined threshold, the agent approaches the public opinion by a factor of 0.05.
 If the absolute distance lies outside the range, the agent moves into the opposing direction and therewith increases the distance what we call the "backfire effect".
 4. *Drop ingoing edges:*  Regarding its updated opinion, an agent checks if the current posts in his feed are in an accepted absolute distance to the own opinion.
 If not, the agent also checks the real opinion of the source agent and if this opinion is also outside the accepted range, the agent drops the incoming edge so that it won't receive further posts of the former followee.
 In one step, an agent can only drop a tenth of his current number (rounded up) of ingoing edges so that a realistic behavior is maintained.
-5. *Add ingoing edges:* After disconnecting from agents that are outside of the accepted opinion range, an agent adds new ingoing edges if his in-neighbors count is below a desired value.
+5. *Add ingoing edges:* After disconnecting from agents that are outside of the accepted opinion range, an agent adds new ingoing edges if his in-neighbors count is below the desired value.
 All agents try to maintain an indegree that equals a tenth of the network size.
 Adding edges is based on the configuration either done by selecting candidates from the neighbors of the agent's in-neighbors without regarding the opinion or selecting candidates randomly from the whole network that lie inside a defined absolute distance from the own opinion.
-In the third configuration both approaches are combined.
+In the third configuration, both approaches are combined.
 From the selected candidates, an agent always chooses the one with the highest outdegree first and creates a new directed edge towards itself.
 This process is continued until the number of new in-neighbors is reached or the list of candidates is empty.
-6. *Publish posts:* When the network maintenance is finished, an agent starts to publish posts with regard to its inclination to interact.
-A post is generated through multiplying the own opinion with a randomly chosen factor in [-0.1,0.1] and setting the post weight equals to the own current outdegree.
-After generating the post it is shared to all feeds of the current agent's outneighbors.
+6. *Publish posts:* When the network maintenance is finished, an agent starts to publish posts concerning its inclination to interact.
+A post is generated through multiplying the own opinion with a randomly chosen factor in [-0.1,0.1] and setting the post-weight equals to the own current outdegree.
+After generating the post it is shared with all feeds of the current agent's out-neighbors.
 
 The actions described above are performed by every agent during a simulation step.
 After all agents are finished, their current states and network measures are logged for analysis.
@@ -77,23 +77,23 @@ After all steps are done, the simulation object is saved containing the initial 
 
 ## Implementation of opinion dynamics
 As shown in the previous section there are several ways to model the dynamics in opinion formation.
-We decided to implement a variant of the bounded confidence model proposed by Hegsemlann et al. that relies on a initially randomly generated social network.
-When in a certain threshold, agents approach towards the perceived public opinion with regarding the outdegree of the other agents who have an influence on them. Outside this threshold a backfire effect is triggered that leads the agent to reinforcing her own opinion by increasing the distance between the own and the perceived public opinion. As a result, the agent will tend to disconnect from others who are too far apart in their in opinion and thus again reducing the distance between public and own opinion.
+We decided to implement a variant of the bounded confidence model proposed by Hegsemlann et al. that relies on an initially randomly generated social network.
+When in a certain threshold, agents approach towards the perceived public opinion regarding the outdegree of the other agents who influence them. Outside this threshold, a backfire effect is triggered that leads the agent to reinforce her own opinion by increasing the distance between her own and the perceived public opinion. As a result, the agent will tend to disconnect from others who are too far apart in their opinion and thus again reducing the distance between the public and their own opinion.
 
 ## Network analysis
 
-For an appropriate analysis of the resulting social networks we investigated various measures to evaluate effects on the distribution of degrees, centrality and community structure. Our chosen measures comprise the following:
+For an appropriate analysis of the resulting social networks, we investigated various measures to evaluate effects on the distribution of degrees, centrality and community structure. Our chosen measures comprise the following:
 
-- Density of the networks, standard deviation of degrees for ingoing and outgoing edges, ratio of outdegree to indegree for the analysis of degree distribution
+- The density of the networks, the standard deviation of degrees for ingoing and outgoing edges, the ratio of outdegree to indegree for the analysis of degree distribution
 - Closeness betweenness, and eigenvector centrality for the understanding of centrality features
 - Clustering coefficient and community detection through label propagation for gaining insights on the community structure
 
 We looked on multiple measures to detect the effect of network structure and the investigated factors on opinion dynamics in the network:
 
 - Standard deviations of opinions
-- Opinion Change Delta Mean (Opinion Change from initial to final opinion of an agent)
-- Difference between individual's opinion and individual's perceived public opinion
+- Opinion Change Delta Mean (Opinion Change from initial to the final opinion of an agent)
+- Difference between an individual's opinion and its perceived public opinion
 
 Besides calculating the means of all aforementioned measures we also investigated them for the most important node in the networks in particular.
 
-The measures were all calculated from the final state of the simulation runs and averaged over all repetitions of the same run so that we are able to calculate confidence intervals for the outcomes of the simulation runs.
+The measures were all calculated from the final state of the simulation runs and averaged over all repetitions of the same run so that we can calculate confidence intervals for the outcomes of the simulation runs.

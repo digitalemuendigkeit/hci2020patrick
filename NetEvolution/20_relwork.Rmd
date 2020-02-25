@@ -1,73 +1,73 @@
 # Related Work
 
 Our work implements the state of the art knowledge about how opinion formation happens and how friendship networks evolve in online environments.
-This section supplies the prerequisites for creating such a simulation model by looking into the dynamics that occur, indicating how they can be modelled and investigating how the surrounding network can be replicated appropriately.
+This section supplies the prerequisites for creating such a simulation model by looking into the dynamics that occur, indicating how they can be modeled and investigating how the surrounding network can be replicated appropriately.
 
 ## Opinion Dynamics in Social Media
 
 In their initial purpose, social media services as Facebook and Twitter were created to open up an online space for interacting with current friends and finding new ones.
-Nowadays, those services provide far more features as news media entered this environments and people started to not only share their everyday activities and cat photos, but also are voicing their opinions and perceiving the reactions of others.
+Nowadays, those services provide far more features as news media entered these environments and people started to not only share their everyday activities and cat photos, but also are voicing their opinions and perceiving the reactions of others.
 
-It has been shown that social media platforms expose their users to a larger range of diverging opinions and information that may or may not fit their initial beliefs than other media could possibly do [@anspach_new_2017].
-While this increased exposure could be suspected as positive influence on the opinion formation, this type of media also shows more vulnerability for misleading the public discourse on certain topics like it got evident for events as the Brexit [@del_vicario_mapping_2017] or most recently the spread of wrong information about the corona virus [@McCloskey2020].
+It has been shown that social media platforms expose their users to a larger range of diverging opinions and information that may or may not fit their initial beliefs than other media could do [@anspach_new_2017].
+While this increased exposure could be suspected as a positive influence on the opinion formation, this type of media also shows more vulnerability for misleading the public discourse on certain topics like it got evident for events as the Brexit [@del_vicario_mapping_2017] or most recently the spread of wrong information about the coronavirus [@McCloskey2020].
 
 Furthermore, it is crucial to consider the imbalance of activity of social media users.
-As Romero et al. found, the majority of users passively consume content on social media platforms and rarely take part in interactions, while only a little part of the users utilize those platforms to actively contribute new content and spread their opinions which transforms them into secondary gate keepers of information spread [@Romero2011a; @singer_user-generated_2014].
+As Romero et al. found, the majority of users passively consume content on social media platforms and rarely take part in interactions, while only a little part of the users utilize those platforms to actively contribute new content and spread their opinions which transforms them into secondary gatekeepers of information spread [@Romero2011a; @singer_user-generated_2014].
 Those individuals are also referred to as opinion leaders [@Burt1999].
 Besides a higher intention to share news and other information via social media [@schafer2015opinion], opinion leaders also get apparent through their prominent position in social networks as they show more ties to other users and a higher influence on information spread [@Halberstam2016a].
 
-This serves as motivation to take a closer look on the underlying network structure of social media platforms as the structure impacts both active and passive users equally.
-Looking on the influence of network dynamics, Szymanski et al. revealed an effect on the formation of political opinions among multicultural societies.
+This serves as motivation to take a closer look at the underlying network structure of social media platforms as the structure impacts both active and passive users equally.
+Looking at the influence of network dynamics, Szymanski et al. revealed an effect on the formation of political opinions among multicultural societies.
 They found that both sociocultural factors and network dynamics steer the opinion formation of an individual as the initial ties a certain individual holds keep influencing her opinion formation permanently.
-These initial ties evolve due to cultural factors, ethnicity and gender [@Szymanski201661].
+These initial ties evolve due to cultural factors, ethnicity, and gender [@Szymanski201661].
 
-Azzimonti et al. showed that the vulnerability of a social network to propagation of misinformation and polarization depends on its structure and the features that are provided to the users.
-They investigated multiple factors that could lead to opinion polarization and spread of misinformation in an agent-based network and showed that particular network characteristics and the behavior of central agent can foster those two effects.
-Higher clustering, for example, increases polarization while it has no effect on the spread of misinformation.
+Azzimonti et al. showed that the vulnerability of a social network to the propagation of misinformation and polarization depends on its structure and the features that are provided to the users.
+They investigated multiple factors that could lead to opinion polarization and spread of misinformation in an agent-based network and showed that particular network characteristics and the behavior of the central agent can foster those two effects.
+Higher clustering, for example, increases polarization while it does not affect the spread of misinformation.
 Regarding centrality it is the other way round: if potential spreaders of misinformation occupy positions in the network with high follower count, the dissemination of misinformation is facilitated whereas the polarization is not significantly promoted [@NBERw24462].
 
-In addition to the deception that is initiated through particular users, the algorithms that are used by social media platforms for presenting relevant content can also lead to misguided perceptions of the oppinion climate [@Nguyen2014]. To reveal the true effect of such algorithms it is inevitable to precisely analyze their interaction with the users [@CaleroValdez2018a].
+In addition to the deception that is initiated through particular users, the algorithms that are used by social media platforms for presenting relevant content can also lead to misguided perceptions of the opinion climate [@Nguyen2014]. To reveal the true effect of such algorithms it is inevitable to precisely analyze their interaction with the users [@CaleroValdez2018a].
 
 ## Modelling opinion dynamics
 
-After shedding light on the role of social media platforms on providing social ties and their importance for information and opinion spread it is also central for our research approach to understand, how opinion dynamics can be modelled.
-We therefore take a closer look on research that deals with the operationalization of opinion on the one hand, and the modeling of social networks in simulation environments on the other hand.
+After shedding light on the role of social media platforms on providing social ties and their importance for information and opinion spread it is also central for our research approach to understand, how opinion dynamics can be modeled.
+Therefore, we take a closer look at research that deals with the operationalization of opinion on the one hand, and the modeling of social networks in simulation environments on the other hand.
 
 It is necessary to transform the opinion of a social network member into a value that allows for comparing it to others based on mathematical operations.
 Only in this way we can implement mechanisms for the interaction and mutual influence of opinions inside the simulated network community.
 
-The initial idea for turning an opinion into a concrete value derives from the objective to measure promoting factors in the process of consensus finding.
-@Degroot1974 therefore replicated the beliefs into subjective probability distributions which allowed to perform the required calculations that are modelling the opinion formation.
+The initial idea for turning opinion into a concrete value derives from the objective to measure promoting factors in the process of consensus finding.
+For this @Degroot1974 replicated the beliefs into subjective probability distributions which allowed to perform the required calculations that are modeling the opinion formation.
 
-Another approach for modelling opinion dynamics is to build an agent-based model that directly allows for manipulating various factors in the process of opinion formation.
+Another approach for modeling opinion dynamics is to build an agent-based model that directly allows for manipulating various factors in the process of opinion formation.
 
 Deffuant et al. developed such a model and implemented a bounded confidence approach.
 Their work shows how a fixed threshold in which opinion change occurs alters the overall opinion distribution in a simulation.
-They chose to opinion is modelled on a one-dimensional, continuous scale from 0 to 1.
+They chose to opinion is modeled on a one-dimensional, continuous scale from 0 to 1.
 Besides the condition that the agents talk to each other randomly and each conversation is considered for a possible opinion change, they also applied a network model for regulating communication partners within the agents.
 Using square lattices as underlying topology, the agents were restricted to only talking to four others directly adjacent to them.
 In comparison with a model that uses complete mixing of agents, the network version shows that consensus is no longer found for a major group of agents but rather depends on the connectedness of agent clusters, especially for low opinion thresholds [@Deffuant2000].
 
 The research of Weisbuch et al. continues the evaluation of network influence on a bounded confidence model by comparing the original fully mixed mode of Deffuant et al. with a model that incorporates scale-free networks as limiting environments for the agent communication.
 They also found that a scale-free network structure does not have a radical influence on opinion dynamics.
-Most prominent, the use of scale-free networks lead to far more isolated agents and the role of the most-connected node provides useful information.
+Most prominent, the use of scale-free networks leads to far more isolated agents and the role of the most-connected node provides useful information.
 It could be shown that such supernodes were most influential compared to all other nodes and processed themselves also a significant opinion change during the clustering process.
 With decreasing density, differences to the standard mixed variant get more visible.
 Further motivation for investigating the effect of Barabási-Albert networks is given by the research of Stauffer et al. who also differentiated between directed and undirected networks.
 They discovered that especially for small $\epsilon < 0.4$ for the bounded confidence intervals the opinions of the simulated agents show stronger deviations from each other.
-For $\epsilon > 0.4$ their agents always end up with finding a consensus.
+For $\epsilon > 0.4$ their agents always end up finding a consensus.
 Studies of Fortunato et al. show equal indications that for $\epsilon < 0.5$, an opinion dynamics model based on the approach of Deffuant et al. always leads to the formation of a consensus, independent of the underlying network structure [@Weisbuch2004].
 
 Later on, Hegselmann and Krause extended the complexity of the bounded confidence approach by implementing dependencies on symmetry and individual agent properties for the confidence value.
-Looking on the continuous scale of opinions, the threshold for bounded confidence therewith can adapt to the actual position of an agent on this scale and the direction of potential consensus finding.
-Besides, agents can also hold now an individual confidence which allows for implementing different types of agent personalities [@HegselmannKrause2002].
+Looking at the continuous scale of opinions, the threshold for bounded confidence therewith can adapt to the actual position of an agent on this scale and the direction of potential consensus finding.
+Besides, agents can also hold now individual confidence which allows for implementing different types of agent personalities [@HegselmannKrause2002].
 
 ## Modelling Structures of Online Social Networks
 
 Several approaches were made to incorporate network structures that are close to real social networks.
 The previously mentioned study of Deffuant et al. showed a comparison of fully connected agents and a square-lattice topology [@Deffuant2000].
 Further research shows the importance of an accurate model of the network topology as all examined interactions in such simulations are influenced by the underlying structure [@Rolfe2014].
-The review of Mastroeni shows three prominent approaches for dealing with the interaction of individuals in an agent-based simulation model: Pairwise interaction (Every agent only talks to one other agent in a certain time step), any-to-any interaction (Every agent talks to every other agent within a time step), and closest neighbors approaches (An agent talks only to other agents that are in her neighborhood) [@Mastroeni2019].
-We decided for the last approach as it allows for implementing a network and certain dynamics which are similar to those in existing social media platforms.
+The review of Mastroeni shows three prominent approaches for dealing with the interaction of individuals in an agent-based simulation model: Pairwise interaction (Every agent only talks to one other agent in a certain time step), any-to-any interaction (Every agent talks to every other agent within a time step), and closest neighbors approach (An agent talks only to other agents that are in her neighborhood) [@Mastroeni2019].
+We decided on the last approach as it allows for implementing a network and certain dynamics that are similar to those in existing social media platforms.
 
 In the following, we will describe how we implemented the desired opinion and network dynamics and show how we analyzed the results of our simulation models.

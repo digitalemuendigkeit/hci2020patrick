@@ -1,7 +1,7 @@
 # Discussion
 
 Our work revealed several results that call for further investigation.
-Subsequently, we will discuss the results in relation to other research and look into the lessons learned from our initial approach and possible further steps.
+Subsequently, we will discuss the results concerning other research and look into the lessons learned from our initial approach and possible further steps.
 
 As we could show, the overall model configuration was capable of simulating the opinion dynamics in a social network and suitable to perform experiments regarding specific factors of the network size and behavior.
 The programming language Julia proved robust as a simulation environment and provided all necessary flexibility to implement our approach as well as enough performance to run several configurations and repetitions in a reasonable time.
@@ -9,46 +9,46 @@ The programming language Julia proved robust as a simulation environment and pro
 With changing the overall agent count in the network, we wanted to observe how a higher availability of possible friends in a network and the strengthening of supernodes through the preferential attachment mechanism will change the structure and dynamics in the network.
 The obtained results indicate that through increasing the network size, the agents grow closer together although the overall network density decreases significantly.
 This counterintuitive result can be explained with the significant influence growth of the supernode in the network.
-We interpret the absent influence of network size on all measures of opinion dynamics except for the obviously higher deviation of opinions in larger networks as confirmation for the robustness of our implementation.
+We interpret the absent influence of network size on all measures of opinion dynamics except for the higher deviation of opinions in larger networks as confirmation for the robustness of our implementation.
 
-Looking on the other two factors we were able to establish significant influences on both network and opinion dynamics.
-While the unfriend threshold depicts the effects of direct individual behavior of the agents, the addfriends mechanic can be seen as indirect individual behavior as a certain platform could provide recommendations for new friends in various ways and therewith lead the user to establish new connections more locally (through looking into neighbors of neighbors) or more globally (through looking randomly in the whole network).
-Being limited on the local environment naturally leads to lower network densities as the amount of agents who hold similar opinions decreases.
+Looking at the other two factors we were able to establish significant influences on both network and opinion dynamics.
+While the unfriend threshold depicts the effects of direct individual behavior of the agents, the add friends mechanism can be seen as indirect individual behavior as a certain platform could provide recommendations for new friends in various ways and therewith lead the user to establish new connections more locally (through looking into neighbors of neighbors) or more globally (through looking randomly in the whole network).
+Being limited to the local environment naturally leads to lower network densities as the number of agents who hold similar opinions decreases.
 As a consequence, the opinion deviation increases and so does the difference between the own opinion and the perceived public opinion.
-The higher delta of opinion change in networks with random or hybrid addfriends mechanics compared to the other mechanic can be reasoned with the effect of bounded confidence: if agents act in an environment that is closer to their own opinion, they will more likely approach to the opinions of the others and the higher density of networks with randomly chosen friends allows for more opinion fluctuation.
-The restriction to local neighbors on the other hand leads more often to local environments where the public perceived opinion is too distant from the own opinion and alternatively the backfire effect is triggered.
+The higher delta of opinion change in networks with random or hybrid add friends mechanisms compared to the other mechanism can be reasoned with the effect of bounded confidence: if agents act in an environment that is closer to their own opinion, they will more likely approach to the opinions of the others and the higher density of networks with randomly chosen friends allows for more opinion fluctuation.
+The restriction to local neighbors, on the other hand, leads more often to local environments where the public perceived opinion is too distant from their own opinion and alternatively the backfire effect is triggered.
 
 The unfriend threshold showed the most diverse influence on the measured network and opinion dynamics.
 Inherently, the density of a network increases when its members are less rigorous with cutting unsuitable friendship ties.
-Also the effects on centrality and clustering of the network seem rather obvious and the decrease of opinion change delta orthogonal to the rise of distance between public and own opinion shows again the incidence of the bounded confidence dynamics.
+Also, the effects on centrality and clustering of the network seem rather obvious and the decrease of opinion change delta orthogonal to the rise of the distance between public and own opinion shows again the incidence of the bounded confidence dynamics.
 More interesting, however, is the sharp change of measures for unfriend thresholds of 0.6 and 0.8.
-Previous research suggests that members of online social networks tend to unfriend other individuals due to offensive or counter-attitudinal posts but it shows simultaneously that a large share of users are rather lazy in cutting their weak ties [@John2015].
+Previous research suggests that members of online social networks tend to unfriend other individuals due to offensive or counter-attitudinal posts but it shows simultaneously that a large share of users is rather lazy in cutting their weak ties [@John2015].
 John et al. also found that cutting ties because of political posts happens more often around individuals who hold stronger political inclinations and with the reason to increase homogeneity in their Facebook Newsfeeds.
-For less politically interested individuals the primary motivation in cutting those ties lay in reducing the amount of political posts in their feed.
+For less politically interested individuals the primary motivation in cutting those ties lay in reducing the number of political posts in their feed.
 
-With our initial approach we were able to target a proof of concept for an agent-based model that provides more closeness to reality through implementing certain dynamics of real-world social media platforms like Facebook and Twitter.
+With our initial approach, we were able to target proof of concept for an agent-based model that provides more closeness to reality through implementing certain dynamics of real-world social media platforms like Facebook and Twitter.
 Concurrently, our results motivate for further investigation of the examined factors and inclusion of further dynamics into the network model.
 Like other research showed it is difficult to set a limit on fitting the model to real-world dynamics as almost every effect that occurs can be implemented with more or less complexity into a certain simulation environment.
 Han et al. for example considered more precisely the personality of agents and focused specifically on the effect of adding "stubborn" agents to a simulation.
-For simulations with a higher share of agents who stick stubbornly to their opinion they found that the number of opinion clusters decreased [@Han2019].
+For simulations with a higher share of agents who stick stubbornly to their opinion, they found that the number of opinion clusters decreased [@Han2019].
 
 As Dunbar et al. found, people tend to interact on social media platforms within certain communicational layers [@Dunbar2015].
 That means that our connections to other individuals hold similar connotations to those in the offline world and that we would differentiate between our interactions with friends, colleagues and more distant acquaintances.
 For introducing such dynamics into simulation models Salehi et al. showed an approach through varying additional trust levels for the friendship connections of the agents [@Salehi2016].
-Along with the implementation of more complex friendships connections we will also strive to incorporate more features of social networks like the function to share a post from the individual's news feed into her own friendship network.
+Along with the implementation of more complex friendships connections, we will also strive to incorporate more features of social networks like the function to share a post from the individual's news feed into her friendship network.
 
 Another important question while simulating opinion dynamics is how one assumes a simulation state to be final or converged.
 While in cases with consensus formation the answer seems trivial, other cases with unstable opinion distributions in the network might hardly get into a stable final state.
 Meng et al. found that the convergence time of models operating under the bounded confidence approach of Deffuant et al. strongly depends on the underlying network structure.
-Also they stated that there is a critical border for the bounded confidence of $\epsilon = 0.5$ for certain network topologies.
+Also, they stated that there is a critical border for the bounded confidence of $\epsilon = 0.5$ for certain network topologies.
 When this border is crossed, the convergence time of simulation runs increases significantly [@Meng2018].
 Hence, for advancing our approach in the future it will be also inevitable to investigate the convergence behavior of our simulation.
 
-A last consideration has to be given to the modelling of the network structure.
-As we aim to simulate the opinion dynamics in real social networks it is also crucial to run our models on suitable network structures which are capable of replicating the real-world conditions.
+The last consideration has to be given to the modeling of the network structure.
+As we aim to simulate the opinion dynamics in real social networks it is also crucial to run our models on suitable network structures that are capable of replicating the real-world conditions.
 An extensive analysis of the friendship relations in Facebook of Wilson et al. shows that the actual structure of the social graph shows similarities and a power-law distribution of degrees like in Barabási-Albert networks.
-Nevertheless a fitting of the model parameters is required to facilitate the generation of a realistic artificial network and additional factors as network growth have to be taken into account [@wilson_user_2009].
+Nevertheless, fitting of the model parameters is required to facilitate the generation of a realistic artificial network and additional factors as network growth have to be taken into account [@wilson_user_2009].
 
-In conclusion there is still a lot do be done for simulating the opinion dynamics on social media platforms as realistic as possible.
-Nevertheless this process is worth tackling all the obstacles as it will facilitate the understanding of opinion formation in online social networks and help with designing social media platforms in a way so that they actually will support an independent and democratic opinion formation in online environments.
+In conclusion, there is still a lot do be done for simulating the opinion dynamics on social media platforms as realistic as possible.
+Nevertheless, this process is worth tackling all the obstacles as it will facilitate the understanding of opinion formation in online social networks and help with designing social media platforms in a way so that they actually will support an independent and democratic opinion formation in online environments.
 As shown by De et al., the prediction of opinion dynamics in social media platforms is a solvable problem and will be of high value for reaching this goal ultimately [@De2016].
