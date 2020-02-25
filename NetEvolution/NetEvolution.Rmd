@@ -3,7 +3,7 @@ title: "Investigating Key Factors for Social Network Evolution and Opinion Dynam
 title-running: "Social Network Evolution and Opinion Dynamics"
 author-inputfile: "authors.tex" 
 abstract: |
-  In recent years social media platforms have experienced an increasing attention of researchers due to their capabilities of providing information and spreading opinions of individuals, thus establishing a new environment for opinion formation on a societal level. To gain a better understanding of the occuring opinion dynamics,the interactions between the users and the content that has been shared in those environments has to be investigated. With our work we want to shed light on the part played by the underlying network structure as information spread relies directly on it and every user of social media is affected by it. We therefore analyzed the role of network properties and the nature of relationships in such networks using an agent-based model. Our results reveal the capability of such models for investigating the influence of such factors on opinion dynamics and encourage for further investigation in this field of research.
+  In recent years social media platforms have experienced an increasing attention of researchers due to their capabilities of providing information and spreading opinions of individuals, thus establishing a new environment for opinion formation on a societal level. To gain a better understanding of the occuring opinion dynamics,the interactions between the users and the content that has been shared in those environments has to be investigated. With our work we want to shed light on the part played by the underlying network structure as information spread relies directly on it and every user of social media is affected by it. We therefore analyzed the role of network properties and dealing with friendships in such networks using an agent-based model. Our results reveal the capability of such models for investigating the influence of these factors on opinion dynamics and encourage for further investigation in this field of research.
 keywords: "Opinion Dynamics \\and Social Networks Analysis \\and Agent-based Modelling \\and Network Structure."
 bibliography: ["rpackages.bib", "bibliography.bib"]
 #biblio-style: "apalike"
@@ -11,7 +11,7 @@ link-citations: true
 output:
   bookdown::pdf_document2:
     fig_caption: true
-    keep_tex: false
+    keep_tex: true
     template: lncs-template.tex
     md_extensions: +footnotes
     citation_package: biblatex
@@ -43,7 +43,7 @@ library(cowplot)
 # add libraries here
 
 # Add libraries to cite here:
-pkgs <- c("knitr", "tidyverse", "rmdformats", "kableExtra", "scales", "psych", "rmdtemplates")
+pkgs <- c("knitr", "tidyverse", "rmdformats", "scales", "psych", "rmdtemplates")
 rmdtemplates::write_bib(pkgs)
 ```
 
